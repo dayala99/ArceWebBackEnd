@@ -40,14 +40,13 @@ public class UsuarioRepository: IUsuarioRepository
         {
             await connection.OpenAsync();
             var parametros = new DynamicParameters();
-            //PARAMETROS ENTRADA
+            
             parametros.Add("@Usr_Cod", valores.Usr_Cod);
             parametros.Add("@Usr_Nom", valores.Usr_Nom);
-            parametros.Add("@Flg_Est", valores.Flg_Est);
             parametros.Add("@Usr_Reg", valores.Usr_Reg);
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
-            //PARAMETROS SALIDA
+            
             parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
             parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
             try
@@ -79,7 +78,7 @@ public class UsuarioRepository: IUsuarioRepository
             parametros.Add("@Usr_Cod", valores.Usr_Cod);
             parametros.Add("@Usr_Nom", valores.Usr_Nom);
             parametros.Add("@Flg_Est", valores.Flg_Est);
-            parametros.Add("@Usr_Reg", valores.Usr_Reg);
+            parametros.Add("@Usr_Mod", valores.Usr_Mod);
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
 
@@ -87,7 +86,6 @@ public class UsuarioRepository: IUsuarioRepository
             parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
             try
             {
-                //EJECUTAR EL STORED PROCEDURE
                 connection.Execute(
                     "[dbo].[PA_Sg_Usuario_U0001]"
                     , parametros

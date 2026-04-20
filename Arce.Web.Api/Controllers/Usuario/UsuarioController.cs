@@ -16,6 +16,7 @@ namespace MyApp.Namespace
         {
             _usuarioService = usuarioService;
         }
+        
         [HttpGet]
         [Route("getListarUsuarioActivo")]
         public async Task<IActionResult> ListarUsuarioActivo(string Usr_Id, string Usr_Cod, string Usr_Nom, string Flg_Est)
@@ -64,7 +65,7 @@ namespace MyApp.Namespace
                 Usr_Cod = valores.Usr_Cod,
                 Usr_Nom = valores.Usr_Nom,
                 Flg_Est = valores.Flg_Est,
-                Usr_Reg = valores.Usr_Reg
+                Usr_Mod = valores.Usr_Mod
             };
             
             var result = await _usuarioService.ActualizarUsuario(parametros);

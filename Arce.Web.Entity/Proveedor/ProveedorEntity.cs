@@ -1,4 +1,4 @@
-﻿namespace Arce.Web.Entity;
+﻿namespace Arce.Web.Entity.Proveedor;
 
 public class ProveedorEntity
 {
