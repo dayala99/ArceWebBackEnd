@@ -1,0 +1,11 @@
+D:\Proyectos\ArceWebBackend\Arce.Web.Entity\bin\Debug\net8.0\Arce.Web.Entity.deps.json
+D:\Proyectos\ArceWebBackend\Arce.Web.Entity\bin\Debug\net8.0\Arce.Web.Entity.dll
+D:\Proyectos\ArceWebBackend\Arce.Web.Entity\bin\Debug\net8.0\Arce.Web.Entity.pdb
+D:\Proyectos\ArceWebBackend\Arce.Web.Entity\obj\Debug\net8.0\Arce.Web.Entity.GeneratedMSBuildEditorConfig.editorconfig
+D:\Proyectos\ArceWebBackend\Arce.Web.Entity\obj\Debug\net8.0\Arce.Web.Entity.AssemblyInfoInputs.cache
+D:\Proyectos\ArceWebBackend\Arce.Web.Entity\obj\Debug\net8.0\Arce.Web.Entity.AssemblyInfo.cs
+D:\Proyectos\ArceWebBackend\Arce.Web.Entity\obj\Debug\net8.0\Arce.Web.Entity.csproj.CoreCompileInputs.cache
+D:\Proyectos\ArceWebBackend\Arce.Web.Entity\obj\Debug\net8.0\Arce.Web.Entity.dll
+D:\Proyectos\ArceWebBackend\Arce.Web.Entity\obj\Debug\net8.0\refint\Arce.Web.Entity.dll
+D:\Proyectos\ArceWebBackend\Arce.Web.Entity\obj\Debug\net8.0\Arce.Web.Entity.pdb
+D:\Proyectos\ArceWebBackend\Arce.Web.Entity\obj\Debug\net8.0\ref\Arce.Web.Entity.dll

@@ -1,0 +1,15 @@
+D:\Proyectos\ArceWebBackend\Arce.Web.Data\bin\Debug\net8.0\Arce.Web.Data.deps.json
+D:\Proyectos\ArceWebBackend\Arce.Web.Data\bin\Debug\net8.0\Arce.Web.Data.dll
+D:\Proyectos\ArceWebBackend\Arce.Web.Data\bin\Debug\net8.0\Arce.Web.Data.pdb
+D:\Proyectos\ArceWebBackend\Arce.Web.Data\bin\Debug\net8.0\Arce.Web.Entity.dll
+D:\Proyectos\ArceWebBackend\Arce.Web.Data\bin\Debug\net8.0\Arce.Web.Entity.pdb
+D:\Proyectos\ArceWebBackend\Arce.Web.Data\obj\Debug\net8.0\Arce.Web.Data.csproj.AssemblyReference.cache
+D:\Proyectos\ArceWebBackend\Arce.Web.Data\obj\Debug\net8.0\Arce.Web.Data.GeneratedMSBuildEditorConfig.editorconfig
+D:\Proyectos\ArceWebBackend\Arce.Web.Data\obj\Debug\net8.0\Arce.Web.Data.AssemblyInfoInputs.cache
+D:\Proyectos\ArceWebBackend\Arce.Web.Data\obj\Debug\net8.0\Arce.Web.Data.AssemblyInfo.cs
+D:\Proyectos\ArceWebBackend\Arce.Web.Data\obj\Debug\net8.0\Arce.Web.Data.csproj.CoreCompileInputs.cache
+D:\Proyectos\ArceWebBackend\Arce.Web.Data\obj\Debug\net8.0\Arce.Web.298E74B1.Up2Date
+D:\Proyectos\ArceWebBackend\Arce.Web.Data\obj\Debug\net8.0\Arce.Web.Data.dll
+D:\Proyectos\ArceWebBackend\Arce.Web.Data\obj\Debug\net8.0\refint\Arce.Web.Data.dll
+D:\Proyectos\ArceWebBackend\Arce.Web.Data\obj\Debug\net8.0\Arce.Web.Data.pdb
+D:\Proyectos\ArceWebBackend\Arce.Web.Data\obj\Debug\net8.0\ref\Arce.Web.Data.dll

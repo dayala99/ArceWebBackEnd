@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "Pea2BVJLSVzpiwynmdIOrG6B+CRe+UyQUkoNsKJZe4M=",
+  "Source": "Arce.Web.Api",
+  "BasePath": "_content/Arce.Web.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

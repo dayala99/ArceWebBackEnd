@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Proyectos\\ArceWebBackend\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{87936688-5BC0-4ED4-B54F-9589D60E5D93}|Arce.Web.Data\\Arce.Web.Data.csproj|d:\\proyectos\\arcewebbackend\\arce.web.data\\usuario\\usuariorepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{87936688-5BC0-4ED4-B54F-9589D60E5D93}|Arce.Web.Data\\Arce.Web.Data.csproj|solutionrelative:arce.web.data\\usuario\\usuariorepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{42053103-7D4E-45F5-AAD6-B4245AE26801}|Arce.Web.Entity\\Arce.Web.Entity.csproj|d:\\proyectos\\arcewebbackend\\arce.web.entity\\usuario\\usuarioentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{42053103-7D4E-45F5-AAD6-B4245AE26801}|Arce.Web.Entity\\Arce.Web.Entity.csproj|solutionrelative:arce.web.entity\\usuario\\usuarioentity.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{42053103-7D4E-45F5-AAD6-B4245AE26801}|Arce.Web.Entity\\Arce.Web.Entity.csproj|d:\\proyectos\\arcewebbackend\\arce.web.entity\\arce.web.entity.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{42053103-7D4E-45F5-AAD6-B4245AE26801}|Arce.Web.Entity\\Arce.Web.Entity.csproj|solutionrelative:arce.web.entity\\arce.web.entity.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "UsuarioRepository.cs",
+              "DocumentMoniker": "D:\\Proyectos\\ArceWebBackend\\Arce.Web.Data\\Usuario\\UsuarioRepository.cs",
+              "RelativeDocumentMoniker": "Arce.Web.Data\\Usuario\\UsuarioRepository.cs",
+              "ToolTip": "D:\\Proyectos\\ArceWebBackend\\Arce.Web.Data\\Usuario\\UsuarioRepository.cs",
+              "RelativeToolTip": "Arce.Web.Data\\Usuario\\UsuarioRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T00:00:15.462Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UsuarioEntity.cs",
+              "DocumentMoniker": "D:\\Proyectos\\ArceWebBackend\\Arce.Web.Entity\\Usuario\\UsuarioEntity.cs",
+              "RelativeDocumentMoniker": "Arce.Web.Entity\\Usuario\\UsuarioEntity.cs",
+              "ToolTip": "D:\\Proyectos\\ArceWebBackend\\Arce.Web.Entity\\Usuario\\UsuarioEntity.cs",
+              "RelativeToolTip": "Arce.Web.Entity\\Usuario\\UsuarioEntity.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-19T23:54:01.117Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Arce.Web.Entity.csproj",
+              "DocumentMoniker": "D:\\Proyectos\\ArceWebBackend\\Arce.Web.Entity\\Arce.Web.Entity.csproj",
+              "RelativeDocumentMoniker": "Arce.Web.Entity\\Arce.Web.Entity.csproj",
+              "ToolTip": "D:\\Proyectos\\ArceWebBackend\\Arce.Web.Entity\\Arce.Web.Entity.csproj",
+              "RelativeToolTip": "Arce.Web.Entity\\Arce.Web.Entity.csproj",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-04-19T23:53:41.519Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
