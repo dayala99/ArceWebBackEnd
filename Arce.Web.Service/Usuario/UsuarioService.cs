@@ -13,12 +13,12 @@ public class UsuarioService: IUsuarioService
         _usuarioRepository = usuarioRepository;
     }
 
-    public async Task<ServiceResponseList<UsuarioEntity>?> ListarUsuarioActivo()
+    public async Task<ServiceResponseList<UsuarioEntity>?> ListarUsuarioActivo(string Usr_Id, string Usr_Cod, string Usr_Nom, string Flg_Est)
     {
         var result = new ServiceResponseList<UsuarioEntity>();
         try
         {
-            var resultData = await _usuarioRepository.ListarUsuarioActivo();
+            var resultData = await _usuarioRepository.ListarUsuarioActivo(Usr_Id, Usr_Cod, Usr_Nom, Flg_Est);
             if (resultData == null || !resultData.Any())
             {
                 result.Success = true;

@@ -13,14 +13,21 @@ public class UsuarioRepository: IUsuarioRepository
         _connectionString = configuration.GetConnectionString("Connection")!;
     }
 
-    public async Task<IEnumerable<UsuarioEntity>?> ListarUsuarioActivo()
+    public async Task<IEnumerable<UsuarioEntity>?> ListarUsuarioActivo(string Usr_Id, string Usr_Cod, string Usr_Nom, string Flg_Est)
     {
         using (var connection = new SqlConnection(_connectionString))
         {
             await connection.OpenAsync();
 
+            var parametros = new DynamicParameters();
+            parametros.Add("@Usr_Id", Usr_Id);
+            parametros.Add("@Usr_Cod", Usr_Cod);
+            parametros.Add("@Usr_Nom", Usr_Nom);
+            parametros.Add("@Flg_Est", Flg_Est);
+
             var result = await connection.QueryAsync<UsuarioEntity>(
                     "[dbo].[PA_Sg_Usuario_S0001]"
+                    , parametros
                     , commandType: CommandType.StoredProcedure
             );
             return result;
@@ -45,7 +52,6 @@ public class UsuarioRepository: IUsuarioRepository
             parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
             try
             {
-                //EJECUTAR EL STORED PROCEDURE
                 connection.Execute(
                     "[dbo].[PA_Sg_Usuario_I0001]"
                     , parametros
