@@ -13,7 +13,7 @@ public class UsuarioService: IUsuarioService
         _usuarioRepository = usuarioRepository;
     }
 
-    public async Task<ServiceResponseList<UsuarioEntity>?> ListarUsuarioActivo(string Usr_Id, string Usr_Cod, string Usr_Nom, string Flg_Est)
+    public async Task<ServiceResponseList<UsuarioEntity>?> ListarUsuarioActivo(int? Usr_Id, string? Usr_Cod, string? Usr_Nom, string? Flg_Est)
     {
         var result = new ServiceResponseList<UsuarioEntity>();
         try

@@ -19,9 +19,9 @@ namespace MyApp.Namespace
         
         [HttpGet]
         [Route("getListarUsuarioActivo")]
-        public async Task<IActionResult> ListarUsuarioActivo(string Usr_Id, string Usr_Cod, string Usr_Nom, string Flg_Est)
+        public async Task<IActionResult> ListarUsuarioActivo(int? Usr_Id, string? Usr_Cod, string? Usr_Nom, string? Flg_Est)
         {
-            var result = await _usuarioService.ListarUsuarioActivo(Usr_Id, Usr_Cod, Usr_Nom, Flg_Est);
+            var result = await _usuarioService.ListarUsuarioActivo(Usr_Id ?? 0, Usr_Cod ?? "", Usr_Nom ?? "", Flg_Est ?? "");
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;

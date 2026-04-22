@@ -13,7 +13,7 @@ public class UsuarioRepository: IUsuarioRepository
         _connectionString = configuration.GetConnectionString("Connection")!;
     }
 
-    public async Task<IEnumerable<UsuarioEntity>?> ListarUsuarioActivo(string Usr_Id, string Usr_Cod, string Usr_Nom, string Flg_Est)
+    public async Task<IEnumerable<UsuarioEntity>?> ListarUsuarioActivo(int? Usr_Id, string? Usr_Cod, string? Usr_Nom, string? Flg_Est)
     {
         using (var connection = new SqlConnection(_connectionString))
         {
