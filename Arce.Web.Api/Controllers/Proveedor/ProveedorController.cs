@@ -18,9 +18,9 @@ namespace MyApp.Namespace
         
         [HttpGet]
         [Route("getListarProveedorActivo")]
-        public async Task<IActionResult> ListarProveedorActivo(string Prv_Id, string Prv_Nom, string Prv_Ruc, string Prv_Nom_Con, string Flg_Est)
+        public async Task<IActionResult> ListarProveedorActivo(int? Prv_Id, string? Prv_Nom, string? Prv_Ruc, string? Prv_Nom_Con, string? Flg_Est)
         {
-            var result = await _proveedorService.ListarProveedorActivo(Prv_Id, Prv_Nom, Prv_Ruc, Prv_Nom_Con, Flg_Est);
+            var result = await _proveedorService.ListarProveedorActivo(Prv_Id ?? 0, Prv_Nom ?? "", Prv_Ruc ?? "", Prv_Nom_Con ?? "", Flg_Est ?? "");
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;

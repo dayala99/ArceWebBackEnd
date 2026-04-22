@@ -14,7 +14,7 @@ public class ProveedorRepository: IProveedorRepository
         _connectionString = configuration.GetConnectionString("Connection")!;
     }
 
-    public async Task<IEnumerable<ProveedorEntity>?> ListarProveedorActivo(string Prv_Id, string Prv_Nom, string Prv_Ruc, string Prv_Nom_Con, string Flg_Est)
+    public async Task<IEnumerable<ProveedorEntity>?> ListarProveedorActivo(int? Prv_Id, string? Prv_Nom, string? Prv_Ruc, string? Prv_Nom_Con, string? Flg_Est)
     {
         using (var connection = new SqlConnection(_connectionString))
         {

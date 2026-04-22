@@ -3,7 +3,7 @@ using Arce.Web.Service.Comunes;
 using Arce.Web.Entity.Proveedor;
 namespace Arce.Web.Service;
 
-public class ProveedorService
+public class ProveedorService: IProveedorService
 {
     private readonly IProveedorRepository _proveedorRepository;
 
@@ -12,7 +12,7 @@ public class ProveedorService
         _proveedorRepository = proveedorRepository;
     }
 
-    public async Task<ServiceResponseList<ProveedorEntity>?> ListarProveedorActivo(string Prv_Id, string Prv_Nom, string Prv_Ruc, string Prv_Nom_Con, string Flg_Est)
+    public async Task<ServiceResponseList<ProveedorEntity>?> ListarProveedorActivo(int? Prv_Id, string? Prv_Nom, string? Prv_Ruc, string? Prv_Nom_Con, string? Flg_Est)
     {
         var result = new ServiceResponseList<ProveedorEntity>();
         try

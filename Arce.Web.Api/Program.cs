@@ -40,9 +40,11 @@ builder.Services.AddCors(options =>
 
 //Inyection Services
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IProveedorService, ProveedorService>();
 
 //Inyection Repository
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IProveedorRepository, ProveedorRepository>();
 
 
 #endregion
