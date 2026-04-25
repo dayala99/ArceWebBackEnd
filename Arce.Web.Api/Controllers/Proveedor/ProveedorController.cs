@@ -64,8 +64,9 @@ namespace MyApp.Namespace
             {
                 Prv_Id = valores.Prv_Id,
                 Prv_Nom = valores.Prv_Nom,
-                Prv_Ruc = valores.Prv_Tel,
-                Prv_Tel = valores.Prv_Dir,
+                Prv_Ruc = valores.Prv_Ruc,
+                Prv_Tel = valores.Prv_Tel,
+                Prv_Dir = valores.Prv_Dir,
                 Prv_Nom_Con = valores.Prv_Nom_Con,
                 Flg_Est = valores.Flg_Est,
                 Usr_Mod = valores.Usr_Mod
