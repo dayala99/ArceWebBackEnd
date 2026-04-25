@@ -17,10 +17,13 @@ builder.Services.AddCors(options =>
     {
         /*DESARROLLO*/
 
-        policy.WithOrigins("http://localhost:4200")  // Especifica el origen permitido
+        policy.WithOrigins(
+                    "http://localhost:4200", 
+                    "https://localhost:4200"
+                    )  // Especifica el origen permitido
               .AllowAnyHeader()                     // Permitir cualquier encabezado
-              .AllowAnyMethod();                   // Permitir cualquier m�todo (GET, POST, etc.)
-
+              .AllowAnyMethod()                   // Permitir cualquier m�todo (GET, POST, etc.)
+              .AllowCredentials();
 
         /*PRODUCCION*/
 
@@ -62,6 +65,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseRouting();
+
+app.UseCors("AllowAngularApp");
 
 app.UseAuthorization();
 
