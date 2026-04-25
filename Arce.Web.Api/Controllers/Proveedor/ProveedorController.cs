@@ -71,7 +71,7 @@ namespace MyApp.Namespace
                 Usr_Mod = valores.Usr_Mod
             };
             
-            var result = await _proveedorService.RegistrarProveedor(parametros);
+            var result = await _proveedorService.ActualizarProveedor(parametros);
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;
