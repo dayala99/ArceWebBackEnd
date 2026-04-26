@@ -94,16 +94,19 @@ public class ProveedorRepository: IProveedorRepository
             try
             {
                 connection.Execute(
-                    "[dbo].[PA_Sg_Usuario_U0001]"
+                    "[dbo].[PA_Lg_Proveedor_U0001]"
                     , parametros
                     , commandType: CommandType.StoredProcedure
                 );
             }
             catch (SqlException ex)
             {
+                Console.WriteLine(ex.Message);
             }
+
             var Codigo = parametros.Get<int>("@Codigo");
             var mensaje = parametros.Get<string>("@sMsj");
+            
             return (Codigo, mensaje);
         }
     }

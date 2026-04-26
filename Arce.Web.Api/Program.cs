@@ -21,9 +21,9 @@ builder.Services.AddCors(options =>
                     "http://localhost:4200", 
                     "https://localhost:4200"
                     )  // Especifica el origen permitido
-              .AllowAnyHeader()                     // Permitir cualquier encabezado
-              .AllowAnyMethod()                   // Permitir cualquier m�todo (GET, POST, etc.)
-              .AllowCredentials();
+                .AllowAnyHeader()                     // Permitir cualquier encabezado
+                .AllowAnyMethod()                   // Permitir cualquier m�todo (GET, POST, etc.)
+                .AllowCredentials();
 
         /*PRODUCCION*/
 
@@ -44,11 +44,14 @@ builder.Services.AddCors(options =>
 //Inyection Services
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IProveedorService, ProveedorService>();
+builder.Services.AddScoped<IFormaPagoService, FormaPagoService>();
+builder.Services.AddScoped<ICentroCostoService, CentroCostoService>();
 
 //Inyection Repository
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IProveedorRepository, ProveedorRepository>();
-
+builder.Services.AddScoped<IFormaPagoRepository, FormaPagoRepository>();
+builder.Services.AddScoped<ICentroCostoRepository, CentroCostoRepository>();
 
 #endregion
 
