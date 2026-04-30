@@ -18,15 +18,22 @@ public class PedidoService: IPedidoService
         try
         {
             var resultData = await _repository.ListarPedido(Ped_Id, Prv_Nom, Flg_Est, Ped_Tip_Com);
+
             if (resultData == null || !resultData.Any())
             {
                 result.Success = true;
                 result.Message = "No existe información";
+                result.Elements = new List<PedidoCabeceraEntity>();
+                result.TotalElements = 0;
+                return result;
             }
+
+            var elementos = resultData.ToList();
+
             result.Success = true;
             result.Message = "Completado con éxito";
-            result.Elements = resultData.ToList();
-            result.TotalElements = resultData.ToList().Count();
+            result.Elements = elementos;
+            result.TotalElements = elementos.Count;
             return result;
         }
         catch (Exception ex)
@@ -46,11 +53,17 @@ public class PedidoService: IPedidoService
             {
                 result.Success = true;
                 result.Message = "No existe información";
+                result.Elements = new List<PedidoCabeceraEntity>();
+                result.TotalElements = 0;
+                return result;
             }
+
+            var elementos = resultData.ToList();
+
             result.Success = true;
             result.Message = "Completado con éxito";
-            result.Elements = resultData.ToList();
-            result.TotalElements = resultData.ToList().Count();
+            result.Elements = elementos;
+            result.TotalElements = elementos.Count;
             return result;
         }
         catch (Exception ex)
@@ -145,11 +158,17 @@ public class PedidoService: IPedidoService
             {
                 result.Success = true;
                 result.Message = "No existe información";
+                result.Elements = new List<PedidoCabeceraCentroCostoEntity>();
+                result.TotalElements = 0;
+                return result;
             }
+
+            var elementos = resultData.ToList();
+
             result.Success = true;
             result.Message = "Completado con éxito";
-            result.Elements = resultData.ToList();
-            result.TotalElements = resultData.ToList().Count();
+            result.Elements = elementos;
+            result.TotalElements = elementos.Count;
             return result;
         }
         catch (Exception ex)
