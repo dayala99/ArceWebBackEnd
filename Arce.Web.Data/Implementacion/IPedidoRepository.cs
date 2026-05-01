@@ -11,5 +11,10 @@ public interface IPedidoRepository
     Task<(int Codigo, string Mensaje)> ActualizarPedidoEstado(PedidoCabeceraEntity valores);
     Task<IEnumerable<PedidoCabeceraCentroCostoEntity>?> ListarPedidoRegistradoCentroCosto(int? Ped_Id);
     Task<(int Codigo, string Mensaje)> RegistrarCentroCostoPedidoRegistrado(PedidoCabeceraCentroCostoEntity valores);
+    Task<IEnumerable<PedidoCabeceraCentroCostoEntity>?> ObtenerTotalPedidoPorCenCos(int Ped_Id, string Ped_Cen_Cos);
+    Task<IEnumerable<PedidoDetalleEntity>?> ListarDetallePedido(int Ped_Cab_Id);
+    Task<IEnumerable<PedidoDetalleEntity>?> ListarDetallePedidoModificar(int Ped_Det_Id);
+    Task<(int Codigo, string Mensaje)> RegistrarDetallePedido(PedidoDetalleEntity valores);
+    Task<(int Codigo, string Mensaje)> ActualizarDetallePedido(PedidoDetalleEntity valores);
     
 }

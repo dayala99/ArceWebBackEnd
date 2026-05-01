@@ -12,4 +12,9 @@ public interface IPedidoService
     Task<ServiceResponse<int>> ActualizarPedidoEstado(PedidoCabeceraEntity valores);
     Task<ServiceResponseList<PedidoCabeceraCentroCostoEntity>?> ListarPedidoRegistradoCentroCosto(int? Ped_Id);
     Task<ServiceResponse<int>> RegistrarCentroCostoPedidoRegistrado(PedidoCabeceraCentroCostoEntity valores);
+    Task<ServiceResponseList<PedidoCabeceraCentroCostoEntity>?> ObtenerTotalPedidoPorCenCos(int Ped_Id, string Ped_Cen_Cos);
+    Task<ServiceResponseList<PedidoDetalleEntity>?> ListarDetallePedido(int Ped_Cab_Id);
+    Task<ServiceResponseList<PedidoDetalleEntity>?> ListarDetallePedidoModificar(int Ped_Det_Id);
+    Task<ServiceResponse<int>> RegistrarDetallePedido(PedidoDetalleEntity valores);
+    Task<ServiceResponse<int>> ActualizarDetallePedido(PedidoDetalleEntity valores);
 }

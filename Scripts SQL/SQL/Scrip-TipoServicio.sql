@@ -81,3 +81,6 @@ BEGIN
     END CATCH
 END
 GO
+
+SELECT * FROM Lg_Tip_Ser
+GO

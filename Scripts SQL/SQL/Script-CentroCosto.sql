@@ -10,7 +10,7 @@ CREATE TABLE Lg_Cen_Cos
 )
 GO
 
-ALTER PROCEDURE PA_Lg_Cen_Cos_S0001
+CREATE PROCEDURE PA_Lg_Cen_Cos_S0001
 @Cen_Cos_Id INT
 ,   @Cen_Cos_Des VARCHAR(255)
 ,   @Flg_Est CHAR(1)
@@ -81,7 +81,7 @@ END
 GO
 
 SELECT * FROM  Lg_Cen_Cos
-Go
+Gos
 
 EXEC PA_Lg_Cen_Cos_I0001 'Recursos Humanos', 'mayala', 0, ''
 GO

@@ -54,6 +54,9 @@ GO
 EXEC PA_Sg_Usuario_I0001 'dayala', 'Dominic Ayala', 'sistemas', 0, ''
 GO
 
+SELECT * FROM Sg_Usuario
+GO
+
 --SELECT * 
 --FROM Sg_Usuario 
 

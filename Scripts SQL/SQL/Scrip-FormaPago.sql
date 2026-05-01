@@ -10,7 +10,7 @@ CREATE TABLE Lg_For_Pag
 )
 GO
 
-ALTER PROCEDURE PA_Lg_For_Pag_S0001
+CREATE PROCEDURE PA_Lg_For_Pag_S0001
 @For_Pag_Id INT
 ,   @For_Pag_Des VARCHAR(255)
 ,   @Flg_Est CHAR(1)

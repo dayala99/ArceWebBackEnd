@@ -169,5 +169,102 @@ namespace MyApp.Namespace
             return BadRequest(result);
         }
 
+        [HttpGet]
+        [Route("getObtenerTotalPedidoPorCenCos")]
+        public async Task<IActionResult> ObtenerTotalPedidoPorCenCos(int Ped_Id, string Ped_Cen_Cos)
+        {
+            var result = await _service.ObtenerTotalPedidoPorCenCos(Ped_Id, Ped_Cen_Cos);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpGet]
+        [Route("getListarDetallePedido")]
+        public async Task<IActionResult> ListarDetallePedido(int Ped_Cab_Id)
+        {
+            var result = await _service.ListarDetallePedido(Ped_Cab_Id);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpGet]
+        [Route("getListarDetallePedidoModificar")]
+        public async Task<IActionResult> ListarDetallePedidoModificar(int Ped_Det_Id)
+        {
+            var result = await _service.ListarDetallePedidoModificar(Ped_Det_Id);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPost]
+        [Route("postRegistrarDetallePedido")]
+        public async Task<IActionResult> RegistrarDetallePedido([FromBody] PedidoDetalleEntity valores)
+        {
+            PedidoDetalleEntity parametros = new PedidoDetalleEntity
+            {
+                Ped_Cab_Id = valores.Ped_Cab_Id,
+                Ped_Cod_Itm = valores.Ped_Cod_Itm,
+                Ped_Uni_Med = valores.Ped_Uni_Med,
+                Ped_Can = valores.Ped_Can,
+                Ped_Cos_Uni = valores.Ped_Cos_Uni,
+                Ped_Cos_Tot = valores.Ped_Cos_Tot,
+                Usr_Reg = valores.Usr_Reg
+            };
+            
+            var result = await _service.RegistrarDetallePedido(parametros);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPatch]
+        [Route("patchActualizarDetallePedido")]
+        public async Task<IActionResult> ActualizarDetallePedido([FromBody] PedidoDetalleEntity valores)
+        {
+            PedidoDetalleEntity parametros = new PedidoDetalleEntity
+            {
+                Ped_Det_Id = valores.Ped_Det_Id,
+                Ped_Cod_Itm = valores.Ped_Cod_Itm,
+                Ped_Uni_Med = valores.Ped_Uni_Med,
+                Ped_Can = valores.Ped_Can,
+                Ped_Cos_Uni = valores.Ped_Cos_Uni,
+                Ped_Cos_Tot = valores.Ped_Cos_Tot,
+                Usr_Mod = valores.Usr_Mod
+            };
+            
+            var result = await _service.RegistrarDetallePedido(parametros);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
     }
 }

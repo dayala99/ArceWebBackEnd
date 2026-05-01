@@ -202,4 +202,144 @@ public class PedidoService: IPedidoService
             return result;
         }
     }
+
+    public async Task<ServiceResponseList<PedidoCabeceraCentroCostoEntity>?> ObtenerTotalPedidoPorCenCos(int Ped_Id, string Ped_Cen_Cos)
+    {
+        var result = new ServiceResponseList<PedidoCabeceraCentroCostoEntity>();
+        try
+        {
+            var resultData = await _repository.ObtenerTotalPedidoPorCenCos(Ped_Id, Ped_Cen_Cos);
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+                result.Elements = new List<PedidoCabeceraCentroCostoEntity>();
+                result.TotalElements = 0;
+                return result;
+            }
+
+            var elementos = resultData.ToList();
+
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = elementos;
+            result.TotalElements = elementos.Count;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepción no controlada " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponseList<PedidoDetalleEntity>?> ListarDetallePedido(int Ped_Cab_Id)
+    {
+        var result = new ServiceResponseList<PedidoDetalleEntity>();
+        try
+        {
+            var resultData = await _repository.ListarDetallePedido(Ped_Cab_Id);
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+                result.Elements = new List<PedidoDetalleEntity>();
+                result.TotalElements = 0;
+                return result;
+            }
+
+            var elementos = resultData.ToList();
+
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = elementos;
+            result.TotalElements = elementos.Count;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepción no controlada " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponseList<PedidoDetalleEntity>?> ListarDetallePedidoModificar(int Ped_Det_Id)
+    {
+        var result = new ServiceResponseList<PedidoDetalleEntity>();
+        try
+        {
+            var resultData = await _repository.ListarDetallePedidoModificar(Ped_Det_Id);
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+                result.Elements = new List<PedidoDetalleEntity>();
+                result.TotalElements = 0;
+                return result;
+            }
+
+            var elementos = resultData.ToList();
+
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = elementos;
+            result.TotalElements = elementos.Count;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepción no controlada " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponse<int>> RegistrarDetallePedido(PedidoDetalleEntity valores)
+    {
+        var result = new ServiceResponse<int>();
+        try
+        {
+            var resultData = await _repository.RegistrarDetallePedido(valores);
+            if (resultData.Codigo == 0)
+            {
+                result.Success = true;
+                result.Message = resultData.Mensaje;
+                result.CodeTransacc = resultData.Codigo;
+                return result;
+            }
+            result.Success = false;
+            result.Message = resultData.Mensaje;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Error inesperado " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponse<int>> ActualizarDetallePedido(PedidoDetalleEntity valores)
+    {
+        var result = new ServiceResponse<int>();
+        try
+        {
+            var resultData = await _repository.ActualizarDetallePedido(valores);
+            if (resultData.Codigo == 0)
+            {
+                result.Success = true;
+                result.Message = resultData.Mensaje;
+                result.CodeTransacc = resultData.Codigo;
+                return result;
+            }
+            result.Success = false;
+            result.Message = resultData.Mensaje;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Error inesperado " + ex.Message;
+            return result;
+        }
+    }
 }
