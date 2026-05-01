@@ -47,6 +47,21 @@ namespace MyApp.Namespace
             return BadRequest(result);
         }
 
+        [HttpGet]
+        [Route("getListarPedidoModificar")]
+        public async Task<IActionResult> ListarPedidoModificar(int Ped_Id)
+        {
+            var result = await _service.ListarPedidoModificar(Ped_Id);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
         [HttpPost]
         [Route("postRegistrarPedido")]
         public async Task<IActionResult> RegistrarPedido([FromBody] PedidoCabeceraEntity valores)
@@ -147,6 +162,21 @@ namespace MyApp.Namespace
             return BadRequest(result);
         }
 
+        [HttpGet]
+        [Route("getListarPedidoRegistradoCentroCostoModificar")]
+        public async Task<IActionResult> ListarPedidoRegistradoCentroCostoModificar(int? Ped_Cen_Cos_Id)
+        {
+            var result = await _service.ListarPedidoRegistradoCentroCostoModificar(Ped_Cen_Cos_Id ?? 0);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
         [HttpPost]
         [Route("postRegistrarCentroCostoPedidoRegistrado")]
         public async Task<IActionResult> RegistrarCentroCostoPedidoRegistrado([FromBody] PedidoCabeceraCentroCostoEntity valores)
@@ -159,6 +189,26 @@ namespace MyApp.Namespace
             };
             
             var result = await _service.RegistrarCentroCostoPedidoRegistrado(parametros);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpDelete]
+        [Route("deleteEliminarCentroCostoPedidoRegistrado")]
+        public async Task<IActionResult> EliminarCentroCostoPedidoRegistrado([FromBody] PedidoCabeceraCentroCostoEntity valores)
+        {
+            PedidoCabeceraCentroCostoEntity parametros = new PedidoCabeceraCentroCostoEntity
+            {
+                Ped_Cen_Cos_Id = valores.Ped_Cen_Cos_Id
+            };
+            
+            var result = await _service.EliminarCentroCostoPedidoRegistrado(parametros);
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;

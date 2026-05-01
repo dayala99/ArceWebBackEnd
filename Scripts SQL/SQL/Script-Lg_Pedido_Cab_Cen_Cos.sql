@@ -17,6 +17,16 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE PA_Lg_Pedido_Cab_Cen_Cos_S0002
+@Ped_Cen_Cos_Id INT
+AS
+BEGIN
+	SELECT *
+	FROM Lg_Pedido_Cab_Cen_Cos
+	WHERE Ped_Cen_Cos_Id = @Ped_Cen_Cos_Id
+END
+GO
+
 CREATE PROCEDURE PA_Lg_Pedido_Cab_Cen_Cos_I0001
 @Ped_Id INT
 ,   @Ped_Cen_Cos VARCHAR(55)
@@ -41,6 +51,36 @@ BEGIN
         SET @Codigo = ERROR_NUMBER()
         SET @sMsj = ERROR_MESSAGE()
     END CATCH
+END
+GO
+
+CREATE PROCEDURE PA_Lg_Pedido_Cab_Cen_Cos_D0001
+@Ped_Cen_Cos_Id INT
+,	@Codigo INT
+,	@sMsj VARCHAR(55)
+AS
+BEGIN
+	BEGIN TRY 
+		BEGIN TRANSACTION
+			IF EXISTS (SELECT * FROM Lg_Pedido_Cab_Cen_Cos WHERE Ped_Cen_Cos_Id = @Ped_Cen_Cos_Id)
+			BEGIN
+				DELETE FROM Lg_Pedido_Cab_Cen_Cos
+				WHERE Ped_Cen_Cos_Id = @Ped_Cen_Cos_Id
+			END
+
+			SET @Codigo = 0
+			SET @sMsj = 'ELIMINADO CORRECTAMENTE'
+		COMMIT TRANSACTION
+	END TRY
+	BEGIN CATCH
+		IF @@TRANCOUNT > 0
+		BEGIN
+			ROLLBACK TRANSACTION
+		END
+
+		SET @Codigo = ERROR_NUMBER()
+		SET @sMsj = ERROR_MESSAGE()
+	END CATCH
 END
 GO
 

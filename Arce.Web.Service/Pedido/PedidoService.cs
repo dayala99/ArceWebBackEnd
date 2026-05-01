@@ -73,6 +73,36 @@ public class PedidoService: IPedidoService
         }
     }
 
+    public async Task<ServiceResponseList<PedidoCabeceraEntity>?> ListarPedidoModificar(int Ped_Id)
+    {
+        var result = new ServiceResponseList<PedidoCabeceraEntity>();
+        try
+        {
+            var resultData = await _repository.ListarPedidoModificar(Ped_Id);
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+                result.Elements = new List<PedidoCabeceraEntity>();
+                result.TotalElements = 0;
+                return result;
+            }
+
+            var elementos = resultData.ToList();
+
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = elementos;
+            result.TotalElements = elementos.Count;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepción no controlada " + ex.Message;
+            return result;
+        }
+    }
+
     public async Task<ServiceResponse<int>> RegistrarPedido(PedidoCabeceraEntity valores)
     {
         var result = new ServiceResponse<int>();
@@ -178,12 +208,67 @@ public class PedidoService: IPedidoService
         }
     }
 
+    public async Task<ServiceResponseList<PedidoCabeceraCentroCostoEntity>?> ListarPedidoRegistradoCentroCostoModificar(int? Ped_Cen_Cos_Id)
+    {
+        var result = new ServiceResponseList<PedidoCabeceraCentroCostoEntity>();
+        try
+        {
+            var resultData = await _repository.ListarPedidoRegistradoCentroCostoModificar(Ped_Cen_Cos_Id);
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+                result.Elements = new List<PedidoCabeceraCentroCostoEntity>();
+                result.TotalElements = 0;
+                return result;
+            }
+
+            var elementos = resultData.ToList();
+
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = elementos;
+            result.TotalElements = elementos.Count;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepción no controlada " + ex.Message;
+            return result;
+        }
+    }
+
     public async Task<ServiceResponse<int>> RegistrarCentroCostoPedidoRegistrado(PedidoCabeceraCentroCostoEntity valores)
     {
         var result = new ServiceResponse<int>();
         try
         {
             var resultData = await _repository.RegistrarCentroCostoPedidoRegistrado(valores);
+            if (resultData.Codigo == 0)
+            {
+                result.Success = true;
+                result.Message = resultData.Mensaje;
+                result.CodeTransacc = resultData.Codigo;
+                return result;
+            }
+            result.Success = false;
+            result.Message = resultData.Mensaje;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Error inesperado " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponse<int>> EliminarCentroCostoPedidoRegistrado(PedidoCabeceraCentroCostoEntity valores)
+    {
+        var result = new ServiceResponse<int>();
+        try
+        {
+            var resultData = await _repository.EliminarCentroCostoPedidoRegistrado(valores);
             if (resultData.Codigo == 0)
             {
                 result.Success = true;

@@ -57,6 +57,15 @@ BEGIN
 END
 GO
 
+CREATE PROCEDURE PA_Lg_Pedido_Cab_S0003
+@Ped_Id INT
+AS
+BEGIN
+	SELECT *
+	FROM Lg_Pedido_Cab
+	WHERE Ped_Id = @Ped_Id
+END
+GO
 
 
 CREATE PROCEDURE PA_Lg_Pedido_Cab_I0001

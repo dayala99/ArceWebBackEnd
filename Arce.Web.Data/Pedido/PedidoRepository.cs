@@ -54,6 +54,26 @@ public class PedidoRepository: IPedidoRepository
         }
     }
 
+    //LISTAR DATOS PEDIDO PARA MODIFICAR
+    public async Task<IEnumerable<PedidoCabeceraEntity>?> ListarPedidoModificar(int Ped_Id)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+            
+            var parametros = new DynamicParameters();
+            parametros.Add("@Ped_Id", Ped_Id);
+
+            var result = await connection.QueryAsync<PedidoCabeceraEntity>(
+                "[dbo].[PA_Lg_Pedido_Cab_S0003]"
+                , parametros
+                , commandType: CommandType.StoredProcedure
+            );
+
+            return result;
+        }
+    }
+
     //REGISTRAR PEDIDO PRINCIPAL
     public async Task<(int Codigo, string Mensaje)> RegistrarPedido(PedidoCabeceraEntity valores)
     {
@@ -205,6 +225,26 @@ public class PedidoRepository: IPedidoRepository
         }
     }
 
+    //LISTAR CENTROS DE COSTOS REGISTRADOS EN CADA PEDIDO PARA MODIFICAR
+    public async Task<IEnumerable<PedidoCabeceraCentroCostoEntity>?> ListarPedidoRegistradoCentroCostoModificar(int? Ped_Cen_Cos_Id)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Ped_Cen_Cos_Id", Ped_Cen_Cos_Id);
+
+            var result = await connection.QueryAsync<PedidoCabeceraCentroCostoEntity>(
+                "[dbo].[PA_Lg_Pedido_Cab_Cen_Cos_S0002]"
+                , parametros
+                , commandType: CommandType.StoredProcedure
+            );
+
+            return result;
+        }
+    }
+
     //REGISTRAR CENTROS DE COSTOS INGRESADOS EN LA GRILLA DE NUEVO PEDIDO
     public async Task<(int Codigo, string Mensaje)> RegistrarCentroCostoPedidoRegistrado(PedidoCabeceraCentroCostoEntity valores)
     {
@@ -226,6 +266,42 @@ public class PedidoRepository: IPedidoRepository
             {
                 connection.Execute(
                     "[dbo].[PA_Lg_Pedido_Cab_Cen_Cos_I0001]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+                );
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            var Codigo = parametros.Get<int>("@Codigo");
+            var Mensaje = parametros.Get<string>("@sMsj");
+
+            return (Codigo, Mensaje);
+        }
+    }
+
+    //ELIMINAR CENTROS DE COSTOS INGRESADOS EN LA GRILLA DE NUEVO PEDIDO
+    public async Task<(int Codigo, string Mensaje)> EliminarCentroCostoPedidoRegistrado(PedidoCabeceraCentroCostoEntity valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            // parametros.Add("@Ped_Id", valores.Ped_Id);
+            parametros.Add("@Ped_Cen_Cos_Id", valores.Ped_Cen_Cos_Id);
+            parametros.Add("@Codigo", 0);
+            parametros.Add("@sMsj", "");
+
+            parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+
+            try
+            {
+                connection.Execute(
+                    "[dbo].[PA_Lg_Pedido_Cab_Cen_Cos_D0001]"
                     , parametros
                     , commandType: CommandType.StoredProcedure
                 );
