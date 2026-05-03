@@ -46,7 +46,7 @@ public class PedidoRepository: IPedidoRepository
             await connection.OpenAsync();
 
             var result = await connection.QueryAsync<PedidoCabeceraEntity>(
-                "[dbo].[PA_Lg_Pedido_Cab_S0001]"
+                "[dbo].[PA_Lg_Pedido_Cab_S0002]"
                 , commandType: CommandType.StoredProcedure
             );
 
