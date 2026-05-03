@@ -24,4 +24,5 @@ public class PedidoCabeceraEntity
     public DateTime? Fec_Reg { get; set; }
     public string? Usr_Mod { get; set; }
     public DateTime? Fec_Mod { get; set; }
+    public decimal? Ped_Can_Tot { get; set; }
 }

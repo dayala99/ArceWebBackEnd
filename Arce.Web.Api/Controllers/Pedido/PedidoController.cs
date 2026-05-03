@@ -80,7 +80,8 @@ namespace MyApp.Namespace
                 Ped_Arc_Adj_Rut = valores.Ped_Arc_Adj_Rut,
                 Ped_Prv_Cod = valores.Ped_Prv_Cod,
                 Ped_For_Pag_Cod = valores.Ped_For_Pag_Cod,
-                Usr_Reg = valores.Usr_Reg
+                Usr_Reg = valores.Usr_Reg,
+                Ped_Can_Tot = valores.Ped_Can_Tot
             };
             
             var result = await _service.RegistrarPedido(parametros);
@@ -112,7 +113,8 @@ namespace MyApp.Namespace
                 Ped_Arc_Adj_Rut = valores.Ped_Arc_Adj_Rut,
                 Ped_Prv_Cod = valores.Ped_Prv_Cod,
                 Ped_For_Pag_Cod = valores.Ped_For_Pag_Cod,
-                Usr_Mod = valores.Usr_Mod
+                Usr_Mod = valores.Usr_Mod,
+                Ped_Can_Tot = valores.Ped_Can_Tot
             };
             
             var result = await _service.ActualizarPedido(parametros);
