@@ -19,5 +19,6 @@ public interface IPedidoRepository
     Task<IEnumerable<PedidoDetalleEntity>?> ListarDetallePedidoModificar(int Ped_Det_Id);
     Task<(int Codigo, string Mensaje)> RegistrarDetallePedido(PedidoDetalleEntity valores);
     Task<(int Codigo, string Mensaje)> ActualizarDetallePedido(PedidoDetalleEntity valores);
+    Task<(int Codigo, string Mensaje)> EliminarDetallePedido(PedidoDetalleEntity valores);
     
 }

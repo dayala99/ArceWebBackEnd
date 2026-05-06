@@ -6,28 +6,28 @@ using Microsoft.Extensions.Configuration;
 
 namespace Arce.Web.Data;
 
-public class TipoServicioRepository: ITipoServicioRepository
+public class UnidadMedidaRepository: IUnidadMedidaRepository
 {
     private readonly string _connectionString;
 
-    public TipoServicioRepository(IConfiguration configuration)
+    public UnidadMedidaRepository(IConfiguration configuration)
     {
         _connectionString = configuration.GetConnectionString("Connection")!;
     }
 
-    public async Task<IEnumerable<TipoServicioEntity>?> ListarTipoServicioActivo(int? Tip_Ser_Id, string? Tip_Ser_Des, string? Flg_Est)
+    public async Task<IEnumerable<UnidadMedidaEntity>?> ListarUnidadMedida(int? Uni_Med_Id, string? Uni_Med_Des, string? Flg_Est)
     {
         using (var connection = new SqlConnection(_connectionString))
         {
             await connection.OpenAsync();
 
             var parametros = new DynamicParameters();
-            parametros.Add("@Tip_Ser_Id", Tip_Ser_Id);
-            parametros.Add("@Tip_Ser_Des", Tip_Ser_Des);
+            parametros.Add("@Uni_Med_Id", Uni_Med_Id);
+            parametros.Add("@Uni_Med_Des", Uni_Med_Des);
             parametros.Add("@Flg_Est", Flg_Est);
 
-            var result = await connection.QueryAsync<TipoServicioEntity>(
-                "[dbo].[PA_Lg_Tip_Ser_S0001]"
+            var result = await connection.QueryAsync<UnidadMedidaEntity>(
+                "[dbo].[PA_Lg_Unidad_Medida_S0001]"
                 , parametros
                 , commandType: CommandType.StoredProcedure
             );
@@ -36,14 +36,15 @@ public class TipoServicioRepository: ITipoServicioRepository
         }
     }
 
-    public async Task<(int Codigo, string Mensaje)> RegistrarTipoServicio(TipoServicioEntity valores)
+    public async Task<(int Codigo, string Mensaje)> RegistrarUnidadMedida(UnidadMedidaEntity valores)
     {
         using (var connection = new SqlConnection(_connectionString))
         {
             await connection.OpenAsync();
 
             var parametros = new DynamicParameters();
-            parametros.Add("@Tip_Ser_Des", valores.Tip_Ser_Des);
+            parametros.Add("@Uni_Med_Des", valores.Uni_Med_Des);
+            parametros.Add("@Uni_Med_Abr", valores.Uni_Med_Abr);
             parametros.Add("@Usr_Reg", valores.Usr_Reg);
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
@@ -53,7 +54,7 @@ public class TipoServicioRepository: ITipoServicioRepository
             try
             {
                 connection.Execute(
-                    "[dbo].[PA_Lg_Tip_Ser_I0001]"
+                    "[dbo].[PA_Lg_Unidad_Medida_I0001]"
                     , parametros
                     , commandType: CommandType.StoredProcedure
                 );
@@ -70,15 +71,16 @@ public class TipoServicioRepository: ITipoServicioRepository
         }
     }
 
-    public async Task<(int Codigo, string Mensaje)> ActualizarTipoServicio(TipoServicioEntity valores)
+    public async Task<(int Codigo, string Mensaje)> ActualizarUnidadMedida(UnidadMedidaEntity valores)
     {
         using (var connection = new SqlConnection(_connectionString))
         {
             await connection.OpenAsync();
 
             var parametros = new DynamicParameters();
-            parametros.Add("@Tip_Ser_Id", valores.Tip_Ser_Id);
-            parametros.Add("@Tip_Ser_Des", valores.Tip_Ser_Des);
+            parametros.Add("@Uni_Med_Id", valores.Uni_Med_Id);
+            parametros.Add("@Uni_Med_Des", valores.Uni_Med_Des);
+            parametros.Add("@Uni_Med_Abr", valores.Uni_Med_Abr);
             parametros.Add("@Flg_Est", valores.Flg_Est);
             parametros.Add("@Usr_Mod", valores.Usr_Mod);
             parametros.Add("@Codigo", 0);
@@ -89,7 +91,7 @@ public class TipoServicioRepository: ITipoServicioRepository
             try
             {
                 connection.Execute(
-                    "[dbo].[PA_Lg_Tip_Ser_U0001]"
+                    "[dbo].[PA_Lg_Unidad_Medida_U0001]"
                     , parametros
                     , commandType: CommandType.StoredProcedure
                 );

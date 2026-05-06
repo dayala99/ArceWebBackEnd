@@ -463,4 +463,39 @@ public class PedidoRepository: IPedidoRepository
             return (Codigo, Mensaje);
         }
     }
+
+    //ACTUALIZAR DETALLE DE PEDIDO
+    public async Task<(int Codigo, string Mensaje)> EliminarDetallePedido(PedidoDetalleEntity valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Ped_Det_Id", valores.Ped_Det_Id);
+            parametros.Add("@Codigo", 0);
+            parametros.Add("@sMsj", "");
+
+            parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+
+            try
+            {
+                connection.Execute(
+                    "[dbo].[PA_Lg_Pedido_Det_D0001]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+                );
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            var Codigo = parametros.Get<int>("@Codigo");
+            var Mensaje = parametros.Get<string>("@sMsj");
+
+            return (Codigo, Mensaje);
+        }
+    }
 }

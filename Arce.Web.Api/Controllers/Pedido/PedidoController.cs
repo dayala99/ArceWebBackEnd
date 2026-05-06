@@ -318,5 +318,25 @@ namespace MyApp.Namespace
             return BadRequest(result);
         }
 
+        [HttpDelete]
+        [Route("patchActualizarDetallePedido")]
+        public async Task<IActionResult> EliminarDetallePedido([FromBody] PedidoDetalleEntity valores)
+        {
+            PedidoDetalleEntity parametros = new PedidoDetalleEntity
+            {
+                Ped_Det_Id = valores.Ped_Det_Id,
+            };
+            
+            var result = await _service.EliminarDetallePedido(parametros);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
     }
 }
