@@ -49,7 +49,7 @@ public class FormaPagoRepository: IFormaPagoRepository
             parametros.Add("@sMsj", "");
 
             parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
-            parametros.Add("@sMsj", dbType: DbType.String, direction: ParameterDirection.Output);
+            parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
 
             try
             {
@@ -83,7 +83,7 @@ public class FormaPagoRepository: IFormaPagoRepository
             parametros.Add("@Usr_Mod", valores.Usr_Mod);
 
             parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
-            parametros.Add("@sMsj", dbType: DbType.String, direction: ParameterDirection.Output);
+            parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
 
             try
             {

@@ -4,7 +4,7 @@ using Arce.Web.Service.Comunes;
 
 namespace Arce.Web.Service;
 
-public class UnidadMedidaService
+public class UnidadMedidaService : IUnidadMedidaService
 {
     private readonly IUnidadMedidaRepository _repository;
 

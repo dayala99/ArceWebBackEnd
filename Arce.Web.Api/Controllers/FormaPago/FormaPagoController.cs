@@ -33,7 +33,7 @@ namespace MyApp.Namespace
         }
 
         [HttpPost]
-        [Route("getRegistrarFormaPago")]
+        [Route("postRegistrarFormaPago")]
         public async Task<IActionResult> RegistrarFormaPago(FormaPagoEntity valores)
         {
             FormaPagoEntity parametros = new FormaPagoEntity

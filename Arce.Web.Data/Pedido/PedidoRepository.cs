@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using Arce.Web.Entity;
 using Dapper;
 using Microsoft.Extensions.Configuration;
@@ -34,7 +35,80 @@ public class PedidoRepository: IPedidoRepository
                 , commandType: CommandType.StoredProcedure
             );
 
-            return result;
+            var fallbackResult = await connection.QueryAsync<PedidoCabeceraEntity>(
+                @"
+                SELECT
+                    ped.Ped_Id,
+                    COALESCE(prv.Prv_Nom, '') AS Prv_Nom,
+                    ped.Ped_Usr_Apr,
+                    ped.Ped_Lug_Ent,
+                    ped.Ped_Ref,
+                    ped.Ped_Tip_Com,
+                    ped.Ped_Tip_Mon,
+                    CASE
+                        WHEN ped.Ped_Tip_Mon = 1 THEN 'PEN'
+                        WHEN ped.Ped_Tip_Mon = 2 THEN 'USD'
+                        ELSE ''
+                    END AS Ped_Tip_Mon_Des,
+                    ped.Ped_Fec_Ent,
+                    ped.Ped_Sus,
+                    ped.Ped_Arc_Adj_Nom,
+                    ped.Ped_Arc_Adj_Rut,
+                    ped.Ped_Prv_Cod,
+                    ped.Ped_For_Pag_Cod,
+                    ped.Ped_Tot,
+                    ped.Flg_Est,
+                    CASE
+                        WHEN ped.Flg_Est = 'A' THEN 'Aprobado'
+                        WHEN ped.Flg_Est = 'P' THEN 'Pendiente'
+                        WHEN ped.Flg_Est = 'O' THEN 'Observado'
+                        WHEN ped.Flg_Est = 'C' THEN 'Cerrado'
+                        ELSE COALESCE(ped.Flg_Est, '')
+                    END AS Ped_Est_Des,
+                    CASE
+                        WHEN ped.Flg_Est = 'A' THEN 'Aprobado'
+                        WHEN ped.Flg_Est = 'P' THEN 'Pendiente'
+                        WHEN ped.Flg_Est = 'O' THEN 'Observado'
+                        WHEN ped.Flg_Est = 'C' THEN 'Cerrado'
+                        ELSE COALESCE(ped.Flg_Est, '')
+                    END AS Estado,
+                    ped.Usr_Reg,
+                    ped.Fec_Reg,
+                    ped.Usr_Mod,
+                    ped.Fec_Mod,
+                    ped.Ped_Can_Tot
+                FROM dbo.Lg_Pedido_Cab ped
+                LEFT JOIN dbo.Lg_Proveedor prv ON prv.Prv_Id = ped.Ped_Prv_Cod
+                WHERE (@Ped_Id IS NULL OR @Ped_Id <= 0 OR ped.Ped_Id = @Ped_Id)
+                  AND (@Flg_Est IS NULL OR @Flg_Est = '' OR @Flg_Est = 'Todos' OR ped.Flg_Est = @Flg_Est)
+                  AND (@Ped_Tip_Com IS NULL OR @Ped_Tip_Com = '' OR @Ped_Tip_Com = 'Todos' OR ped.Ped_Tip_Com = @Ped_Tip_Com)
+                  AND (@Prv_Nom IS NULL OR @Prv_Nom = '' OR COALESCE(prv.Prv_Nom, '') LIKE '%' + @Prv_Nom + '%')
+                ",
+                parametros
+            );
+
+            if (!result.Any())
+            {
+                return fallbackResult;
+            }
+
+            var resultList = result.ToList();
+            var existingIds = resultList
+                .Where(item => item.Ped_Id.HasValue)
+                .Select(item => item.Ped_Id!.Value)
+                .ToHashSet();
+
+            foreach (var item in fallbackResult)
+            {
+                if (!item.Ped_Id.HasValue || existingIds.Contains(item.Ped_Id.Value))
+                {
+                    continue;
+                }
+
+                resultList.Add(item);
+            }
+
+            return resultList;
         }
     }
 
