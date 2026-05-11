@@ -42,7 +42,11 @@ namespace MyApp.Namespace
                 Prv_Tel = valores.Prv_Tel,
                 Prv_Dir = valores.Prv_Dir,
                 Prv_Nom_Con = valores.Prv_Nom_Con,
-                Usr_Reg = valores.Usr_Reg
+                Usr_Reg = valores.Usr_Reg,
+                Prv_Email = valores.Prv_Email,
+                Prv_Nro_Cue_Ban = valores.Prv_Nro_Cue_Ban,
+                Prv_Nro_Cue_Ban_CCI = valores.Prv_Nro_Cue_Ban_CCI,
+                Prv_Ban = valores.Prv_Ban
             };
             
             var result = await _proveedorService.RegistrarProveedor(parametros);
@@ -69,7 +73,11 @@ namespace MyApp.Namespace
                 Prv_Dir = valores.Prv_Dir,
                 Prv_Nom_Con = valores.Prv_Nom_Con,
                 Flg_Est = valores.Flg_Est,
-                Usr_Mod = valores.Usr_Mod
+                Usr_Mod = valores.Usr_Mod,
+                Prv_Email = valores.Prv_Email,
+                Prv_Nro_Cue_Ban = valores.Prv_Nro_Cue_Ban,
+                Prv_Nro_Cue_Ban_CCI = valores.Prv_Nro_Cue_Ban_CCI,
+                Prv_Ban = valores.Prv_Ban
             };
             
             var result = await _proveedorService.ActualizarProveedor(parametros);

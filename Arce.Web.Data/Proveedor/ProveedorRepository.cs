@@ -47,6 +47,10 @@ public class ProveedorRepository: IProveedorRepository
             parametros.Add("@Prv_Dir", valores.Prv_Dir);
             parametros.Add("@Prv_Nom_Con", valores.Prv_Nom_Con);
             parametros.Add("@Usr_Reg", valores.Usr_Reg);
+            parametros.Add("@Prv_Email", valores.Prv_Email);
+            parametros.Add("@Prv_Nro_Cue_Ban", valores.Prv_Nro_Cue_Ban);
+            parametros.Add("@Prv_Nro_Cue_Ban_CCI", valores.Prv_Nro_Cue_Ban_CCI);
+            parametros.Add("@Prv_Ban", valores.Prv_Ban);
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
 
@@ -85,7 +89,10 @@ public class ProveedorRepository: IProveedorRepository
             parametros.Add("@Prv_Nom_Con", valores.Prv_Nom_Con);
             parametros.Add("@Flg_Est", valores.Flg_Est);
             parametros.Add("@Usr_Mod", valores.Usr_Mod);
-
+            parametros.Add("@Prv_Email", valores.Prv_Email);
+            parametros.Add("@Prv_Nro_Cue_Ban", valores.Prv_Nro_Cue_Ban);
+            parametros.Add("@Prv_Nro_Cue_Ban_CCI", valores.Prv_Nro_Cue_Ban_CCI);
+            parametros.Add("@Prv_Ban", valores.Prv_Ban);
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
 

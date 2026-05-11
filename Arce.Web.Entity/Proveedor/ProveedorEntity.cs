@@ -13,4 +13,9 @@ public class ProveedorEntity
     public DateTime? Fec_Reg { get; set; }
     public string? Usr_Mod { get; set; }
     public DateTime? Fec_Mod { get; set; }
+    public string? Prv_Email { get; set; }
+    public string? Prv_Nro_Cue_Ban { get; set; }
+    public string? Prv_Nro_Cue_Ban_CCI { get; set; }
+    public int? Prv_Ban { get; set; }
+
 }
