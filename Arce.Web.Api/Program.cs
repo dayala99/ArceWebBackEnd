@@ -51,6 +51,7 @@ builder.Services.AddScoped<ICentroCostoService, CentroCostoService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
 builder.Services.AddScoped<IGrupoItemService, GrupoItemService>();
 builder.Services.AddScoped<IItemService, ItemService>();
+builder.Services.AddScoped<IBancoService, BancoService>();
 
 //Inyection Repository
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
@@ -62,6 +63,8 @@ builder.Services.AddScoped<ICentroCostoRepository, CentroCostoRepository>();
 builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
 builder.Services.AddScoped<IGrupoItemRepository, GrupoItemRepository>();
 builder.Services.AddScoped<IItemRepository, ItemRepository>();
+builder.Services.AddScoped<IBancoRepository, BancoRepository>();
+
 
 #endregion
 
