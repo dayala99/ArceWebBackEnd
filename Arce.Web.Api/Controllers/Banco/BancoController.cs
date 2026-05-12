@@ -49,7 +49,7 @@ namespace MyApp.Namespace
         }
 
         [HttpPatch]
-        [Route("patchActualizarBancos")]
+        [Route("patchActualizarBanco")]
         public async Task<IActionResult> ActualizarBanco([FromBody] BancoEntity valores)
         {
             // FormaPagoEntity parametros = new FormaPagoEntity
