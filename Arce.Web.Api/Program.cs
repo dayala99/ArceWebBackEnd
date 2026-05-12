@@ -49,6 +49,8 @@ builder.Services.AddScoped<ITipoServicioService, TipoServicioService>();
 builder.Services.AddScoped<IUnidadMedidaService, UnidadMedidaService>();
 builder.Services.AddScoped<ICentroCostoService, CentroCostoService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
+builder.Services.AddScoped<IGrupoItemService, GrupoItemService>();
+builder.Services.AddScoped<IItemService, ItemService>();
 
 //Inyection Repository
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
@@ -58,6 +60,8 @@ builder.Services.AddScoped<ITipoServicioRepository, TipoServicioRepository>();
 builder.Services.AddScoped<IUnidadMedidaRepository, UnidadMedidaRepository>();
 builder.Services.AddScoped<ICentroCostoRepository, CentroCostoRepository>();
 builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
+builder.Services.AddScoped<IGrupoItemRepository, GrupoItemRepository>();
+builder.Services.AddScoped<IItemRepository, ItemRepository>();
 
 #endregion
 

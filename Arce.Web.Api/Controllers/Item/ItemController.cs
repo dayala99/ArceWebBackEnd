@@ -20,7 +20,7 @@ namespace MyApp.Namespace
         [Route("getListarItem")]
         public async Task<IActionResult> ListarItem(int? Itm_Id, string? Itm_Des, int? Itm_Grp, string? Flg_Est)
         {
-            var result = await _service.ListarItem(Itm_Id ?? 0, Itm_Des ?? "", Itm_Grp ?? 0, Flg_Est ?? "");
+            var result = await _service.ListarItem(Itm_Id, Itm_Des, Itm_Grp, Flg_Est);
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;

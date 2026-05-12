@@ -56,7 +56,7 @@ public class PedidoRepository: IPedidoRepository
                     ped.Ped_Arc_Adj_Rut,
                     ped.Ped_Prv_Cod,
                     ped.Ped_For_Pag_Cod,
-                    ped.Ped_Tot,
+                    COALESCE(NULLIF(ped.Ped_Tot, 0), det.Ped_Tot_Calculado, 0) AS Ped_Tot,
                     ped.Flg_Est,
                     CASE
                         WHEN ped.Flg_Est = 'A' THEN 'Aprobado'
@@ -79,6 +79,11 @@ public class PedidoRepository: IPedidoRepository
                     ped.Ped_Can_Tot
                 FROM dbo.Lg_Pedido_Cab ped
                 LEFT JOIN dbo.Lg_Proveedor prv ON prv.Prv_Id = ped.Ped_Prv_Cod
+                OUTER APPLY (
+                    SELECT SUM(COALESCE(det.Ped_Cos_Tot, 0)) AS Ped_Tot_Calculado
+                    FROM dbo.Lg_Pedido_Det det
+                    WHERE det.Ped_Cab_Id = ped.Ped_Id
+                ) det
                 WHERE (@Ped_Id IS NULL OR @Ped_Id <= 0 OR ped.Ped_Id = @Ped_Id)
                   AND (@Flg_Est IS NULL OR @Flg_Est = '' OR @Flg_Est = 'Todos' OR ped.Flg_Est = @Flg_Est)
                   AND (@Ped_Tip_Com IS NULL OR @Ped_Tip_Com = '' OR @Ped_Tip_Com = 'Todos' OR ped.Ped_Tip_Com = @Ped_Tip_Com)
@@ -93,10 +98,21 @@ public class PedidoRepository: IPedidoRepository
             }
 
             var resultList = result.ToList();
+            var fallbackMap = fallbackResult
+                .Where(item => item.Ped_Id.HasValue)
+                .ToDictionary(item => item.Ped_Id!.Value, item => item);
             var existingIds = resultList
                 .Where(item => item.Ped_Id.HasValue)
                 .Select(item => item.Ped_Id!.Value)
                 .ToHashSet();
+
+            foreach (var item in resultList.Where(item => item.Ped_Id.HasValue))
+            {
+                if (fallbackMap.TryGetValue(item.Ped_Id!.Value, out var fallbackItem) && fallbackItem.Ped_Tot.HasValue)
+                {
+                    item.Ped_Tot = fallbackItem.Ped_Tot;
+                }
+            }
 
             foreach (var item in fallbackResult)
             {
@@ -256,7 +272,7 @@ public class PedidoRepository: IPedidoRepository
             parametros.Add("@Flg_Est", valores.Flg_Est);
 
             parametros.Add("@Codigo", 0);
-            parametros.Add("@sMjs", "");
+            parametros.Add("@sMsj", "");
 
             parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
             parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);

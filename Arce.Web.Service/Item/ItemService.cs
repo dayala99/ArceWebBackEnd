@@ -23,6 +23,9 @@ public class ItemService: IItemService
             {
                 result.Success = true;
                 result.Message = "No existe información";
+                result.Elements = new List<ItemEntity>();
+                result.TotalElements = 0;
+                return result;
             }
             result.Success = true;
             result.Message = "Completado con éxito";

@@ -21,10 +21,10 @@ public class ItemRepository: IItemRepository
         {
             await connection.OpenAsync();
             var parametros = new DynamicParameters();
-            parametros.Add("@Itm_Id", Itm_Id);
-            parametros.Add("@Itm_Des", Itm_Des);
-            parametros.Add("@Itm_Grp", Itm_Grp);
-            parametros.Add("@Flg_Est", Flg_Est);
+            parametros.Add("@Itm_Id", Itm_Id ?? 0);
+            parametros.Add("@Itm_Des", string.IsNullOrWhiteSpace(Itm_Des) ? "" : Itm_Des.Trim());
+            parametros.Add("@Itm_Grp", Itm_Grp.HasValue && Itm_Grp.Value > 0 ? Itm_Grp.Value.ToString() : "");
+            parametros.Add("@Flg_Est", string.IsNullOrWhiteSpace(Flg_Est) ? "" : Flg_Est.Trim());
             var result = await connection.QueryAsync<ItemEntity>(
                     "[dbo].[PA_Lg_Item_S0001]"
                     , parametros
