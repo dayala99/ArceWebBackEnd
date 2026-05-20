@@ -21,4 +21,5 @@ public interface IPedidoService
     Task<ServiceResponse<int>> RegistrarDetallePedido(PedidoDetalleEntity valores);
     Task<ServiceResponse<int>> ActualizarDetallePedido(PedidoDetalleEntity valores);
     Task<ServiceResponse<int>> EliminarDetallePedido(PedidoDetalleEntity valores);
+    Task<ServiceResponse<int>> AsignarOrdenCompra(PedidoCabeceraCentroCostoEntity valores);
 }

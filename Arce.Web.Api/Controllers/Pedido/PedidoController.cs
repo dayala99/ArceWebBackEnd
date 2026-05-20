@@ -338,5 +338,20 @@ namespace MyApp.Namespace
             return BadRequest(result);
         }
 
+        [HttpPatch]
+        [Route("patchAsignarOrdenCompra")]
+        public async Task<IActionResult> AsignarOrdenCompra([FromBody] PedidoCabeceraCentroCostoEntity valores)
+        {            
+            var result = await _service.AsignarOrdenCompra(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
     }
 }

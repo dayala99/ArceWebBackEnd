@@ -20,5 +20,6 @@ public interface IPedidoRepository
     Task<(int Codigo, string Mensaje)> RegistrarDetallePedido(PedidoDetalleEntity valores);
     Task<(int Codigo, string Mensaje)> ActualizarDetallePedido(PedidoDetalleEntity valores);
     Task<(int Codigo, string Mensaje)> EliminarDetallePedido(PedidoDetalleEntity valores);
+    Task <(int Codigo, string Mensaje)> AsignarOrdenCompra(PedidoCabeceraCentroCostoEntity valores);
     
 }
