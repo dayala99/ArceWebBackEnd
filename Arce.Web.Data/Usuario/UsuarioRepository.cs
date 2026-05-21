@@ -40,13 +40,13 @@ public class UsuarioRepository: IUsuarioRepository
         {
             await connection.OpenAsync();
             var parametros = new DynamicParameters();
-            
+             
             parametros.Add("@Usr_Cod", valores.Usr_Cod);
             parametros.Add("@Usr_Nom", valores.Usr_Nom);
             parametros.Add("@Usr_Reg", valores.Usr_Reg);
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
-            
+             
             parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
             parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
             try

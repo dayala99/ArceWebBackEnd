@@ -66,6 +66,16 @@ namespace MyApp.Namespace
         [Route("postRegistrarPedido")]
         public async Task<IActionResult> RegistrarPedido([FromBody] PedidoCabeceraEntity valores)
         {
+            if (valores == null)
+            {
+                return BadRequest(new
+                {
+                    Success = false,
+                    CodeResult = StatusCodes.Status400BadRequest,
+                    Message = "El cuerpo de la solicitud de pedido es obligatorio."
+                });
+            }
+
             PedidoCabeceraEntity parametros = new PedidoCabeceraEntity
             {
                 Ped_Id = valores.Ped_Id,
@@ -99,6 +109,16 @@ namespace MyApp.Namespace
         [Route("patchActualizarPedido")]
         public async Task<IActionResult> ActualizarPedido([FromBody] PedidoCabeceraEntity valores)
         {
+            if (valores == null)
+            {
+                return BadRequest(new
+                {
+                    Success = false,
+                    CodeResult = StatusCodes.Status400BadRequest,
+                    Message = "El cuerpo de la solicitud de pedido es obligatorio."
+                });
+            }
+
             PedidoCabeceraEntity parametros = new PedidoCabeceraEntity
             {
                 Ped_Id = valores.Ped_Id,

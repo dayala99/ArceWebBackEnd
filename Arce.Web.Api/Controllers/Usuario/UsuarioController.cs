@@ -40,7 +40,6 @@ namespace MyApp.Namespace
             {
                 Usr_Cod = valores.Usr_Cod,
                 Usr_Nom = valores.Usr_Nom,
-                Flg_Est = valores.Flg_Est,
                 Usr_Reg = valores.Usr_Reg
             };
             
