@@ -4,7 +4,7 @@ using Arce.Web.Service.Comunes;
 
 namespace Arce.Web.Service;
 
-public class OrdenCompraService
+public class OrdenCompraService : IOrdenCompraService
 {
     private readonly IOrdenCompraRepository _repository;
 

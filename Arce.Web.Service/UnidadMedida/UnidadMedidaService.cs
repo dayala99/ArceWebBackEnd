@@ -20,19 +20,12 @@ public class UnidadMedidaService : IUnidadMedidaService
         try
         {
             var resultData = await _repository.ListarUnidadMedida(Uni_Med_Id, Uni_Med_Des, Flg_Est);
-
-            if(resultData == null || !resultData.Any())
-            {
-                result.Success = false;
-                result.Message = "No existe información";
-
-                return result;
-            }
+            var elements = (resultData ?? Enumerable.Empty<UnidadMedidaEntity>()).ToList();
 
             result.Success = true;
-            result.Message = "Completado con éxito";
-            result.Elements = resultData.ToList();
-            result.TotalElements = resultData.ToList().Count();
+            result.Message = elements.Any() ? "Completado con éxito" : "No existe información";
+            result.Elements = elements;
+            result.TotalElements = elements.Count;
 
             return result;
         }

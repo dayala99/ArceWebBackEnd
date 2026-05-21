@@ -21,19 +21,12 @@ public class TipoServicioService: ITipoServicioService
         try
         {
             var resultData = await _tipoServicioRepository.ListarTipoServicioActivo(Tip_Ser_Id, Tip_Ser_Des, Flg_Est);
-
-            if(resultData == null || !resultData.Any())
-            {
-                result.Success = false;
-                result.Message = "No existe información";
-
-                return result;
-            }
+            var elements = (resultData ?? Enumerable.Empty<TipoServicioEntity>()).ToList();
 
             result.Success = true;
-            result.Message = "Completado con éxito";
-            result.Elements = resultData.ToList();
-            result.TotalElements = resultData.ToList().Count();
+            result.Message = elements.Any() ? "Completado con éxito" : "No existe información";
+            result.Elements = elements;
+            result.TotalElements = elements.Count;
 
             return result;
         }
