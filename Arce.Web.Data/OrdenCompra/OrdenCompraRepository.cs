@@ -48,6 +48,7 @@ public class OrdenCompraRepository: IOrdenCompraRepository
             parametros.Add("@Ord_Com_Sub_Tot", valores.Ord_Com_Sub_Tot);
             parametros.Add("@Ord_Com_Igv", valores.Ord_Com_Igv);
             parametros.Add("@Ord_Com_Tot", valores.Ord_Com_Tot);
+            parametros.Add("@Ord_Com_Ped_Id", valores.Ord_Com_Ped_Id);
             parametros.Add("@Usr_Reg", valores.Usr_Reg);
 
             parametros.Add("@Codigo", 0);
@@ -89,6 +90,7 @@ public class OrdenCompraRepository: IOrdenCompraRepository
             parametros.Add("@Ord_Com_Sub_Tot", valores.Ord_Com_Sub_Tot);
             parametros.Add("@Ord_Com_Igv", valores.Ord_Com_Igv);
             parametros.Add("@Ord_Com_Tot", valores.Ord_Com_Tot);
+            parametros.Add("@Ord_Com_Ped_Id", valores.Ord_Com_Ped_Id);
             parametros.Add("@Flg_Est", valores.Flg_Est);
             parametros.Add("@Usr_Mod", valores.Usr_Mod);
 
