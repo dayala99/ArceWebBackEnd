@@ -33,7 +33,7 @@ public class OrdenCompraRepository: IOrdenCompraRepository
         }
     }
 
-    public async Task<(int Codigo, string Mensaje)> RegistrarOrdenCompra(OrdenCompraEntity valores)
+    public async Task<(int Codigo, string Mensaje, int Codigo_Orden_Compra)> RegistrarOrdenCompra(OrdenCompraEntity valores)
     {
         using (var connection = new SqlConnection(_connectionString))
         {
@@ -50,10 +50,14 @@ public class OrdenCompraRepository: IOrdenCompraRepository
             parametros.Add("@Ord_Com_Tot", valores.Ord_Com_Tot);
             parametros.Add("@Ord_Com_Ped_Id", valores.Ord_Com_Ped_Id);
             parametros.Add("@Usr_Reg", valores.Usr_Reg);
+            parametros.Add("@Ord_Com_Arc_Adj_Nom", valores.Ord_Com_Arc_Adj_Nom);
+            parametros.Add("@Ord_Com_Arc_Adj_Rut", valores.Ord_Com_Arc_Adj_Rut);
 
+            parametros.Add("@Ord_Com_Id", 0);
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
 
+            parametros.Add("@Ord_Com_Id", dbType: DbType.Int32, direction: ParameterDirection.Output);
             parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
             parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
             try
@@ -66,10 +70,12 @@ public class OrdenCompraRepository: IOrdenCompraRepository
             }
             catch (SqlException ex)
             {
+                Console.WriteLine(ex.Message);
             }
             var Codigo = parametros.Get<int>("@Codigo");
-            var mensaje = parametros.Get<string>("@sMsj");
-            return (Codigo, mensaje);
+            var Mensaje = parametros.Get<string>("@sMsj");
+            var CodigoOrdenCompra = parametros.Get<int>("@Ord_Com_Id");
+            return (Codigo, Mensaje, CodigoOrdenCompra);
         }
     }
 
@@ -93,7 +99,9 @@ public class OrdenCompraRepository: IOrdenCompraRepository
             parametros.Add("@Ord_Com_Ped_Id", valores.Ord_Com_Ped_Id);
             parametros.Add("@Flg_Est", valores.Flg_Est);
             parametros.Add("@Usr_Mod", valores.Usr_Mod);
-
+            parametros.Add("@Ord_Com_Arc_Adj_Nom", valores.Ord_Com_Arc_Adj_Nom);
+            parametros.Add("@Ord_Com_Arc_Adj_Rut", valores.Ord_Com_Arc_Adj_Rut);     
+            
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
 

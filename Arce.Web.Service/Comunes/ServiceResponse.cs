@@ -13,5 +13,6 @@ namespace Arce.Web.Service.Comunes
         public string? Message { get; set; }
         public T? Element { get; set; }
         public int CodeTransacc { get; set; }
+        public int Data { get; set; }
     }
 }

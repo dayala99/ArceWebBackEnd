@@ -7,7 +7,7 @@ public class PedidoCabeceraEntity
     public string? Ped_Usr_Apr  { get; set; }
     public string? Ped_Lug_Ent { get; set; }
     public string? Ped_Ref { get; set; }
-    public string? Ped_Tip_Com { get; set; }
+    public int? Ped_Tip_Com { get; set; }
     public int? Ped_Tip_Mon { get; set; }
     public string? Ped_Tip_Mon_Des { get; set; }
     public DateTime? Ped_Fec_Ent { get; set; }
@@ -25,4 +25,18 @@ public class PedidoCabeceraEntity
     public string? Usr_Mod { get; set; }
     public DateTime? Fec_Mod { get; set; }
     public decimal? Ped_Can_Tot { get; set; }
+    public DateTime? Fec_Apr { get; set; }
+    public string? Mon_Abr { get; set; }
+    public string? Tip_Ser_Des { get; set; }
+    public IEnumerable<PedidoDetalleEntityReporte>? Detalle_Reporte{ get; set; }
+}
+
+public class PedidoDetalleEntityReporte
+{
+    public int? Ped_Cab_Id { get; set; }
+    public string? Itm_Des { get; set; }
+	public string? Uni_Med_Abr { get; set; }
+	public decimal? Ped_Can { get; set; }
+	public decimal? Ped_Cos_Uni { get; set; }
+	public decimal? Ped_Cos_Tot { get; set; }
 }

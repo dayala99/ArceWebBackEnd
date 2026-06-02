@@ -12,12 +12,12 @@ public class PedidoService: IPedidoService
     {
         _repository = pedidoRepository;
     }
-    public async Task<ServiceResponseList<PedidoCabeceraEntity>?> ListarPedido(int? Ped_Id, string? Prv_Nom, string? Flg_Est, string? Ped_Tip_Com)
+    public async Task<ServiceResponseList<PedidoCabeceraEntity>?> ListarPedido(int? Ped_Id, string? Flg_Est, int? Ped_Tip_Com)
     {
         var result = new ServiceResponseList<PedidoCabeceraEntity>();
         try
         {
-            var resultData = await _repository.ListarPedido(Ped_Id, Prv_Nom, Flg_Est, Ped_Tip_Com);
+            var resultData = await _repository.ListarPedido(Ped_Id, Flg_Est, Ped_Tip_Com);
 
             if (resultData == null || !resultData.Any())
             {
@@ -459,6 +459,147 @@ public class PedidoService: IPedidoService
         try
         {
             var resultData = await _repository.AsignarOrdenCompra(valores);
+            if (resultData.Codigo == 0)
+            {
+                result.Success = true;
+                result.Message = resultData.Mensaje;
+                result.CodeTransacc = resultData.Codigo;
+                return result;
+            }
+            result.Success = false;
+            result.Message = resultData.Mensaje;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Error inesperado " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponse<int>> AsignarOrdenCompraADetallePedido(PedidoDetalleEntity valores)
+    {
+        var result = new ServiceResponse<int>();
+        try
+        {
+            var resultData = await _repository.AsignarOrdenCompraADetallePedido(valores);
+            if (resultData.Codigo == 0)
+            {
+                result.Success = true;
+                result.Message = resultData.Mensaje;
+                result.CodeTransacc = resultData.Codigo;
+                return result;
+            }
+            result.Success = false;
+            result.Message = resultData.Mensaje;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Error inesperado " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponseList<PedidoDetalleEntity>?> ListarItemsAsignadosPedidoCentroCosto(int Ped_Cab_Id)
+    {
+        var result = new ServiceResponseList<PedidoDetalleEntity>();
+        try
+        {
+            var resultData = await _repository.ListarItemsAsignadosPedidoCentroCosto(Ped_Cab_Id);
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+                result.Elements = new List<PedidoDetalleEntity>();
+                result.TotalElements = 0;
+                return result;
+            }
+
+            var elementos = resultData.ToList();
+
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = elementos;
+            result.TotalElements = elementos.Count;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepción no controlada " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponseList<PedidoDetalleEntity>?> ListarItemsAsignadosPedidoCentroCostoModificar(int Ord_Com_Id, int Ped_Cab_Id)
+    {
+        var result = new ServiceResponseList<PedidoDetalleEntity>();
+        try
+        {
+            var resultData = await _repository.ListarItemsAsignadosPedidoCentroCostoModificar(Ord_Com_Id, Ped_Cab_Id);
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+                result.Elements = new List<PedidoDetalleEntity>();
+                result.TotalElements = 0;
+                return result;
+            }
+
+            var elementos = resultData.ToList();
+
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = elementos;
+            result.TotalElements = elementos.Count;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepción no controlada " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponseList<PedidoCabeceraEntity>?> CargarReportePedido(string Ped_Id)
+    {
+        var result = new ServiceResponseList<PedidoCabeceraEntity>();
+        try
+        {
+            var resultData = await _repository.CargarReportePedido(Ped_Id);
+
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+                result.Elements = new List<PedidoCabeceraEntity>();
+                result.TotalElements = 0;
+                return result;
+            }
+
+            var elementos = resultData.ToList();
+
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = elementos;
+            result.TotalElements = elementos.Count;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepción no controlada " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponse<int>> DesAsignarOrdenCompraADetallePedido(PedidoDetalleEntity valores)
+    {
+        var result = new ServiceResponse<int>();
+        try
+        {
+            var resultData = await _repository.DesAsignarOrdenCompraADetallePedido(valores);
             if (resultData.Codigo == 0)
             {
                 result.Success = true;

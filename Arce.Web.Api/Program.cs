@@ -27,14 +27,14 @@ builder.Services.AddCors(options =>
 
         /*PRODUCCION*/
 
-        //policy.WithOrigins(
-        //"http://192.168.1.36",
-        //"https://192.168.1.36",
-        //"https://gestion.precotex.com",
-        //"https://gestion.precotex.com:444"
-        //)  // Especifica el origen permitido
-        //.AllowAnyHeader()                     // Permitir cualquier encabezado
-        //.AllowAnyMethod();                   // Permitir cualquier m�todo (GET, POST, etc.) 
+        // policy.WithOrigins(
+        // // "http://192.168.1.36",
+        // // "https://192.168.1.36",
+        // "https://gestion.montajeseingenieriaarceperu.com",
+        // "https://gestion.montajeseingenieriaarceperu.com:443"
+        // )  // Especifica el origen permitido
+        // .AllowAnyHeader()                     // Permitir cualquier encabezado
+        // .AllowAnyMethod();                   // Permitir cualquier m�todo (GET, POST, etc.) 
 
     }); 
 });
@@ -54,6 +54,7 @@ builder.Services.AddScoped<IItemService, ItemService>();
 builder.Services.AddScoped<IBancoService, BancoService>();
 builder.Services.AddScoped<IMonedaService, MonedaService>();
 builder.Services.AddScoped<IOrdenCompraService, OrdenCompraService>();
+builder.Services.AddScoped<IAlmacenService, AlmacenService>();
 
 //Inyection Repository
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
@@ -68,6 +69,7 @@ builder.Services.AddScoped<IItemRepository, ItemRepository>();
 builder.Services.AddScoped<IBancoRepository, BancoRepository>();
 builder.Services.AddScoped<IMonedaRepository, MonedaRepository>();
 builder.Services.AddScoped<IOrdenCompraRepository, OrdenCompraRepository>();
+builder.Services.AddScoped<IAlmacenRepository, AlmacenRepository>();
 
 #endregion
 

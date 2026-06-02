@@ -48,15 +48,18 @@ public class OrdenCompraService : IOrdenCompraService
                 result.Success = true;
                 result.Message = resultData.Mensaje;
                 result.CodeTransacc = resultData.Codigo;
+                result.Data = resultData.Codigo_Orden_Compra;
                 return result;
             }
             result.Success = false;
             result.Message = resultData.Mensaje;
+            result.Data = 0;
             return result;
         }
         catch (Exception ex)
         {
             result.Success = false;
+            result.Data = 0;
             result.Message = "Error inesperado " + ex.Message;
             return result;
         }

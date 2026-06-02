@@ -21,4 +21,6 @@ public class OrdenCompraEntity
 	public DateTime? Fec_Mod { get; set; }
 	public string? Prv_Nom { get; set; }
 	public string? For_Pag_Des { get; set; }
+	public string? Ord_Com_Arc_Adj_Nom { get; set; }
+	public string? Ord_Com_Arc_Adj_Rut { get; set; }
 }

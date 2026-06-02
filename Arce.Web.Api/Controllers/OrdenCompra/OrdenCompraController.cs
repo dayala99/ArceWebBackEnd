@@ -31,10 +31,48 @@ namespace MyApp.Namespace
             return BadRequest(result);
         }
 
+        // [HttpPost]
+        // [Route("postRegistrarOrdenCompra")]
+        // public async Task<IActionResult> RegistrarOrdenCompra([FromBody] OrdenCompraEntity valores)
+        // {            
+        //     var result = await _service.RegistrarOrdenCompra(valores);
+        //     if (result!.Success)
+        //     {
+        //         result.CodeResult = StatusCodes.Status200OK;
+        //         return Ok(result);
+        //     }
+
+        //     result.CodeResult = StatusCodes.Status400BadRequest;
+        //     return BadRequest(result);
+        // }
+
         [HttpPost]
         [Route("postRegistrarOrdenCompra")]
-        public async Task<IActionResult> RegistrarOrdenCompra([FromBody] OrdenCompraEntity valores)
-        {            
+        public async Task<IActionResult> RegistrarOrdenCompra([FromForm] OrdenCompraEntity valores, IFormFile archivo)
+        {
+            if (valores == null)
+            {
+                return BadRequest(new { Success = false, Message = "Datos incompletos" });
+            }
+
+            if (archivo != null && archivo.Length > 0)
+            {
+                var carpeta = Path.Combine(@"D:\Archivos");
+                if (!Directory.Exists(carpeta))
+                    Directory.CreateDirectory(carpeta);
+
+                var nombreArchivo = $"{Path.GetFileName(archivo.FileName)}";
+                var rutaCompleta = Path.Combine(carpeta, nombreArchivo);
+
+                using (var stream = new FileStream(rutaCompleta, FileMode.Create))
+                {
+                    await archivo.CopyToAsync(stream);
+                }
+
+                valores.Ord_Com_Arc_Adj_Nom = archivo.FileName;
+                valores.Ord_Com_Arc_Adj_Rut = rutaCompleta;
+            }
+
             var result = await _service.RegistrarOrdenCompra(valores);
             if (result!.Success)
             {

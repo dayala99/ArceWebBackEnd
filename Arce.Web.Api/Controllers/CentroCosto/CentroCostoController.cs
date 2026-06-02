@@ -34,7 +34,7 @@ namespace MyApp.Namespace
 
         [HttpPost]
         [Route("postRegistrarCentroCosto")]
-        public async Task<IActionResult> RegistrarCentroCosto(CentroCostoEntity valores)
+        public async Task<IActionResult> RegistrarCentroCosto([FromBody] CentroCostoEntity valores)
         {
             CentroCostoEntity parametros = new CentroCostoEntity
             {
@@ -56,7 +56,7 @@ namespace MyApp.Namespace
 
         [HttpPatch]
         [Route("patchActualizarCentroCosto")]
-        public async Task<IActionResult> ActualizarCentroCosto(CentroCostoEntity valores)
+        public async Task<IActionResult> ActualizarCentroCosto([FromBody] CentroCostoEntity valores)
         {
             CentroCostoEntity parametros = new CentroCostoEntity
             {

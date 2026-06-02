@@ -5,7 +5,7 @@ namespace Arce.Web.Service;
 
 public interface IPedidoService
 {
-    Task<ServiceResponseList<PedidoCabeceraEntity>?> ListarPedido(int? Ped_Id, string? Prv_Nom, string? Flg_Est, string? Ped_Tip_Com);
+    Task<ServiceResponseList<PedidoCabeceraEntity>?> ListarPedido(int? Ped_Id, string? Flg_Est, int? Ped_Tip_Com);
     Task<ServiceResponseList<PedidoCabeceraEntity>?> ListarPedidoCorrelativoNuevo();
     Task<ServiceResponseList<PedidoCabeceraEntity>?> ListarPedidoModificar(int Ped_Id);
     Task<ServiceResponse<int>> RegistrarPedido(PedidoCabeceraEntity valores);
@@ -22,4 +22,9 @@ public interface IPedidoService
     Task<ServiceResponse<int>> ActualizarDetallePedido(PedidoDetalleEntity valores);
     Task<ServiceResponse<int>> EliminarDetallePedido(PedidoDetalleEntity valores);
     Task<ServiceResponse<int>> AsignarOrdenCompra(PedidoCabeceraCentroCostoEntity valores);
+    Task<ServiceResponse<int>> AsignarOrdenCompraADetallePedido(PedidoDetalleEntity valores);
+    Task<ServiceResponseList<PedidoDetalleEntity>?> ListarItemsAsignadosPedidoCentroCosto(int Ped_Cab_Id);
+    Task<ServiceResponseList<PedidoDetalleEntity>?> ListarItemsAsignadosPedidoCentroCostoModificar(int Ord_Com_Id, int Ped_Cab_Id);
+    Task<ServiceResponseList<PedidoCabeceraEntity>?> CargarReportePedido(string Ped_Id);
+    Task<ServiceResponse<int>> DesAsignarOrdenCompraADetallePedido(PedidoDetalleEntity valores);
 }

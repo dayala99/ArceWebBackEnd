@@ -4,7 +4,7 @@ namespace Arce.Web.Data;
 
 public interface IPedidoRepository
 {
-    Task<IEnumerable<PedidoCabeceraEntity>?> ListarPedido(int? Ped_Id, string? Prv_Nom, string? Flg_Est, string? Ped_Tip_Com);
+    Task<IEnumerable<PedidoCabeceraEntity>?> ListarPedido(int? Ped_Id, string? Flg_Est, int? Ped_Tip_Com);
     Task<IEnumerable<PedidoCabeceraEntity>?> ListarPedidoCorrelativoNuevo();
     Task<IEnumerable<PedidoCabeceraEntity>?> ListarPedidoModificar(int Ped_Id);
     Task<(int Codigo, string Mensaje)> RegistrarPedido(PedidoCabeceraEntity valores);
@@ -21,5 +21,9 @@ public interface IPedidoRepository
     Task<(int Codigo, string Mensaje)> ActualizarDetallePedido(PedidoDetalleEntity valores);
     Task<(int Codigo, string Mensaje)> EliminarDetallePedido(PedidoDetalleEntity valores);
     Task <(int Codigo, string Mensaje)> AsignarOrdenCompra(PedidoCabeceraCentroCostoEntity valores);
-    
+    Task <(int Codigo, string Mensaje)> AsignarOrdenCompraADetallePedido(PedidoDetalleEntity valores);
+    Task<IEnumerable<PedidoDetalleEntity>?> ListarItemsAsignadosPedidoCentroCosto(int Ped_Cab_Id);
+    Task<IEnumerable<PedidoDetalleEntity>?> ListarItemsAsignadosPedidoCentroCostoModificar(int Ord_Com_Id, int Ped_Cab_Id);
+    Task<IEnumerable<PedidoCabeceraEntity>> CargarReportePedido(string Ped_Id);
+    Task <(int Codigo, string Mensaje)> DesAsignarOrdenCompraADetallePedido(PedidoDetalleEntity valores);
 }

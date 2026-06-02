@@ -34,7 +34,7 @@ namespace MyApp.Namespace
 
         [HttpPost]
         [Route("postRegistrarTipoServicio")]
-        public async Task<IActionResult> RegistrarTipoServicio(TipoServicioEntity valores)
+        public async Task<IActionResult> RegistrarTipoServicio([FromBody] TipoServicioEntity valores)
         {
             TipoServicioEntity parametros = new TipoServicioEntity()
             {
@@ -56,7 +56,7 @@ namespace MyApp.Namespace
 
         [HttpPost]
         [Route("patchActualizarTipoServicio")]
-        public async Task<IActionResult> ActualizarTipoServicio(TipoServicioEntity valores)
+        public async Task<IActionResult> ActualizarTipoServicio([FromBody] TipoServicioEntity valores)
         {
             TipoServicioEntity parametros = new TipoServicioEntity()
             {

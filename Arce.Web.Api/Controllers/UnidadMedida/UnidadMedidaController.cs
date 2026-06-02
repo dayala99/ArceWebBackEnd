@@ -57,7 +57,7 @@ namespace MyApp.Namespace
 
         [HttpPost]
         [Route("patchActualizarUnidadMedida")]
-        public async Task<IActionResult> ActualizarUnidadMedida(UnidadMedidaEntity valores)
+        public async Task<IActionResult> ActualizarUnidadMedida([FromBody] UnidadMedidaEntity valores)
         {
             UnidadMedidaEntity parametros = new UnidadMedidaEntity()
             {

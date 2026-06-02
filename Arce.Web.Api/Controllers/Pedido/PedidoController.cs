@@ -2,6 +2,7 @@ using Arce.Web.Entity;
 using Arce.Web.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace MyApp.Namespace
 {
@@ -19,9 +20,9 @@ namespace MyApp.Namespace
 
         [HttpGet]
         [Route("getListarPedido")]
-        public async Task<IActionResult> ListarPedido(int? Ped_Id, string? Prv_Nom, string? Flg_Est, string? Ped_Tip_Com)
+        public async Task<IActionResult> ListarPedido(int? Ped_Id, string? Flg_Est, int? Ped_Tip_Com)
         {
-            var result = await _service.ListarPedido(Ped_Id ?? 0, Prv_Nom ?? "", Flg_Est ?? "", Ped_Tip_Com ?? "");
+            var result = await _service.ListarPedido(Ped_Id ?? 0, Flg_Est ?? "", Ped_Tip_Com ?? 0);
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;
@@ -62,39 +63,77 @@ namespace MyApp.Namespace
             return BadRequest(result);
         }
 
+        // [HttpPost]
+        // [Route("postRegistrarPedido")]
+        // public async Task<IActionResult> RegistrarPedido([FromBody] PedidoCabeceraEntity valores)
+        // {
+        //     if (valores == null)
+        //     {
+        //         return BadRequest(new
+        //         {
+        //             Success = false,
+        //             CodeResult = StatusCodes.Status400BadRequest,
+        //             Message = "El cuerpo de la solicitud de pedido es obligatorio."
+        //         });
+        //     }
+
+        //     PedidoCabeceraEntity parametros = new PedidoCabeceraEntity
+        //     {
+        //         Ped_Id = valores.Ped_Id,
+        //         Ped_Usr_Apr = valores.Ped_Usr_Apr,
+        //         Ped_Lug_Ent = valores.Ped_Lug_Ent,
+        //         Ped_Ref = valores.Ped_Ref,
+        //         Ped_Tip_Com = valores.Ped_Tip_Com,
+        //         Ped_Tip_Mon = valores.Ped_Tip_Mon,
+        //         Ped_Fec_Ent = valores.Ped_Fec_Ent,
+        //         Ped_Sus = valores.Ped_Sus,
+        //         Ped_Arc_Adj_Nom = valores.Ped_Arc_Adj_Nom,
+        //         Ped_Arc_Adj_Rut = valores.Ped_Arc_Adj_Rut,
+        //         Ped_Prv_Cod = valores.Ped_Prv_Cod,
+        //         Ped_For_Pag_Cod = valores.Ped_For_Pag_Cod,
+        //         Usr_Reg = valores.Usr_Reg,
+        //         Ped_Can_Tot = valores.Ped_Can_Tot
+        //     };
+            
+        //     var result = await _service.RegistrarPedido(parametros);
+        //     if (result!.Success)
+        //     {
+        //         result.CodeResult = StatusCodes.Status200OK;
+        //         return Ok(result);
+        //     }
+
+        //     result.CodeResult = StatusCodes.Status400BadRequest;
+        //     return BadRequest(result);
+        // }
+
         [HttpPost]
         [Route("postRegistrarPedido")]
-        public async Task<IActionResult> RegistrarPedido([FromBody] PedidoCabeceraEntity valores)
+        public async Task<IActionResult> RegistrarPedido([FromForm] PedidoCabeceraEntity valores, IFormFile archivo)
         {
             if (valores == null)
             {
-                return BadRequest(new
-                {
-                    Success = false,
-                    CodeResult = StatusCodes.Status400BadRequest,
-                    Message = "El cuerpo de la solicitud de pedido es obligatorio."
-                });
+                return BadRequest(new { Success = false, Message = "Datos incompletos" });
             }
 
-            PedidoCabeceraEntity parametros = new PedidoCabeceraEntity
+            if (archivo != null && archivo.Length > 0)
             {
-                Ped_Id = valores.Ped_Id,
-                Ped_Usr_Apr = valores.Ped_Usr_Apr,
-                Ped_Lug_Ent = valores.Ped_Lug_Ent,
-                Ped_Ref = valores.Ped_Ref,
-                Ped_Tip_Com = valores.Ped_Tip_Com,
-                Ped_Tip_Mon = valores.Ped_Tip_Mon,
-                Ped_Fec_Ent = valores.Ped_Fec_Ent,
-                Ped_Sus = valores.Ped_Sus,
-                Ped_Arc_Adj_Nom = valores.Ped_Arc_Adj_Nom,
-                Ped_Arc_Adj_Rut = valores.Ped_Arc_Adj_Rut,
-                Ped_Prv_Cod = valores.Ped_Prv_Cod,
-                Ped_For_Pag_Cod = valores.Ped_For_Pag_Cod,
-                Usr_Reg = valores.Usr_Reg,
-                Ped_Can_Tot = valores.Ped_Can_Tot
-            };
-            
-            var result = await _service.RegistrarPedido(parametros);
+                var carpeta = Path.Combine(@"D:\Archivos");
+                if (!Directory.Exists(carpeta))
+                    Directory.CreateDirectory(carpeta);
+
+                var nombreArchivo = $"{Path.GetFileName(archivo.FileName)}";
+                var rutaCompleta = Path.Combine(carpeta, nombreArchivo);
+
+                using (var stream = new FileStream(rutaCompleta, FileMode.Create))
+                {
+                    await archivo.CopyToAsync(stream);
+                }
+
+                valores.Ped_Arc_Adj_Nom = archivo.FileName;
+                valores.Ped_Arc_Adj_Rut = rutaCompleta;
+            }
+
+            var result = await _service.RegistrarPedido(valores);
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;
@@ -105,39 +144,53 @@ namespace MyApp.Namespace
             return BadRequest(result);
         }
 
+
         [HttpPatch]
         [Route("patchActualizarPedido")]
-        public async Task<IActionResult> ActualizarPedido([FromBody] PedidoCabeceraEntity valores)
+        public async Task<IActionResult> ActualizarPedido([FromBody] PedidoCabeceraEntity valores, IFormFile archivo)
         {
             if (valores == null)
             {
-                return BadRequest(new
-                {
-                    Success = false,
-                    CodeResult = StatusCodes.Status400BadRequest,
-                    Message = "El cuerpo de la solicitud de pedido es obligatorio."
-                });
+                return BadRequest(new { Success = false, Message = "Datos incompletos" });
             }
 
-            PedidoCabeceraEntity parametros = new PedidoCabeceraEntity
+            if (archivo != null && archivo.Length > 0)
             {
-                Ped_Id = valores.Ped_Id,
-                Ped_Usr_Apr = valores.Ped_Usr_Apr,
-                Ped_Lug_Ent = valores.Ped_Lug_Ent,
-                Ped_Ref = valores.Ped_Ref,
-                Ped_Tip_Com = valores.Ped_Tip_Com,
-                Ped_Tip_Mon = valores.Ped_Tip_Mon,
-                Ped_Fec_Ent = valores.Ped_Fec_Ent,
-                Ped_Sus = valores.Ped_Sus,
-                Ped_Arc_Adj_Nom = valores.Ped_Arc_Adj_Nom,
-                Ped_Arc_Adj_Rut = valores.Ped_Arc_Adj_Rut,
-                Ped_Prv_Cod = valores.Ped_Prv_Cod,
-                Ped_For_Pag_Cod = valores.Ped_For_Pag_Cod,
-                Usr_Mod = valores.Usr_Mod,
-                Ped_Can_Tot = valores.Ped_Can_Tot
-            };
+                var carpeta = Path.Combine(@"D:\Archivos");
+                if (!Directory.Exists(carpeta))
+                    Directory.CreateDirectory(carpeta);
+
+                var nombreArchivo = $"{Path.GetFileName(archivo.FileName)}";
+                var rutaCompleta = Path.Combine(carpeta, nombreArchivo);
+
+                using (var stream = new FileStream(rutaCompleta, FileMode.Create))
+                {
+                    await archivo.CopyToAsync(stream);
+                }
+
+                valores.Ped_Arc_Adj_Nom = archivo.FileName;
+                valores.Ped_Arc_Adj_Rut = rutaCompleta;
+            }
+
+            // PedidoCabeceraEntity parametros = new PedidoCabeceraEntity
+            // {
+            //     Ped_Id = valores.Ped_Id,
+            //     Ped_Usr_Apr = valores.Ped_Usr_Apr,
+            //     Ped_Lug_Ent = valores.Ped_Lug_Ent,
+            //     Ped_Ref = valores.Ped_Ref,
+            //     Ped_Tip_Com = valores.Ped_Tip_Com,
+            //     Ped_Tip_Mon = valores.Ped_Tip_Mon,
+            //     Ped_Fec_Ent = valores.Ped_Fec_Ent,
+            //     Ped_Sus = valores.Ped_Sus,
+            //     Ped_Arc_Adj_Nom = valores.Ped_Arc_Adj_Nom,
+            //     Ped_Arc_Adj_Rut = valores.Ped_Arc_Adj_Rut,
+            //     Ped_Prv_Cod = valores.Ped_Prv_Cod,
+            //     Ped_For_Pag_Cod = valores.Ped_For_Pag_Cod,
+            //     Usr_Mod = valores.Usr_Mod,
+            //     Ped_Can_Tot = valores.Ped_Can_Tot
+            // };
             
-            var result = await _service.ActualizarPedido(parametros);
+            var result = await _service.ActualizarPedido(valores);
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;
@@ -290,18 +343,18 @@ namespace MyApp.Namespace
         [Route("postRegistrarDetallePedido")]
         public async Task<IActionResult> RegistrarDetallePedido([FromBody] PedidoDetalleEntity valores)
         {
-            PedidoDetalleEntity parametros = new PedidoDetalleEntity
-            {
-                Ped_Cab_Id = valores.Ped_Cab_Id,
-                Ped_Cod_Itm = valores.Ped_Cod_Itm,
-                Ped_Uni_Med = valores.Ped_Uni_Med,
-                Ped_Can = valores.Ped_Can,
-                Ped_Cos_Uni = valores.Ped_Cos_Uni,
-                Ped_Cos_Tot = valores.Ped_Cos_Tot,
-                Usr_Reg = valores.Usr_Reg
-            };
+            // PedidoDetalleEntity parametros = new PedidoDetalleEntity
+            // {
+            //     Ped_Cab_Id = valores.Ped_Cab_Id,
+            //     Ped_Cod_Itm = valores.Ped_Cod_Itm,
+            //     Ped_Uni_Med = valores.Ped_Uni_Med,
+            //     Ped_Can = valores.Ped_Can,
+            //     Ped_Cos_Uni = valores.Ped_Cos_Uni,
+            //     Ped_Cos_Tot = valores.Ped_Cos_Tot,
+            //     Usr_Reg = valores.Usr_Reg
+            // };
             
-            var result = await _service.RegistrarDetallePedido(parametros);
+            var result = await _service.RegistrarDetallePedido(valores);
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;
@@ -363,6 +416,100 @@ namespace MyApp.Namespace
         public async Task<IActionResult> AsignarOrdenCompra([FromBody] PedidoCabeceraCentroCostoEntity valores)
         {            
             var result = await _service.AsignarOrdenCompra(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPatch]
+        [Route("patchAsignarOrdenCompraADetallePedido")]
+        public async Task<IActionResult> AsignarOrdenCompraADetallePedido([FromBody] PedidoDetalleEntity valores)
+        {            
+            var result = await _service.AsignarOrdenCompraADetallePedido(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpGet("getArchivoPedido")]
+        public IActionResult GetArchivoPedido(string nombreArchivo)
+        {
+            var carpeta = @"D:\Archivos";
+            var ruta = Path.Combine(carpeta, nombreArchivo);
+
+            if (!System.IO.File.Exists(ruta))
+                return NotFound("El archivo no existe en disco");
+
+            var provider = new FileExtensionContentTypeProvider();
+            if (!provider.TryGetContentType(ruta, out var mimeType))
+            {
+                mimeType = "application/octet-stream";
+            }
+
+            var fileBytes = System.IO.File.ReadAllBytes(ruta);
+            return File(fileBytes, mimeType);
+        }
+
+        [HttpGet]
+        [Route("getListarItemsAsignadosPedidoCentroCosto")]
+        public async Task<IActionResult> ListarItemsAsignadosPedidoCentroCosto(int Ped_Cab_Id)
+        {
+            var result = await _service.ListarItemsAsignadosPedidoCentroCosto(Ped_Cab_Id);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpGet]
+        [Route("getListarItemsAsignadosPedidoCentroCostoModificar")]
+        public async Task<IActionResult> ListarItemsAsignadosPedidoCentroCostoModificar(int Ord_Com_Id, int Ped_Cab_Id)
+        {
+            var result = await _service.ListarItemsAsignadosPedidoCentroCostoModificar(Ord_Com_Id, Ped_Cab_Id);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpGet]
+        [Route("getCargarReportePedido")]
+        public async Task<IActionResult> CargarReportePedido(string Ped_Id)
+        {
+            var result = await _service.CargarReportePedido(Ped_Id);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPatch]
+        [Route("patchDesAsignarOrdenCompraADetallePedido")]
+        public async Task<IActionResult> DesAsignarOrdenCompraADetallePedido([FromBody] PedidoDetalleEntity valores)
+        {            
+            var result = await _service.DesAsignarOrdenCompraADetallePedido(valores);
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;

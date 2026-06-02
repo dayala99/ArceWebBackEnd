@@ -34,7 +34,7 @@ namespace MyApp.Namespace
 
         [HttpPost]
         [Route("postRegistrarFormaPago")]
-        public async Task<IActionResult> RegistrarFormaPago(FormaPagoEntity valores)
+        public async Task<IActionResult> RegistrarFormaPago([FromBody] FormaPagoEntity valores)
         {
             FormaPagoEntity parametros = new FormaPagoEntity
             {
@@ -56,7 +56,7 @@ namespace MyApp.Namespace
 
         [HttpPatch]
         [Route("patchActualizarFormaPago")]
-        public async Task<IActionResult> ActualizarFormaPago(FormaPagoEntity valores)
+        public async Task<IActionResult> ActualizarFormaPago([FromBody] FormaPagoEntity valores)
         {
             FormaPagoEntity parametros = new FormaPagoEntity
             {
