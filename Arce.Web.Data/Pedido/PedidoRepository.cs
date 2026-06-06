@@ -764,5 +764,81 @@ public class PedidoRepository: IPedidoRepository
 
         }
     }
+
+    public async Task<IEnumerable<PedidoCabeceraEntity>?> ListarPedidoAprobadoParaOC(int? Ped_Id, string? Flg_Est, int? Ped_Tip_Com)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Ped_Id", Ped_Id);
+            //parametros.Add("@Prv_Nom", Prv_Nom);
+            parametros.Add("@Flg_Est", Flg_Est);
+            parametros.Add("@Ped_Tip_Com", Ped_Tip_Com);
+
+            var result = await connection.QueryAsync<PedidoCabeceraEntity>(
+                "[dbo].[PA_Lg_Pedido_Cab_S0005]"
+                , parametros
+                , commandType: CommandType.StoredProcedure
+            );
+            return result;
+        }
+    }
+
+    public async Task<(int Codigo, string Mensaje)> ActualizarPedidoCuandoDetalleCompleto(PedidoCabeceraEntity valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+            
+            var parametros = new DynamicParameters();
+            parametros.Add("@Ped_Id", valores.Ped_Id);
+
+            parametros.Add("@Codigo", 0);
+            parametros.Add("@sMsj", "");
+
+            parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+
+            try
+            {
+                connection.Execute(
+                    "[dbo].[PA_Lg_Pedido_Cab_U0003]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+                );
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            var Codigo = parametros.Get<int>("@Codigo");
+            var Mensaje = parametros.Get<string>("@sMsj");
+
+            return (Codigo, Mensaje);
+
+        }
+    }
+
+    public async Task<IEnumerable<PedidoDetalleEntity>?> ListarDetalleIngresoAlmacen(int? Ped_Cab_Id, int? Ord_Com_Id)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Ped_Cab_Id", Ped_Cab_Id);
+            parametros.Add("@Ord_Com_Id", Ord_Com_Id);
+
+            var result = await connection.QueryAsync<PedidoDetalleEntity>(
+                "[dbo].[PA_Lg_Pedido_Det_S0005]"
+                , parametros
+                , commandType: CommandType.StoredProcedure
+            );
+            return result;
+        }
+    }
     
 }

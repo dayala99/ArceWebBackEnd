@@ -7,20 +7,21 @@ namespace MyApp.Namespace
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ItemController : ControllerBase
+    public class DetraccionController : ControllerBase
     {
-        public readonly IItemService _service;
+        public readonly IDetraccionService _service;
 
-        public ItemController(IItemService service)
+        public DetraccionController(IDetraccionService service)
         {
             _service = service;
         }
-        
+
         [HttpGet]
-        [Route("getListarItem")]
-        public async Task<IActionResult> ListarItem(string? Itm_Cod, string? Itm_Des, int? Itm_Grp, int? Itm_Sub_Grp, int? Itm_Det_Mat_Id,string? Flg_Est)
+        [Route("getListarDetraccion")]
+        public async Task<IActionResult> ListarDetraccion(int? Det_Id, string? Det_Des, string? Flg_Est)
         {
-            var result = await _service.ListarItem(Itm_Cod, Itm_Des, Itm_Grp, Itm_Sub_Grp, Itm_Det_Mat_Id, Flg_Est);
+            var result = await _service.ListarDetraccion(Det_Id ?? 0, Det_Des ?? "", Flg_Est ?? "");
+
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;
@@ -32,11 +33,12 @@ namespace MyApp.Namespace
         }
 
         [HttpPost]
-        [Route("postRegistrarItem")]
-        public async Task<IActionResult> RegistrarItem([FromBody] ItemEntity valores)
-        {           
-            var result = await _service.RegistrarItem(valores);
-            if (result!.Success)
+        [Route("postRegistrarDetraccion")]
+        public async Task<IActionResult> RegistrarDetraccion([FromBody] DetraccionEntity valores)
+        {   
+            var result = await _service.RegistrarDetraccion(valores);
+
+            if (result.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;
                 return Ok(result);
@@ -47,10 +49,11 @@ namespace MyApp.Namespace
         }
 
         [HttpPatch]
-        [Route("patchActualizarItem")]
-        public async Task<IActionResult> ActualizarItem([FromBody] ItemEntity valores)
-        {           
-            var result = await _service.ActualizarItem(valores);
+        [Route("patchActualizarDetraccion")]
+        public async Task<IActionResult> ActualizarDetraccion([FromBody] DetraccionEntity valores)
+        {
+            var result = await _service.ActualizarDetraccion(valores);
+
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;

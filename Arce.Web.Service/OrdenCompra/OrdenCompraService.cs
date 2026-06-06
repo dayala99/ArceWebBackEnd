@@ -37,6 +37,30 @@ public class OrdenCompraService : IOrdenCompraService
         }
     }
 
+    public async Task<ServiceResponseList<OrdenCompraEntity>?> ListarOrdenCompraModificar(int? Ord_Com_Id)
+    {
+        var result = new ServiceResponseList<OrdenCompraEntity>();
+        try
+        {
+            var resultData = await _repository.ListarOrdenCompraModificar(Ord_Com_Id);
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+            }
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = resultData.ToList();
+            result.TotalElements = resultData.ToList().Count();
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepción no controlada " + ex.Message;
+            return result;
+        }
+    }
+
     public async Task<ServiceResponse<int>> RegistrarOrdenCompra(OrdenCompraEntity valores)
     {
         var result = new ServiceResponse<int>();
@@ -86,6 +110,54 @@ public class OrdenCompraService : IOrdenCompraService
         {
             result.Success = false;
             result.Message = "Error inesperado " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponseList<OrdenCompraEntity>?> ListarOrdenCompraPendienteAlmacen(int? Ord_Com_Id, string? Ord_Com_Prv, string? Flg_Est)
+    {
+        var result = new ServiceResponseList<OrdenCompraEntity>();
+        try
+        {
+            var resultData = await _repository.ListarOrdenCompraPendienteAlmacen(Ord_Com_Id, Ord_Com_Prv, Flg_Est);
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+            }
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = resultData.ToList();
+            result.TotalElements = resultData.ToList().Count();
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepción no controlada " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponseList<OrdenCompraEntity>?> ListarCabeceraIngresoAlmacen(int? Ord_Com_Id)
+    {
+        var result = new ServiceResponseList<OrdenCompraEntity>();
+        try
+        {
+            var resultData = await _repository.ListarCabeceraIngresoAlmacen(Ord_Com_Id);
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+            }
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = resultData.ToList();
+            result.TotalElements = resultData.ToList().Count();
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepción no controlada " + ex.Message;
             return result;
         }
     }

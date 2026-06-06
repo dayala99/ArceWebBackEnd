@@ -6,30 +6,28 @@ using Microsoft.Extensions.Configuration;
 
 namespace Arce.Web.Data;
 
-public class ItemRepository: IItemRepository
+public class ItemDetalleMaterialRepository: IItemDetalleMaterialRepository
 {
     private readonly string _connectionString;
 
-    public ItemRepository(IConfiguration configuration)
+    public ItemDetalleMaterialRepository(IConfiguration configuration)
     {
         _connectionString = configuration.GetConnectionString("Connection")!;
     }
 
-    public async Task<IEnumerable<ItemEntity>?> ListarItem(string? Itm_Cod, string? Itm_Des, int? Itm_Grp, int? Itm_Sub_Grp, int? Itm_Det_Mat_Id,string? Flg_Est)
+    public async Task<IEnumerable<ItemDetalleMaterialEntity>?> ListarItemDetalleMaterial(string? Det_Mat_Cod, string? Det_Mat_Des, int? Grp_Id, int? Sub_Grp_Id, string? Flg_Est)
     {
         using (var connection = new SqlConnection(_connectionString))
         {
             await connection.OpenAsync();
             var parametros = new DynamicParameters();
-            parametros.Add("@Itm_Cod", string.IsNullOrWhiteSpace(Itm_Cod) ? "" : Itm_Cod.Trim());
-            parametros.Add("@Itm_Des", string.IsNullOrWhiteSpace(Itm_Des) ? "" : Itm_Des.Trim());
-            parametros.Add("@Itm_Grp", Itm_Grp.HasValue && Itm_Grp.Value > 0 ? Itm_Grp.Value.ToString() : "");
-            parametros.Add("@Itm_Sub_Grp", Itm_Sub_Grp.HasValue && Itm_Sub_Grp.Value > 0 ? Itm_Sub_Grp.Value.ToString() : "");
-            parametros.Add("@Itm_Det_Mat_Id", Itm_Det_Mat_Id.HasValue && Itm_Det_Mat_Id.Value > 0 ? Itm_Det_Mat_Id.Value.ToString() : "");
-            parametros.Add("@Flg_Est", string.IsNullOrWhiteSpace(Flg_Est) ? "" : Flg_Est.Trim());
-            
-            var result = await connection.QueryAsync<ItemEntity>(
-                    "[dbo].[PA_Lg_Item_S0001]"
+            parametros.Add("@Det_Mat_Cod", Det_Mat_Cod);
+            parametros.Add("@Det_Mat_Des", Det_Mat_Des);
+            parametros.Add("@Grp_Id", Grp_Id);
+            parametros.Add("@Sub_Grp_Id", Sub_Grp_Id);
+            parametros.Add("@Flg_Est", Flg_Est);
+            var result = await connection.QueryAsync<ItemDetalleMaterialEntity>(
+                    "[dbo].[PA_Lg_Detalle_Material_S0001]"
                     , parametros
                     , commandType: CommandType.StoredProcedure
             );
@@ -37,17 +35,16 @@ public class ItemRepository: IItemRepository
         }
     }
 
-    public async Task<(int Codigo, string Mensaje)> RegistrarItem(ItemEntity valores)
+    public async Task<(int Codigo, string Mensaje)> RegistrarItemDetalleMaterial(ItemDetalleMaterialEntity valores)
     {
         using (var connection = new SqlConnection(_connectionString))
         {
             await connection.OpenAsync();
             var parametros = new DynamicParameters();
             
-            parametros.Add("@Itm_Des", valores.Itm_Des);
-            parametros.Add("@Itm_Grp", valores.Itm_Grp);
-            parametros.Add("@Itm_Sub_Grp", valores.Itm_Sub_Grp);
-            parametros.Add("@Itm_Det_Mat_Id", valores.Itm_Det_Mat_Id);
+            parametros.Add("@Grp_Id", valores.Grp_Id);
+            parametros.Add("@Sub_Grp_Id", valores.Sub_Grp_Id);
+            parametros.Add("@Det_Mat_Des", valores.Det_Mat_Des);
             parametros.Add("@Usr_Reg", valores.Usr_Reg);
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
@@ -57,7 +54,7 @@ public class ItemRepository: IItemRepository
             try
             {
                 connection.Execute(
-                    "[dbo].[PA_Lg_Item_I0001]"
+                    "[dbo].[PA_Lg_Detalle_Material_I0001]"
                     , parametros
                     , commandType: CommandType.StoredProcedure
                 );
@@ -73,7 +70,7 @@ public class ItemRepository: IItemRepository
         }
     }
 
-    public async Task<(int Codigo, string Mensaje)> ActualizarItem(ItemEntity valores)
+    public async Task<(int Codigo, string Mensaje)> ActualizarItemDetalleMaterial(ItemDetalleMaterialEntity valores)
     {
         using (var connection = new SqlConnection(_connectionString))
         {
@@ -81,11 +78,10 @@ public class ItemRepository: IItemRepository
 
             var parametros = new DynamicParameters();
 
-            parametros.Add("@Itm_Id", valores.Itm_Id);
-            parametros.Add("@Itm_Des", valores.Itm_Des);
-            parametros.Add("@Itm_Grp", valores.Itm_Grp);
-            parametros.Add("@Itm_Sub_Grp", valores.Itm_Sub_Grp);
-            parametros.Add("@Itm_Det_Mat_Id", valores.Itm_Det_Mat_Id);
+            parametros.Add("@Det_Mat_Id", valores.Det_Mat_Id);
+            parametros.Add("@Grp_Id", valores.Grp_Id);
+            parametros.Add("@Sub_Grp_Id", valores.Sub_Grp_Id);
+            parametros.Add("@Det_Mat_Des", valores.Det_Mat_Des);
             parametros.Add("@Flg_Est", valores.Flg_Est);
             parametros.Add("@Usr_Mod", valores.Usr_Mod);
 
@@ -111,6 +107,24 @@ public class ItemRepository: IItemRepository
             var mensaje = parametros.Get<string>("@sMsj");
             
             return (Codigo, mensaje);
+        }
+    }
+
+    public async Task<IEnumerable<ItemDetalleMaterialEntity>?> ListarItemDetalleMaterialPorGrupoySubgrupo(int? Grp_Id, int? Sub_Grp_Id)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+            var parametros = new DynamicParameters();
+            parametros.Add("@Grp_Id", Grp_Id);
+            parametros.Add("@Sub_Grp_Id", Sub_Grp_Id);
+
+            var result = await connection.QueryAsync<ItemDetalleMaterialEntity>(
+                    "[dbo].[PA_Lg_Detalle_Material_S0002]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+            );
+            return result;
         }
     }
 }

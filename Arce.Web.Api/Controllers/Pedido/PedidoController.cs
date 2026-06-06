@@ -117,7 +117,7 @@ namespace MyApp.Namespace
 
             if (archivo != null && archivo.Length > 0)
             {
-                var carpeta = Path.Combine(@"D:\Archivos");
+                var carpeta = Path.Combine(@"C:\Archivos");
                 if (!Directory.Exists(carpeta))
                     Directory.CreateDirectory(carpeta);
 
@@ -147,7 +147,7 @@ namespace MyApp.Namespace
 
         [HttpPatch]
         [Route("patchActualizarPedido")]
-        public async Task<IActionResult> ActualizarPedido([FromBody] PedidoCabeceraEntity valores, IFormFile archivo)
+        public async Task<IActionResult> ActualizarPedido([FromForm] PedidoCabeceraEntity valores, IFormFile archivo)
         {
             if (valores == null)
             {
@@ -156,7 +156,7 @@ namespace MyApp.Namespace
 
             if (archivo != null && archivo.Length > 0)
             {
-                var carpeta = Path.Combine(@"D:\Archivos");
+                var carpeta = Path.Combine(@"C:\Archivos");
                 if (!Directory.Exists(carpeta))
                     Directory.CreateDirectory(carpeta);
 
@@ -444,7 +444,7 @@ namespace MyApp.Namespace
         [HttpGet("getArchivoPedido")]
         public IActionResult GetArchivoPedido(string nombreArchivo)
         {
-            var carpeta = @"D:\Archivos";
+            var carpeta = @"C:\Archivos";
             var ruta = Path.Combine(carpeta, nombreArchivo);
 
             if (!System.IO.File.Exists(ruta))
@@ -510,6 +510,51 @@ namespace MyApp.Namespace
         public async Task<IActionResult> DesAsignarOrdenCompraADetallePedido([FromBody] PedidoDetalleEntity valores)
         {            
             var result = await _service.DesAsignarOrdenCompraADetallePedido(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpGet]
+        [Route("getListarPedidoAprobadoParaOC")]
+        public async Task<IActionResult> ListarPedidoAprobadoParaOC(int? Ped_Id, string? Flg_Est, int? Ped_Tip_Com)
+        {
+            var result = await _service.ListarPedidoAprobadoParaOC(Ped_Id ?? 0, Flg_Est ?? "", Ped_Tip_Com ?? 0);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPatch]
+        [Route("patchActualizarPedidoCuandoDetalleCompleto")]
+        public async Task<IActionResult> ActualizarPedidoCuandoDetalleCompleto([FromBody] PedidoCabeceraEntity valores)
+        {            
+            var result = await _service.ActualizarPedidoCuandoDetalleCompleto(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpGet]
+        [Route("getListarDetalleIngresoAlmacen")]
+        public async Task<IActionResult> ListarDetalleIngresoAlmacen(int? Ped_Cab_Id, int? Ord_Com_Id)
+        {
+            var result = await _service.ListarDetalleIngresoAlmacen(Ped_Cab_Id ?? 0, Ord_Com_Id ?? 0);
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;

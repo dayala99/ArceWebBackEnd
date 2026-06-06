@@ -13,4 +13,9 @@ public class ItemEntity
 
     //COGER NOMBRE DE GRUPO DESDE LA TABLA GRUPOITEM
     public string? Grp_Des { get; set; }
+    public int? Itm_Sub_Grp { get; set; }
+    public string? Sub_Grp_Des { get; set; }
+    public int? Itm_Det_Mat_Id { get; set; }
+    public string? Det_Mat_Des { get; set; }
+    public string? Itm_Cod { get; set; }
 }

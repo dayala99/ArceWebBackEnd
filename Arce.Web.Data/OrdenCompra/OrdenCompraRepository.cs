@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
+using System.Windows.Markup;
 using Arce.Web.Entity;
 using Dapper;
 using Microsoft.Extensions.Configuration;
@@ -33,6 +34,23 @@ public class OrdenCompraRepository: IOrdenCompraRepository
         }
     }
 
+    public async Task<IEnumerable<OrdenCompraEntity>?> ListarOrdenCompraModificar(int? Ord_Com_Id)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+            var parametros = new DynamicParameters();
+            parametros.Add("@Ord_Com_Id", Ord_Com_Id);
+
+            var result = await connection.QueryAsync<OrdenCompraEntity>(
+                    "[dbo].[PA_Lg_Orden_Compra_S0002]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+            );
+            return result;
+        }
+    }
+
     public async Task<(int Codigo, string Mensaje, int Codigo_Orden_Compra)> RegistrarOrdenCompra(OrdenCompraEntity valores)
     {
         using (var connection = new SqlConnection(_connectionString))
@@ -52,6 +70,8 @@ public class OrdenCompraRepository: IOrdenCompraRepository
             parametros.Add("@Usr_Reg", valores.Usr_Reg);
             parametros.Add("@Ord_Com_Arc_Adj_Nom", valores.Ord_Com_Arc_Adj_Nom);
             parametros.Add("@Ord_Com_Arc_Adj_Rut", valores.Ord_Com_Arc_Adj_Rut);
+            parametros.Add("@Ord_Com_Det_Id", valores.Ord_Com_Det_Id);
+            parametros.Add("@Ord_Com_Det_Mon", valores.Ord_Com_Det_Mon);
 
             parametros.Add("@Ord_Com_Id", 0);
             parametros.Add("@Codigo", 0);
@@ -100,7 +120,9 @@ public class OrdenCompraRepository: IOrdenCompraRepository
             parametros.Add("@Flg_Est", valores.Flg_Est);
             parametros.Add("@Usr_Mod", valores.Usr_Mod);
             parametros.Add("@Ord_Com_Arc_Adj_Nom", valores.Ord_Com_Arc_Adj_Nom);
-            parametros.Add("@Ord_Com_Arc_Adj_Rut", valores.Ord_Com_Arc_Adj_Rut);     
+            parametros.Add("@Ord_Com_Arc_Adj_Rut", valores.Ord_Com_Arc_Adj_Rut);
+            parametros.Add("@Ord_Com_Det_Id", valores.Ord_Com_Det_Id);
+            parametros.Add("@Ord_Com_Det_Mon", valores.Ord_Com_Det_Mon);
             
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
@@ -124,6 +146,41 @@ public class OrdenCompraRepository: IOrdenCompraRepository
             var mensaje = parametros.Get<string>("@sMsj");
             
             return (Codigo, mensaje);
+        }
+    }
+
+    public async Task<IEnumerable<OrdenCompraEntity>?> ListarOrdenCompraPendienteAlmacen(int? Ord_Com_Id, string? Ord_Com_Prv, string? Flg_Est)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+            var parametros = new DynamicParameters();
+            parametros.Add("@Ord_Com_Id", Ord_Com_Id);
+            parametros.Add("@Ord_Com_Prv", Ord_Com_Prv);
+            parametros.Add("@Flg_Est", Flg_Est);
+            var result = await connection.QueryAsync<OrdenCompraEntity>(
+                    "[dbo].[PA_Lg_Orden_Compra_S0003]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+            );
+            return result;
+        }
+    }
+
+    public async Task<IEnumerable<OrdenCompraEntity>?> ListarCabeceraIngresoAlmacen(int? Ord_Com_Id)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+            var parametros = new DynamicParameters();
+            parametros.Add("@Ord_Com_Id", Ord_Com_Id);
+
+            var result = await connection.QueryAsync<OrdenCompraEntity>(
+                    "[dbo].[PA_Lg_Orden_Compra_S0004]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+            );
+            return result;
         }
     }
 }

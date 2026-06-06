@@ -55,6 +55,9 @@ builder.Services.AddScoped<IBancoService, BancoService>();
 builder.Services.AddScoped<IMonedaService, MonedaService>();
 builder.Services.AddScoped<IOrdenCompraService, OrdenCompraService>();
 builder.Services.AddScoped<IAlmacenService, AlmacenService>();
+builder.Services.AddScoped<IDetraccionService, DetraccionService>();
+builder.Services.AddScoped<ISubGrupoItemService, SubGrupoItemService>();
+builder.Services.AddScoped<IItemDetalleMaterialService, ItemDetalleMaterialService>();
 
 //Inyection Repository
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
@@ -70,6 +73,9 @@ builder.Services.AddScoped<IBancoRepository, BancoRepository>();
 builder.Services.AddScoped<IMonedaRepository, MonedaRepository>();
 builder.Services.AddScoped<IOrdenCompraRepository, OrdenCompraRepository>();
 builder.Services.AddScoped<IAlmacenRepository, AlmacenRepository>();
+builder.Services.AddScoped<IDetraccionRepository, DetraccionRepository>();
+builder.Services.AddScoped<ISubGrupoItemRepository, SubGrupoItemRepository>();
+builder.Services.AddScoped<IItemDetalleMaterialRepository, ItemDetalleMaterialRepository>();
 
 #endregion
 

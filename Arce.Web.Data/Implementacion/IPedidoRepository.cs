@@ -26,4 +26,7 @@ public interface IPedidoRepository
     Task<IEnumerable<PedidoDetalleEntity>?> ListarItemsAsignadosPedidoCentroCostoModificar(int Ord_Com_Id, int Ped_Cab_Id);
     Task<IEnumerable<PedidoCabeceraEntity>> CargarReportePedido(string Ped_Id);
     Task <(int Codigo, string Mensaje)> DesAsignarOrdenCompraADetallePedido(PedidoDetalleEntity valores);
+    Task<IEnumerable<PedidoCabeceraEntity>?> ListarPedidoAprobadoParaOC(int? Ped_Id, string? Flg_Est, int? Ped_Tip_Com);
+    Task<(int Codigo, string Mensaje)> ActualizarPedidoCuandoDetalleCompleto(PedidoCabeceraEntity valores);
+    Task<IEnumerable<PedidoDetalleEntity>?> ListarDetalleIngresoAlmacen(int? Ped_Cab_Id, int? Ord_Com_Id);
 }

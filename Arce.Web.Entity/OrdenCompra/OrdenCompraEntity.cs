@@ -23,4 +23,9 @@ public class OrdenCompraEntity
 	public string? For_Pag_Des { get; set; }
 	public string? Ord_Com_Arc_Adj_Nom { get; set; }
 	public string? Ord_Com_Arc_Adj_Rut { get; set; }
+	public int? Ord_Com_Det_Id { get; set; }
+	public decimal? Ord_Com_Det_Mon { get; set; }
+	public int? Ped_Cab_Id { get; set; }
+	public int? Ped_Tip_Com { get; set; }
+	public string? Tip_Ser_Des { get; set; }
 }

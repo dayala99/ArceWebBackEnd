@@ -27,4 +27,7 @@ public interface IPedidoService
     Task<ServiceResponseList<PedidoDetalleEntity>?> ListarItemsAsignadosPedidoCentroCostoModificar(int Ord_Com_Id, int Ped_Cab_Id);
     Task<ServiceResponseList<PedidoCabeceraEntity>?> CargarReportePedido(string Ped_Id);
     Task<ServiceResponse<int>> DesAsignarOrdenCompraADetallePedido(PedidoDetalleEntity valores);
+    Task<ServiceResponseList<PedidoCabeceraEntity>?> ListarPedidoAprobadoParaOC(int? Ped_Id, string? Flg_Est, int? Ped_Tip_Com);
+    Task<ServiceResponse<int>> ActualizarPedidoCuandoDetalleCompleto(PedidoCabeceraEntity valores);
+    Task<ServiceResponseList<PedidoDetalleEntity>?> ListarDetalleIngresoAlmacen(int? Ped_Cab_Id, int? Ord_Com_Id);
 }

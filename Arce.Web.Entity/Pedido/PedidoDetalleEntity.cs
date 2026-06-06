@@ -19,4 +19,6 @@ public class PedidoDetalleEntity
     public DateTime? Fec_Mod { get; set; }
     public int? Ord_Com_Id { get; set; }
     public string? Ped_Obs { get; set; }
+    public string? Itm_Cod { get; set; }
+    public string? Uni_Med_Abr { get; set; }
 }
