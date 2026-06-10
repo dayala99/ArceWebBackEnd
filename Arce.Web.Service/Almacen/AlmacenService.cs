@@ -213,4 +213,35 @@ public class AlmacenService: IAlmacenService
             return result;
         }
     }
+
+    public async Task<ServiceResponse<int>> RegistrarIngresoAlmacenOrdenCompra(AlmacenEntity valores)
+    {
+        var result = new ServiceResponse<int>();
+
+        try
+        {
+            var resultData = await _repository.RegistrarIngresoAlmacenOrdenCompra(valores);
+
+            if (resultData.Codigo == 0)
+            {
+                result.Success = true;
+                result.Message = resultData.Mensaje;
+                result.CodeTransacc = resultData.Codigo;
+                result.Data = resultData.Alm_Mov_Id;
+                return result;
+            }
+            
+            result.Success = false;
+            result.Message = resultData.Mensaje;
+            result.Data = 0;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Error inesperado " + ex.Message;
+            result.Data = 0;
+            return result;
+        }
+    }
 }

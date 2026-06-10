@@ -12,12 +12,12 @@ public class PedidoService: IPedidoService
     {
         _repository = pedidoRepository;
     }
-    public async Task<ServiceResponseList<PedidoCabeceraEntity>?> ListarPedido(int? Ped_Id, string? Flg_Est, int? Ped_Tip_Com)
+    public async Task<ServiceResponseList<PedidoCabeceraEntity>?> ListarPedido(int? Ped_Id, string? Flg_Est, int? Ped_Tip_Com, string? Usr_Cod)
     {
         var result = new ServiceResponseList<PedidoCabeceraEntity>();
         try
         {
-            var resultData = await _repository.ListarPedido(Ped_Id, Flg_Est, Ped_Tip_Com);
+            var resultData = await _repository.ListarPedido(Ped_Id, Flg_Est, Ped_Tip_Com, Usr_Cod);
 
             if (resultData == null || !resultData.Any())
             {
@@ -702,6 +702,31 @@ public class PedidoService: IPedidoService
         catch (Exception ex)
         {
             result.Message = "Excepción no controlada " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponse<int>> ActualizarPedidoDetalleIngresoAlmacen(PedidoDetalleEntity valores)
+    {
+        var result = new ServiceResponse<int>();
+        try
+        {
+            var resultData = await _repository.ActualizarPedidoDetalleIngresoAlmacen(valores);
+            if (resultData.Codigo == 0)
+            {
+                result.Success = true;
+                result.Message = resultData.Mensaje;
+                result.CodeTransacc = resultData.Codigo;
+                return result;
+            }
+            result.Success = false;
+            result.Message = resultData.Mensaje;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Error inesperado " + ex.Message;
             return result;
         }
     }

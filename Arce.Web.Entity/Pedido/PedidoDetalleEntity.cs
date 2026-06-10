@@ -21,4 +21,6 @@ public class PedidoDetalleEntity
     public string? Ped_Obs { get; set; }
     public string? Itm_Cod { get; set; }
     public string? Uni_Med_Abr { get; set; }
+    public int? Can_Ing {get; set; }
+    public DateTime? Fec_Ing { get; set; }
 }

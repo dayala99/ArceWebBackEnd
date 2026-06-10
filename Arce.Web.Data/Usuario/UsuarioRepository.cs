@@ -40,13 +40,17 @@ public class UsuarioRepository: IUsuarioRepository
         {
             await connection.OpenAsync();
             var parametros = new DynamicParameters();
-             
+
             parametros.Add("@Usr_Cod", valores.Usr_Cod);
             parametros.Add("@Usr_Nom", valores.Usr_Nom);
             parametros.Add("@Usr_Reg", valores.Usr_Reg);
+            parametros.Add("@Usr_Doc_Nro", valores.Usr_Doc_Nro);
+            parametros.Add("@Usr_Cen_Cos_Id", valores.Usr_Cen_Cos_Id);
+            parametros.Add("@Usr_Pass", valores.Usr_Pass);
+            parametros.Add("@Usr_Apr", valores.Usr_Apr);
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
-             
+            
             parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
             parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
             try
@@ -79,6 +83,10 @@ public class UsuarioRepository: IUsuarioRepository
             parametros.Add("@Usr_Nom", valores.Usr_Nom);
             parametros.Add("@Flg_Est", valores.Flg_Est);
             parametros.Add("@Usr_Mod", valores.Usr_Mod);
+            parametros.Add("@Usr_Doc_Nro", valores.Usr_Doc_Nro);
+            parametros.Add("@Usr_Cen_Cos_Id", valores.Usr_Cen_Cos_Id);
+            parametros.Add("@Usr_Pass", valores.Usr_Pass);
+            parametros.Add("@Usr_Apr", valores.Usr_Apr);
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
 
@@ -98,6 +106,43 @@ public class UsuarioRepository: IUsuarioRepository
             var Codigo = parametros.Get<int>("@Codigo");
             var mensaje = parametros.Get<string>("@sMsj");
             return (Codigo, mensaje);
+        }
+    }
+
+    public async Task<IEnumerable<UsuarioEntity>?> ObtenerAccesoUsuario(string? Usr_Cod, string? Usr_Pass)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Usr_Cod", Usr_Cod);
+            parametros.Add("@Usr_Pass", Usr_Pass);
+
+            var result = await connection.QueryAsync<UsuarioEntity>(
+                    "[dbo].[PA_Sg_Usuario_S0002]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+            );
+            return result;
+        }
+    }
+
+    public async Task<IEnumerable<UsuarioEntity>?> ObtenerUsuariosAprobacion(string? Usr_Apr)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Usr_Apr", Usr_Apr);
+
+            var result = await connection.QueryAsync<UsuarioEntity>(
+                    "[dbo].[PA_Sg_Usuario_S0003]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+            );
+            return result;
         }
     }
 

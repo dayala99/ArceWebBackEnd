@@ -20,9 +20,9 @@ namespace MyApp.Namespace
 
         [HttpGet]
         [Route("getListarPedido")]
-        public async Task<IActionResult> ListarPedido(int? Ped_Id, string? Flg_Est, int? Ped_Tip_Com)
+        public async Task<IActionResult> ListarPedido(int? Ped_Id, string? Flg_Est, int? Ped_Tip_Com, string? Usr_Cod)
         {
-            var result = await _service.ListarPedido(Ped_Id ?? 0, Flg_Est ?? "", Ped_Tip_Com ?? 0);
+            var result = await _service.ListarPedido(Ped_Id ?? 0, Flg_Est ?? "", Ped_Tip_Com ?? 0, Usr_Cod ?? "");
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;
@@ -555,6 +555,21 @@ namespace MyApp.Namespace
         public async Task<IActionResult> ListarDetalleIngresoAlmacen(int? Ped_Cab_Id, int? Ord_Com_Id)
         {
             var result = await _service.ListarDetalleIngresoAlmacen(Ped_Cab_Id ?? 0, Ord_Com_Id ?? 0);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPatch]
+        [Route("patchActualizarPedidoDetalleIngresoAlmacen")]
+        public async Task<IActionResult> ActualizarPedidoDetalleIngresoAlmacen([FromBody] PedidoDetalleEntity valores)
+        {            
+            var result = await _service.ActualizarPedidoDetalleIngresoAlmacen(valores);
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;

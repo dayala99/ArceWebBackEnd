@@ -127,5 +127,21 @@ namespace MyApp.Namespace
             result.CodeResult = StatusCodes.Status400BadRequest;
             return BadRequest(result);
         }
+
+        [HttpPost]
+        [Route("postRegistrarIngresoAlmacenOrdenCompra")]
+        public async Task<IActionResult> RegistrarIngresoAlmacenOrdenCompra([FromBody] AlmacenEntity valores)
+        {   
+            var result = await _service.RegistrarIngresoAlmacenOrdenCompra(valores);
+
+            if (result.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
     }
 }

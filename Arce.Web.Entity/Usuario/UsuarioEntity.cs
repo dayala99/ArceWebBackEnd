@@ -18,5 +18,9 @@ namespace Arce.Web.Entity.Usuario
         public DateTime? Fec_Mod { get; set; }
         public string? Usr_Doc_Nro { get; set; }
         public int? Usr_Cen_Cos_Id { get; set; }
+        public string? Existe { get; set; }
+        public string? Respuesta { get; set; }
+        public string? Usr_Pass { get; set; }
+        public string? Usr_Apr { get; set; }
     }
 }

@@ -86,4 +86,52 @@ public class UsuarioService: IUsuarioService
             return result;
         }
     }
+
+    public async Task<ServiceResponseList<UsuarioEntity>?> ObtenerAccesoUsuario(string? Usr_Cod, string? Usr_Pass)
+    {
+        var result = new ServiceResponseList<UsuarioEntity>();
+        try
+        {
+            var resultData = await _usuarioRepository.ObtenerAccesoUsuario(Usr_Cod, Usr_Pass);
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+            }
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = resultData.ToList();
+            result.TotalElements = resultData.ToList().Count();
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepción no controlada " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponseList<UsuarioEntity>?> ObtenerUsuariosAprobacion(string? Usr_Apr)
+    {
+        var result = new ServiceResponseList<UsuarioEntity>();
+        try
+        {
+            var resultData = await _usuarioRepository.ObtenerUsuariosAprobacion(Usr_Apr);
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+            }
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = resultData.ToList();
+            result.TotalElements = resultData.ToList().Count();
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepción no controlada " + ex.Message;
+            return result;
+        }
+    }
 }

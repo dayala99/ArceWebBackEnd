@@ -186,5 +186,20 @@ namespace MyApp.Namespace
             result.CodeResult = StatusCodes.Status400BadRequest;
             return BadRequest(result);
         }
+
+        [HttpPatch]
+        [Route("patchCambiarEstadoOrdenCompra")]
+        public async Task<IActionResult> CambiarEstadoOrdenCompra([FromBody] OrdenCompraEntity valores)
+        {   
+            var result = await _service.CambiarEstadoOrdenCompra(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
     }
 }

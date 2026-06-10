@@ -17,7 +17,7 @@ public class PedidoRepository: IPedidoRepository
     }
 
     //LISTAR TOTAL DE PEDIDOS
-    public async Task<IEnumerable<PedidoCabeceraEntity>?> ListarPedido(int? Ped_Id, string? Flg_Est, int? Ped_Tip_Com)
+    public async Task<IEnumerable<PedidoCabeceraEntity>?> ListarPedido(int? Ped_Id, string? Flg_Est, int? Ped_Tip_Com, string? Usr_Cod)
     {
         using (var connection = new SqlConnection(_connectionString))
         {
@@ -28,6 +28,7 @@ public class PedidoRepository: IPedidoRepository
             //parametros.Add("@Prv_Nom", Prv_Nom);
             parametros.Add("@Flg_Est", Flg_Est);
             parametros.Add("@Ped_Tip_Com", Ped_Tip_Com);
+            parametros.Add("@Usr_Cod", Usr_Cod);
 
             var result = await connection.QueryAsync<PedidoCabeceraEntity>(
                 "[dbo].[PA_Lg_Pedido_Cab_S0001]"
@@ -838,6 +839,44 @@ public class PedidoRepository: IPedidoRepository
                 , commandType: CommandType.StoredProcedure
             );
             return result;
+        }
+    }
+
+    public async Task<(int Codigo, string Mensaje)> ActualizarPedidoDetalleIngresoAlmacen(PedidoDetalleEntity valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+            
+            var parametros = new DynamicParameters();
+            parametros.Add("@Ped_Det_Id", valores.Ped_Det_Id);
+            parametros.Add("@Ord_Com_Id", valores.Ord_Com_Id);
+            parametros.Add("@Can_Ing", valores.Can_Ing);
+
+            parametros.Add("@Codigo", 0);
+            parametros.Add("@sMsj", "");
+
+            parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+
+            try
+            {
+                connection.Execute(
+                    "[dbo].[PA_Lg_Pedido_Det_U0004]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+                );
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            var Codigo = parametros.Get<int>("@Codigo");
+            var Mensaje = parametros.Get<string>("@sMsj");
+
+            return (Codigo, Mensaje);
+
         }
     }
     

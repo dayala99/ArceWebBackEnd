@@ -28,4 +28,5 @@ public class OrdenCompraEntity
 	public int? Ped_Cab_Id { get; set; }
 	public int? Ped_Tip_Com { get; set; }
 	public string? Tip_Ser_Des { get; set; }
+	public string? Prv_Ruc { get; set; }
 }

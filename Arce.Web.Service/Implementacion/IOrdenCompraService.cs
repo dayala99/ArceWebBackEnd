@@ -11,4 +11,5 @@ public interface IOrdenCompraService
     Task<ServiceResponse<int>> ActualizarOdenCompra(OrdenCompraEntity valores);
     Task<ServiceResponseList<OrdenCompraEntity>?> ListarOrdenCompraPendienteAlmacen(int? Ord_Com_Id, string? Ord_Com_Prv, string? Flg_Est);
     Task<ServiceResponseList<OrdenCompraEntity>?> ListarCabeceraIngresoAlmacen(int? Ord_Com_Id);
+    Task<ServiceResponse<int>> CambiarEstadoOrdenCompra(OrdenCompraEntity valores);
 }

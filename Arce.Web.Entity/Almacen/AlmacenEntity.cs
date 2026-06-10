@@ -17,4 +17,6 @@ public class AlmacenEntity
     public string? Ing_Des { get; set; } 
     public string? Cen_Cos_Des { get; set; }
     public string? Usr_Nom { get; set; }
+	public int? Ped_Id { get; set; }
+	public int? Ord_Com_Id { get; set; }
 }

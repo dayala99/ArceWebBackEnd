@@ -58,6 +58,8 @@ builder.Services.AddScoped<IAlmacenService, AlmacenService>();
 builder.Services.AddScoped<IDetraccionService, DetraccionService>();
 builder.Services.AddScoped<ISubGrupoItemService, SubGrupoItemService>();
 builder.Services.AddScoped<IItemDetalleMaterialService, ItemDetalleMaterialService>();
+builder.Services.AddScoped<IUbicacionService, UbicacionService>();
+
 
 //Inyection Repository
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
@@ -76,6 +78,8 @@ builder.Services.AddScoped<IAlmacenRepository, AlmacenRepository>();
 builder.Services.AddScoped<IDetraccionRepository, DetraccionRepository>();
 builder.Services.AddScoped<ISubGrupoItemRepository, SubGrupoItemRepository>();
 builder.Services.AddScoped<IItemDetalleMaterialRepository, ItemDetalleMaterialRepository>();
+builder.Services.AddScoped<IUbicacionRepository, UbicacionRepository>();
+
 
 #endregion
 

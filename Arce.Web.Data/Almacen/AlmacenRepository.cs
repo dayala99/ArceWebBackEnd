@@ -243,4 +243,44 @@ public class AlmacenRepository: IAlmacenRepository
     }
 
     /*FIN DETALLE*/
+
+    public async Task<(int Codigo, string Mensaje, int Alm_Mov_Id)> RegistrarIngresoAlmacenOrdenCompra(AlmacenEntity valores)
+    {
+        using(var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Alm_Ubi", valores.Alm_Ubi);
+            parametros.Add("@Alm_Tip_Ing", valores.Alm_Tip_Ing);
+            parametros.Add("@Usr_Reg",valores.Usr_Reg);
+            parametros.Add("@Ord_Com_Id", valores.Ord_Com_Id);
+            parametros.Add("@Ped_Id",valores.Ped_Id);
+            parametros.Add("@Alm_Mov_Id",0);
+            parametros.Add("@Codigo",0);
+            parametros.Add("@sMsj", "");
+
+            parametros.Add("@Alm_Mov_Id", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+
+            try
+            {
+                connection.Execute(
+                    "[dbo].[PA_Lg_Almacen_I0002]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+                );
+            }catch(SqlException ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            
+            var Alm_Mov_Id = parametros.Get<int>("@Alm_Mov_Id");
+            var Codigo = parametros.Get<int>("@Codigo");
+            var Mensaje = parametros.Get<string>("@sMsj");
+            
+            return (Codigo, Mensaje, Alm_Mov_Id);
+        }
+    }
 }
