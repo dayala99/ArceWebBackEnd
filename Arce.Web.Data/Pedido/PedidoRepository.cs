@@ -556,6 +556,7 @@ public class PedidoRepository: IPedidoRepository
             parametros.Add("@Ped_Det_Id", valores.Ped_Det_Id);
             parametros.Add("@Ord_Com_Id", valores.Ord_Com_Id);
             parametros.Add("@Ped_Obs", valores.Ped_Obs);
+            parametros.Add("@Ped_Cos_Uni", valores.Ped_Cos_Uni);
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
 
