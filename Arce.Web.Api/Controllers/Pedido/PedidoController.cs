@@ -368,19 +368,8 @@ namespace MyApp.Namespace
         [HttpPatch]
         [Route("patchActualizarDetallePedido")]
         public async Task<IActionResult> ActualizarDetallePedido([FromBody] PedidoDetalleEntity valores)
-        {
-            PedidoDetalleEntity parametros = new PedidoDetalleEntity
-            {
-                Ped_Det_Id = valores.Ped_Det_Id,
-                Ped_Cod_Itm = valores.Ped_Cod_Itm,
-                Ped_Uni_Med = valores.Ped_Uni_Med,
-                Ped_Can = valores.Ped_Can,
-                Ped_Cos_Uni = valores.Ped_Cos_Uni,
-                Ped_Cos_Tot = valores.Ped_Cos_Tot,
-                Usr_Mod = valores.Usr_Mod
-            };
-            
-            var result = await _service.ActualizarDetallePedido(parametros);
+        {          
+            var result = await _service.ActualizarDetallePedido(valores);
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;
@@ -392,7 +381,7 @@ namespace MyApp.Namespace
         }
 
         [HttpDelete]
-        [Route("patchActualizarDetallePedido")]
+        [Route("deleteEliminarDetallePedido")]
         public async Task<IActionResult> EliminarDetallePedido([FromBody] PedidoDetalleEntity valores)
         {
             PedidoDetalleEntity parametros = new PedidoDetalleEntity
@@ -570,6 +559,21 @@ namespace MyApp.Namespace
         public async Task<IActionResult> ActualizarPedidoDetalleIngresoAlmacen([FromBody] PedidoDetalleEntity valores)
         {            
             var result = await _service.ActualizarPedidoDetalleIngresoAlmacen(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPatch]
+        [Route("patchRechazarPedido")]
+        public async Task<IActionResult> RechazarPedido([FromBody] PedidoCabeceraEntity valores)
+        {            
+            var result = await _service.RechazarPedido(valores);
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;

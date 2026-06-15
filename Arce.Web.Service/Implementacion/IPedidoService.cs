@@ -31,4 +31,5 @@ public interface IPedidoService
     Task<ServiceResponse<int>> ActualizarPedidoCuandoDetalleCompleto(PedidoCabeceraEntity valores);
     Task<ServiceResponseList<PedidoDetalleEntity>?> ListarDetalleIngresoAlmacen(int? Ped_Cab_Id, int? Ord_Com_Id);
     Task<ServiceResponse<int>> ActualizarPedidoDetalleIngresoAlmacen(PedidoDetalleEntity valores);
+    Task<ServiceResponse<int>> RechazarPedido(PedidoCabeceraEntity valores);
 }

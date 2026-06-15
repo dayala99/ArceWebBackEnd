@@ -5,7 +5,7 @@ public class PedidoCabeceraEntity
     public int? Ped_Id  { get; set; }
     public string? Prv_Nom { get; set; }
     public string? Ped_Usr_Apr  { get; set; }
-    public string? Ped_Lug_Ent { get; set; }
+    public int? Ped_Lug_Ent { get; set; }
     public string? Ped_Ref { get; set; }
     public int? Ped_Tip_Com { get; set; }
     public int? Ped_Tip_Mon { get; set; }
@@ -29,6 +29,7 @@ public class PedidoCabeceraEntity
     public string? Mon_Abr { get; set; }
     public string? Tip_Ser_Des { get; set; }
     public IEnumerable<PedidoDetalleEntityReporte>? Detalle_Reporte{ get; set; }
+    public string? Ped_Mot_Rch { get; set; }
 }
 
 public class PedidoDetalleEntityReporte

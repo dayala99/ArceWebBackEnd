@@ -48,6 +48,8 @@ public class UsuarioRepository: IUsuarioRepository
             parametros.Add("@Usr_Cen_Cos_Id", valores.Usr_Cen_Cos_Id);
             parametros.Add("@Usr_Pass", valores.Usr_Pass);
             parametros.Add("@Usr_Apr", valores.Usr_Apr);
+            parametros.Add("@Usr_Corr", valores.Usr_Corr);
+            parametros.Add("@Usr_Prf", valores.Usr_Prf);
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
             
@@ -87,6 +89,8 @@ public class UsuarioRepository: IUsuarioRepository
             parametros.Add("@Usr_Cen_Cos_Id", valores.Usr_Cen_Cos_Id);
             parametros.Add("@Usr_Pass", valores.Usr_Pass);
             parametros.Add("@Usr_Apr", valores.Usr_Apr);
+            parametros.Add("@Usr_Corr", valores.Usr_Corr);
+            parametros.Add("@Usr_Prf", valores.Usr_Prf);
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
 

@@ -36,95 +36,6 @@ public class PedidoRepository: IPedidoRepository
                 , commandType: CommandType.StoredProcedure
             );
 
-            // var fallbackResult = await connection.QueryAsync<PedidoCabeceraEntity>(
-            //     @"
-            //     SELECT
-            //         ped.Ped_Id,
-            //         COALESCE(prv.Prv_Nom, '') AS Prv_Nom,
-            //         ped.Ped_Usr_Apr,
-            //         ped.Ped_Lug_Ent,
-            //         ped.Ped_Ref,
-            //         ped.Ped_Tip_Com,
-            //         ped.Ped_Tip_Mon,
-            //         CASE
-            //             WHEN ped.Ped_Tip_Mon = 1 THEN 'PEN'
-            //             WHEN ped.Ped_Tip_Mon = 2 THEN 'USD'
-            //             ELSE ''
-            //         END AS Ped_Tip_Mon_Des,
-            //         ped.Ped_Fec_Ent,
-            //         ped.Ped_Sus,
-            //         ped.Ped_Arc_Adj_Nom,
-            //         ped.Ped_Arc_Adj_Rut,
-            //         ped.Ped_Prv_Cod,
-            //         ped.Ped_For_Pag_Cod,
-            //         COALESCE(NULLIF(ped.Ped_Tot, 0), det.Ped_Tot_Calculado, 0) AS Ped_Tot,
-            //         ped.Flg_Est,
-            //         CASE
-            //             WHEN ped.Flg_Est = 'A' THEN 'Aprobado'
-            //             WHEN ped.Flg_Est = 'P' THEN 'Pendiente'
-            //             WHEN ped.Flg_Est = 'O' THEN 'Observado'
-            //             WHEN ped.Flg_Est = 'C' THEN 'Cerrado'
-            //             ELSE COALESCE(ped.Flg_Est, '')
-            //         END AS Ped_Est_Des,
-            //         CASE
-            //             WHEN ped.Flg_Est = 'A' THEN 'Aprobado'
-            //             WHEN ped.Flg_Est = 'P' THEN 'Pendiente'
-            //             WHEN ped.Flg_Est = 'O' THEN 'Observado'
-            //             WHEN ped.Flg_Est = 'C' THEN 'Cerrado'
-            //             ELSE COALESCE(ped.Flg_Est, '')
-            //         END AS Estado,
-            //         ped.Usr_Reg,
-            //         ped.Fec_Reg,
-            //         ped.Usr_Mod,
-            //         ped.Fec_Mod,
-            //         ped.Ped_Can_Tot
-            //     FROM dbo.Lg_Pedido_Cab ped
-            //     LEFT JOIN dbo.Lg_Proveedor prv ON prv.Prv_Id = ped.Ped_Prv_Cod
-            //     OUTER APPLY (
-            //         SELECT SUM(COALESCE(det.Ped_Cos_Tot, 0)) AS Ped_Tot_Calculado
-            //         FROM dbo.Lg_Pedido_Det det
-            //         WHERE det.Ped_Cab_Id = ped.Ped_Id
-            //     ) det
-            //     WHERE (@Ped_Id IS NULL OR @Ped_Id <= 0 OR ped.Ped_Id = @Ped_Id)
-            //       AND (@Flg_Est IS NULL OR @Flg_Est = '' OR @Flg_Est = 'Todos' OR ped.Flg_Est = @Flg_Est)
-            //       AND (@Ped_Tip_Com IS NULL OR @Ped_Tip_Com = '' OR @Ped_Tip_Com = 'Todos' OR ped.Ped_Tip_Com = @Ped_Tip_Com)
-            //       AND (@Prv_Nom IS NULL OR @Prv_Nom = '' OR COALESCE(prv.Prv_Nom, '') LIKE '%' + @Prv_Nom + '%')
-            //     ",
-            //     parametros
-            // );
-
-            // if (!result.Any())
-            // {
-            //     return fallbackResult;
-            // }
-
-            // var resultList = result.ToList();
-            // var fallbackMap = fallbackResult
-            //     .Where(item => item.Ped_Id.HasValue)
-            //     .ToDictionary(item => item.Ped_Id!.Value, item => item);
-            // var existingIds = resultList
-            //     .Where(item => item.Ped_Id.HasValue)
-            //     .Select(item => item.Ped_Id!.Value)
-            //     .ToHashSet();
-
-            // foreach (var item in resultList.Where(item => item.Ped_Id.HasValue))
-            // {
-            //     if (fallbackMap.TryGetValue(item.Ped_Id!.Value, out var fallbackItem) && fallbackItem.Ped_Tot.HasValue)
-            //     {
-            //         item.Ped_Tot = fallbackItem.Ped_Tot;
-            //     }
-            // }
-
-            // foreach (var item in fallbackResult)
-            // {
-            //     if (!item.Ped_Id.HasValue || existingIds.Contains(item.Ped_Id.Value))
-            //     {
-            //         continue;
-            //     }
-
-            //     resultList.Add(item);
-            // }
-
             return result;
         }
     }
@@ -166,14 +77,14 @@ public class PedidoRepository: IPedidoRepository
     }
 
     //REGISTRAR PEDIDO PRINCIPAL
-    public async Task<(int Codigo, string Mensaje)> RegistrarPedido(PedidoCabeceraEntity valores)
+    public async Task<(int Codigo, string Mensaje, int Ped_Id)> RegistrarPedido(PedidoCabeceraEntity valores)
     {
         using (var connection = new SqlConnection(_connectionString))
         {
             await connection.OpenAsync();
 
             var parametros = new DynamicParameters();
-            parametros.Add("@Ped_Id", valores.Ped_Id);
+            //parametros.Add("@Ped_Id", valores.Ped_Id);
             parametros.Add("@Ped_Usr_Apr", valores.Ped_Usr_Apr);
             parametros.Add("@Ped_Lug_Ent", valores.Ped_Lug_Ent);
             parametros.Add("@Ped_Ref", valores.Ped_Ref);
@@ -187,9 +98,12 @@ public class PedidoRepository: IPedidoRepository
             parametros.Add("@Ped_For_Pag_Cod", valores.Ped_For_Pag_Cod);
             parametros.Add("@Usr_Reg", valores.Usr_Reg);
             parametros.Add("@Ped_Can_Tot", valores.Ped_Can_Tot);
+
+            parametros.Add("@Ped_Id", 0);
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
 
+            parametros.Add("@Ped_Id", dbType: DbType.Int32, direction: ParameterDirection.Output);
             parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
             parametros.Add("@sMsj", dbType: DbType.String, size:255, direction: ParameterDirection.Output);
 
@@ -206,10 +120,11 @@ public class PedidoRepository: IPedidoRepository
                 Console.WriteLine(ex.Message);
             }
 
+            var Ped_Id = parametros.Get<int>("@Ped_Id");
             var Codigo = parametros.Get<int>("@Codigo");
             var Mensaje = parametros.Get<string>("@sMsj");
 
-            return (Codigo, Mensaje);
+            return (Codigo, Mensaje, Ped_Id);
         }
     }
 
@@ -489,6 +404,7 @@ public class PedidoRepository: IPedidoRepository
             parametros.Add("@Ped_Cos_Tot", valores.Ped_Cos_Tot);
             parametros.Add("@Ped_Cen_Cos_Asg", valores.Ped_Cen_Cos_Asg);
             parametros.Add("@Usr_Reg", valores.Usr_Reg);
+            parametros.Add("@Ped_Obs_Ped", valores.Ped_Obs_Ped);
             
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
@@ -530,6 +446,8 @@ public class PedidoRepository: IPedidoRepository
             parametros.Add("@Ped_Can", valores.Ped_Can);
             parametros.Add("@Ped_Cos_Uni", valores.Ped_Cos_Uni);
             parametros.Add("@Ped_Cos_Tot", valores.Ped_Cos_Tot);
+            parametros.Add("@Ped_Cen_Cos_Asg", valores.Ped_Cen_Cos_Asg);
+            parametros.Add("@Ped_Obs_Ped", valores.Ped_Obs_Ped);
             parametros.Add("@Usr_Mod", valores.Usr_Mod);
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
@@ -877,6 +795,42 @@ public class PedidoRepository: IPedidoRepository
 
             return (Codigo, Mensaje);
 
+        }
+    }
+
+    public async Task<(int Codigo, string Mensaje)> RechazarPedido(PedidoCabeceraEntity valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Ped_Id", valores.Ped_Id);
+            parametros.Add("@Ped_Mot_Rch", valores.Ped_Mot_Rch);
+
+            parametros.Add("@Codigo", 0);
+            parametros.Add("@sMsj", "");
+
+            parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+
+            try
+            {
+                connection.Execute(
+                    "[dbo].[PA_Lg_Pedido_Cab_U0004]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+                );
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            var Codigo = parametros.Get<int>("@Codigo");
+            var Mensaje = parametros.Get<string>("@sMsj");
+
+            return (Codigo, Mensaje);
         }
     }
     
