@@ -146,4 +146,24 @@ public class UsuarioRepository: IUsuarioRepository
         }
     }
 
-}   
+
+
+    public async Task<IEnumerable<UsuarioEntity>?> ConsultarDatosUsuario(string? Usr_Cod)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Usr_Cod", Usr_Cod);
+
+            var result = await connection.QueryAsync<UsuarioEntity>(
+                    "[dbo].[SP_Consulta_Datos_Usuario]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+            );
+            return result;
+        }
+    }
+
+}

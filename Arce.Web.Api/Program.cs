@@ -22,7 +22,7 @@ builder.Services.AddCors(options =>
                     "https://localhost:4200"
                     )  // Especifica el origen permitido
                 .AllowAnyHeader()                     // Permitir cualquier encabezado
-                .AllowAnyMethod()                   // Permitir cualquier m�todo (GET, POST, etc.)
+                .AllowAnyMethod()                   // Permitir cualquier método (GET, POST, etc.)
                 .AllowCredentials();
 
         /*PRODUCCION*/
@@ -34,7 +34,7 @@ builder.Services.AddCors(options =>
         // "https://gestion.montajeseingenieriaarceperu.com:443"
         // )  // Especifica el origen permitido
         // .AllowAnyHeader()                     // Permitir cualquier encabezado
-        // .AllowAnyMethod();                   // Permitir cualquier m�todo (GET, POST, etc.) 
+        // .AllowAnyMethod();                   // Permitir cualquier método (GET, POST, etc.) 
 
     }); 
 });
@@ -59,6 +59,7 @@ builder.Services.AddScoped<IDetraccionService, DetraccionService>();
 builder.Services.AddScoped<ISubGrupoItemService, SubGrupoItemService>();
 builder.Services.AddScoped<IItemDetalleMaterialService, ItemDetalleMaterialService>();
 builder.Services.AddScoped<IUbicacionService, UbicacionService>();
+builder.Services.AddScoped<IInspeccionesService, InspeccionesService>();
 
 
 //Inyection Repository
@@ -79,6 +80,7 @@ builder.Services.AddScoped<IDetraccionRepository, DetraccionRepository>();
 builder.Services.AddScoped<ISubGrupoItemRepository, SubGrupoItemRepository>();
 builder.Services.AddScoped<IItemDetalleMaterialRepository, ItemDetalleMaterialRepository>();
 builder.Services.AddScoped<IUbicacionRepository, UbicacionRepository>();
+builder.Services.AddScoped<IInspeccionesRepository, InspeccionesRepository>();
 
 
 #endregion
@@ -93,6 +95,14 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    // Abrir Swagger automáticamente en el navegador
+    var swaggerUrl = "http://localhost:5218/swagger/index.html";
+    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+    {
+        FileName = swaggerUrl,
+        UseShellExecute = true
+    });
 }
 
 app.UseHttpsRedirection();

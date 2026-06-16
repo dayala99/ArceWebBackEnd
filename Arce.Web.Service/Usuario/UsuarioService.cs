@@ -134,4 +134,33 @@ public class UsuarioService: IUsuarioService
             return result;
         }
     }
+
+
+    public async Task<ServiceResponseList<UsuarioEntity>?> ConsultarDatosUsuario(string? Usr_Cod)
+    {
+        var result = new ServiceResponseList<UsuarioEntity>();
+        try
+        {
+            var resultData = await _usuarioRepository.ConsultarDatosUsuario(Usr_Cod);
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+                result.Elements = new List<UsuarioEntity>();
+                result.TotalElements = 0;
+                return result;
+            }
+
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = resultData.ToList();
+            result.TotalElements = resultData.ToList().Count();
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepción no controlada " + ex.Message;
+            return result;
+        }
+    }
 }

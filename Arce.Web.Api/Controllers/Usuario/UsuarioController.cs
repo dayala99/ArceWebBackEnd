@@ -91,5 +91,20 @@ namespace MyApp.Namespace
             result.CodeResult = StatusCodes.Status400BadRequest;
             return BadRequest(result);
         }
+
+        [HttpGet]
+        [Route("getConsultaDatosUsuario")]
+        public async Task<IActionResult> ConsultarDatosUsuario(string? Usr_Cod)
+        {
+            var result = await _usuarioService.ConsultarDatosUsuario(Usr_Cod ?? "");
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
     }
 }

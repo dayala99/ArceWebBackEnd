@@ -9,4 +9,5 @@ public interface IUsuarioService
     Task<ServiceResponse<int>> ActualizarUsuario(UsuarioEntity valores);
     Task<ServiceResponseList<UsuarioEntity>?> ObtenerAccesoUsuario(string? Usr_Cod, string? Usr_Pass);
     Task<ServiceResponseList<UsuarioEntity>?> ObtenerUsuariosAprobacion(string? Usr_Apr);
+    Task<ServiceResponseList<UsuarioEntity>?> ConsultarDatosUsuario(string? Usr_Cod);
 }
