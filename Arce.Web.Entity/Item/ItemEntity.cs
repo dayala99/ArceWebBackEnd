@@ -18,4 +18,6 @@ public class ItemEntity
     public int? Itm_Det_Mat_Id { get; set; }
     public string? Det_Mat_Des { get; set; }
     public string? Itm_Cod { get; set; }
+    public int? Uni_Med_Id { get; set; }
+    public string? Uni_Med_Des { get; set; }
 }

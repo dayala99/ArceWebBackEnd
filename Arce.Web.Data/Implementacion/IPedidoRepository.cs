@@ -7,7 +7,7 @@ public interface IPedidoRepository
     Task<IEnumerable<PedidoCabeceraEntity>?> ListarPedido(int? Ped_Id, string? Flg_Est, int? Ped_Tip_Com, string? Usr_Cod);
     Task<IEnumerable<PedidoCabeceraEntity>?> ListarPedidoCorrelativoNuevo();
     Task<IEnumerable<PedidoCabeceraEntity>?> ListarPedidoModificar(int Ped_Id);
-    Task<(int Codigo, string Mensaje)> RegistrarPedido(PedidoCabeceraEntity valores);
+    Task<(int Codigo, string Mensaje, int Ped_Id)> RegistrarPedido(PedidoCabeceraEntity valores);
     Task<(int Codigo, string Mensaje)> ActualizarPedido(PedidoCabeceraEntity valores);
     Task<(int Codigo, string Mensaje)> ActualizarPedidoEstado(PedidoCabeceraEntity valores);
     Task<IEnumerable<PedidoCabeceraCentroCostoEntity>?> ListarPedidoRegistradoCentroCosto(int? Ped_Id);
@@ -30,4 +30,5 @@ public interface IPedidoRepository
     Task<(int Codigo, string Mensaje)> ActualizarPedidoCuandoDetalleCompleto(PedidoCabeceraEntity valores);
     Task<IEnumerable<PedidoDetalleEntity>?> ListarDetalleIngresoAlmacen(int? Ped_Cab_Id, int? Ord_Com_Id);
     Task<(int Codigo, string Mensaje)> ActualizarPedidoDetalleIngresoAlmacen(PedidoDetalleEntity valores);
+    Task<(int Codigo, string Mensaje)> RechazarPedido(PedidoCabeceraEntity valores);
 }

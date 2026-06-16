@@ -48,6 +48,7 @@ public class ItemRepository: IItemRepository
             parametros.Add("@Itm_Grp", valores.Itm_Grp);
             parametros.Add("@Itm_Sub_Grp", valores.Itm_Sub_Grp);
             parametros.Add("@Itm_Det_Mat_Id", valores.Itm_Det_Mat_Id);
+            parametros.Add("@Uni_Med_Id", valores.Uni_Med_Id);
             parametros.Add("@Usr_Reg", valores.Usr_Reg);
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
@@ -88,7 +89,8 @@ public class ItemRepository: IItemRepository
             parametros.Add("@Itm_Det_Mat_Id", valores.Itm_Det_Mat_Id);
             parametros.Add("@Flg_Est", valores.Flg_Est);
             parametros.Add("@Usr_Mod", valores.Usr_Mod);
-
+            parametros.Add("@Uni_Med_Id", valores.Uni_Med_Id);
+            
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
 
