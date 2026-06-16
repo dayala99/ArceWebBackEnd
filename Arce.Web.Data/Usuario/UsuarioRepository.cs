@@ -50,6 +50,7 @@ public class UsuarioRepository: IUsuarioRepository
             parametros.Add("@Usr_Apr", valores.Usr_Apr);
             parametros.Add("@Usr_Corr", valores.Usr_Corr);
             parametros.Add("@Usr_Prf", valores.Usr_Prf);
+            parametros.Add("@Usr_Crg", valores.Usr_Crg);
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
             
@@ -91,6 +92,7 @@ public class UsuarioRepository: IUsuarioRepository
             parametros.Add("@Usr_Apr", valores.Usr_Apr);
             parametros.Add("@Usr_Corr", valores.Usr_Corr);
             parametros.Add("@Usr_Prf", valores.Usr_Prf);
+            parametros.Add("@Usr_Crg", valores.Usr_Crg);
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
 
