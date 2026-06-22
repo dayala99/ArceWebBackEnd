@@ -29,4 +29,7 @@ public class OrdenCompraEntity
 	public int? Ped_Tip_Com { get; set; }
 	public string? Tip_Ser_Des { get; set; }
 	public string? Prv_Ruc { get; set; }
+	public string? Det_Des { get; set; }
+	public string? Flg_Igv_Aut { get; set; }
+	public decimal? Igv_Por { get; set; }
 }

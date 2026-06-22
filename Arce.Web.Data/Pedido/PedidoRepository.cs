@@ -98,6 +98,7 @@ public class PedidoRepository: IPedidoRepository
             parametros.Add("@Ped_For_Pag_Cod", valores.Ped_For_Pag_Cod);
             parametros.Add("@Usr_Reg", valores.Usr_Reg);
             parametros.Add("@Ped_Can_Tot", valores.Ped_Can_Tot);
+            parametros.Add("@Ped_Ref_Gral", valores.Ped_Ref_Gral);
 
             parametros.Add("@Ped_Id", 0);
             parametros.Add("@Codigo", 0);
@@ -150,6 +151,8 @@ public class PedidoRepository: IPedidoRepository
             parametros.Add("@Ped_For_Pag_Cod", valores.Ped_For_Pag_Cod);
             parametros.Add("@Usr_Mod", valores.Usr_Mod);
             parametros.Add("@Ped_Can_Tot", valores.Ped_Can_Tot);
+            parametros.Add("@Ped_Ref_Gral", valores.Ped_Ref_Gral);
+
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
 
@@ -819,6 +822,42 @@ public class PedidoRepository: IPedidoRepository
             {
                 connection.Execute(
                     "[dbo].[PA_Lg_Pedido_Cab_U0004]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+                );
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            var Codigo = parametros.Get<int>("@Codigo");
+            var Mensaje = parametros.Get<string>("@sMsj");
+
+            return (Codigo, Mensaje);
+        }
+    }
+
+    public async Task<(int Codigo, string Mensaje)> ActualizarReferenciaGeneral(PedidoCabeceraEntity valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Ped_Id", valores.Ped_Id);
+            parametros.Add("@Ped_Ref_Gral", valores.Ped_Ref_Gral);
+
+            parametros.Add("@Codigo", 0);
+            parametros.Add("@sMsj", "");
+
+            parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+
+            try
+            {
+                connection.Execute(
+                    "[dbo].[PA_Lg_Pedido_Cab_U0005]"
                     , parametros
                     , commandType: CommandType.StoredProcedure
                 );

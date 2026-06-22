@@ -118,4 +118,171 @@ public class ProveedorRepository: IProveedorRepository
         }
     }
 
+    public async Task<IEnumerable<ProveedorBancoEntity>?> ListarProveedorBanco(int? Prv_Ban_Id, int? Prv_Id)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+            var parametros = new DynamicParameters();
+            parametros.Add("@Prv_Ban_Id", Prv_Ban_Id);
+            parametros.Add("@Prv_Id", Prv_Id);
+
+            var result = await connection.QueryAsync<ProveedorBancoEntity>(
+                    "[dbo].[PA_Lg_Proveedor_Banco_S0001]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+            );
+            return result;
+        }
+    }
+
+    public async Task<(int Codigo, string Mensaje)> RegistrarProveedorBanco(ProveedorBancoEntity valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+            var parametros = new DynamicParameters();
+            
+            parametros.Add("@Prv_Id", valores.Prv_Id);
+            parametros.Add("@Ban_Id", valores.Ban_Id);
+            parametros.Add("@Tip_Mon", valores.Tip_Mon);
+            parametros.Add("@Prv_Ban_Nro_Cta", valores.Prv_Ban_Nro_Cta);
+            parametros.Add("@Prv_Ban_Nro_Cta_CCI", valores.Prv_Ban_Nro_Cta_CCI);
+            parametros.Add("Usr_Reg", valores.Usr_Reg);
+
+            parametros.Add("@Codigo", 0);
+            parametros.Add("@sMsj", "");
+
+            parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+            try
+            {
+                connection.Execute(
+                    "[dbo].[PA_Lg_Proveedor_Banco_I0001]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+                );
+            }
+            catch (SqlException ex)
+            {
+            }
+            var Codigo = parametros.Get<int>("@Codigo");
+            var mensaje = parametros.Get<string>("@sMsj");
+            return (Codigo, mensaje);
+        }
+    }
+
+    public async Task<(int Codigo, string Mensaje)> ActualizarProveedorBanco(ProveedorBancoEntity valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+
+            parametros.Add("@Prv_Ban_Id", valores.Prv_Ban_Id);
+            parametros.Add("@Prv_Id", valores.Prv_Id);
+            parametros.Add("@Ban_Id", valores.Ban_Id);
+            parametros.Add("@Tip_Mon", valores.Tip_Mon);
+            parametros.Add("@Prv_Ban_Nro_Cta", valores.Prv_Ban_Nro_Cta);
+            parametros.Add("@Prv_Ban_Nro_Cta_CCI", valores.Prv_Ban_Nro_Cta_CCI);
+            parametros.Add("@Usr_Mod", valores.Usr_Mod);
+
+            parametros.Add("@Codigo", 0);
+            parametros.Add("@sMsj", "");
+
+            parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+            try
+            {
+                connection.Execute(
+                    "[dbo].[PA_Lg_Proveedor_Banco_U0001]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+                );
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            var Codigo = parametros.Get<int>("@Codigo");
+            var mensaje = parametros.Get<string>("@sMsj");
+            
+            return (Codigo, mensaje);
+        }
+    }
+
+    public async Task<(int Codigo, string Mensaje)> EliminarProveedorBanco(ProveedorBancoEntity valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+
+            parametros.Add("@Prv_Ban_Id", valores.Prv_Ban_Id);
+            parametros.Add("@Prv_Id", valores.Prv_Id);
+
+            parametros.Add("@Codigo", 0);
+            parametros.Add("@sMsj", "");
+
+            parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+            try
+            {
+                connection.Execute(
+                    "[dbo].[PA_Lg_Proveedor_Banco_D0001]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+                );
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            var Codigo = parametros.Get<int>("@Codigo");
+            var mensaje = parametros.Get<string>("@sMsj");
+            
+            return (Codigo, mensaje);
+        }
+    }
+
+    public async Task<(int Codigo, string Mensaje)> ActualizarCuentaBancariaProveedor(ProveedorBancoEntity valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+
+            parametros.Add("@Prv_Ban_Id", valores.Prv_Ban_Id);
+            parametros.Add("@Prv_Id", valores.Prv_Id);
+
+            parametros.Add("@Codigo", 0);
+            parametros.Add("@sMsj", "");
+
+            parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+            try
+            {
+                connection.Execute(
+                    "[dbo].[PA_Lg_Proveedor_U0003]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+                );
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            var Codigo = parametros.Get<int>("@Codigo");
+            var mensaje = parametros.Get<string>("@sMsj");
+            
+            return (Codigo, mensaje);
+        }
+    }
+
 }

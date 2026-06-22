@@ -30,6 +30,9 @@ public class PedidoCabeceraEntity
     public string? Tip_Ser_Des { get; set; }
     public IEnumerable<PedidoDetalleEntityReporte>? Detalle_Reporte{ get; set; }
     public string? Ped_Mot_Rch { get; set; }
+    public string? Usr_Nom { get; set; }
+    public string? Ord_Com_Ped_Id { get; set; }
+    public string? Ped_Ref_Gral { get; set; }
 }
 
 public class PedidoDetalleEntityReporte
