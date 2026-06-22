@@ -73,6 +73,7 @@ builder.Services.AddScoped<IDireccionEntregaService, DireccionEntregaService>();
 builder.Services.AddScoped<IEnviarCorreoService, EnviarCorreoService>();
 builder.Services.AddScoped<IPerfilService, PerfilService>();
 builder.Services.AddScoped<IAccesoService, AccesoService>();
+builder.Services.AddScoped<ICargoService, CargoService>();
 
 //Inyection Repository
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
@@ -98,6 +99,8 @@ builder.Services.AddScoped<ISubestacionesRepository, SubestacionesRepository>();
 builder.Services.AddScoped<IDireccionEntregaRepository, DireccionEntregaRepository>();
 builder.Services.AddScoped<IPerfilRepository, PerfilRepository>();
 builder.Services.AddScoped<IAccesoRepository, AccesoRepository>();
+builder.Services.AddScoped<ICargoRepository, CargoRepository>();
+
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>(); // ← AGREGADO
 
 #endregion

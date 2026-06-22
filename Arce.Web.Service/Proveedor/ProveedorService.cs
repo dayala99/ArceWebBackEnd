@@ -85,4 +85,128 @@ public class ProveedorService: IProveedorService
             return result;
         }
     }
+
+    public async Task<ServiceResponseList<ProveedorBancoEntity>?> ListarProveedorBanco(int? Prv_Ban_Id, int? Prv_Id)
+    {
+        var result = new ServiceResponseList<ProveedorBancoEntity>();
+        try
+        {
+            var resultData = await _proveedorRepository.ListarProveedorBanco(Prv_Ban_Id, Prv_Id);
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+            }
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = resultData.ToList();
+            result.TotalElements = resultData.ToList().Count();
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepción no controlada " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponse<int>> RegistrarProveedorBanco(ProveedorBancoEntity valores)
+    {
+        var result = new ServiceResponse<int>();
+        try
+        {
+            var resultData = await _proveedorRepository.RegistrarProveedorBanco(valores);
+            if (resultData.Codigo == 0)
+            {
+                result.Success = true;
+                result.Message = resultData.Mensaje;
+                result.CodeTransacc = resultData.Codigo;
+                return result;
+            }
+            result.Success = false;
+            result.Message = resultData.Mensaje;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Error inesperado " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponse<int>> ActualizarProveedorBanco(ProveedorBancoEntity valores)
+    {
+        var result = new ServiceResponse<int>();
+        try
+        {
+            var resultData = await _proveedorRepository.ActualizarProveedorBanco(valores);
+            if (resultData.Codigo == 0)
+            {
+                result.Success = true;
+                result.Message = resultData.Mensaje;
+                result.CodeTransacc = resultData.Codigo;
+                return result;
+            }
+            result.Success = false;
+            result.Message = resultData.Mensaje;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Error inesperado " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponse<int>> EliminarProveedorBanco(ProveedorBancoEntity valores)
+    {
+        var result = new ServiceResponse<int>();
+        try
+        {
+            var resultData = await _proveedorRepository.EliminarProveedorBanco(valores);
+            if (resultData.Codigo == 0)
+            {
+                result.Success = true;
+                result.Message = resultData.Mensaje;
+                result.CodeTransacc = resultData.Codigo;
+                return result;
+            }
+            result.Success = false;
+            result.Message = resultData.Mensaje;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Error inesperado " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponse<int>> ActualizarCuentaBancariaProveedor(ProveedorBancoEntity valores)
+    {
+        var result = new ServiceResponse<int>();
+        try
+        {
+            var resultData = await _proveedorRepository.ActualizarCuentaBancariaProveedor(valores);
+            if (resultData.Codigo == 0)
+            {
+                result.Success = true;
+                result.Message = resultData.Mensaje;
+                result.CodeTransacc = resultData.Codigo;
+                return result;
+            }
+            result.Success = false;
+            result.Message = resultData.Mensaje;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Error inesperado " + ex.Message;
+            return result;
+        }
+    }
 }

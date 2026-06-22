@@ -32,4 +32,5 @@ public interface IPedidoService
     Task<ServiceResponseList<PedidoDetalleEntity>?> ListarDetalleIngresoAlmacen(int? Ped_Cab_Id, int? Ord_Com_Id);
     Task<ServiceResponse<int>> ActualizarPedidoDetalleIngresoAlmacen(PedidoDetalleEntity valores);
     Task<ServiceResponse<int>> RechazarPedido(PedidoCabeceraEntity valores);
+    Task<ServiceResponse<int>> ActualizarReferenciaGeneral(PedidoCabeceraEntity valores);
 }

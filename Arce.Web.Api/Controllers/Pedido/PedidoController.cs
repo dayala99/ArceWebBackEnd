@@ -584,5 +584,20 @@ namespace MyApp.Namespace
             return BadRequest(result);
         }
 
+        [HttpPatch]
+        [Route("patchActualizarReferenciaGeneral")]
+        public async Task<IActionResult> ActualizarReferenciaGeneral([FromBody] PedidoCabeceraEntity valores)
+        {            
+            var result = await _service.ActualizarReferenciaGeneral(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
     }
 }

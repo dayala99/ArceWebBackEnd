@@ -31,4 +31,5 @@ public interface IPedidoRepository
     Task<IEnumerable<PedidoDetalleEntity>?> ListarDetalleIngresoAlmacen(int? Ped_Cab_Id, int? Ord_Com_Id);
     Task<(int Codigo, string Mensaje)> ActualizarPedidoDetalleIngresoAlmacen(PedidoDetalleEntity valores);
     Task<(int Codigo, string Mensaje)> RechazarPedido(PedidoCabeceraEntity valores);
+    Task<(int Codigo, string Mensaje)> ActualizarReferenciaGeneral(PedidoCabeceraEntity valores);
 }

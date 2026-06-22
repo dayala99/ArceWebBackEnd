@@ -44,9 +44,6 @@ namespace MyApp.Namespace
                 Prv_Nom_Con = valores.Prv_Nom_Con,
                 Usr_Reg = valores.Usr_Reg,
                 Prv_Email = valores.Prv_Email,
-                Prv_Nro_Cue_Ban = valores.Prv_Nro_Cue_Ban,
-                Prv_Nro_Cue_Ban_CCI = valores.Prv_Nro_Cue_Ban_CCI,
-                Prv_Ban = valores.Prv_Ban
             };
             
             var result = await _proveedorService.RegistrarProveedor(parametros);
@@ -75,12 +72,84 @@ namespace MyApp.Namespace
                 Flg_Est = valores.Flg_Est,
                 Usr_Mod = valores.Usr_Mod,
                 Prv_Email = valores.Prv_Email,
-                Prv_Nro_Cue_Ban = valores.Prv_Nro_Cue_Ban,
-                Prv_Nro_Cue_Ban_CCI = valores.Prv_Nro_Cue_Ban_CCI,
-                Prv_Ban = valores.Prv_Ban
             };
             
             var result = await _proveedorService.ActualizarProveedor(parametros);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpGet]
+        [Route("getListarProveedorBanco")]
+        public async Task<IActionResult> ListarProveedorBanco(int? Prv_Ban_Id, int? Prv_Id)
+        {
+            var result = await _proveedorService.ListarProveedorBanco(Prv_Ban_Id ?? 0, Prv_Id ?? 0);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPost]
+        [Route("postRegistrarProveedorBanco")]
+        public async Task<IActionResult> RegistrarProveedorBanco([FromBody] ProveedorBancoEntity valores)
+        {            
+            var result = await _proveedorService.RegistrarProveedorBanco(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPatch]
+        [Route("patchActualizarProveedorBanco")]
+        public async Task<IActionResult> ActualizarProveedorBanco([FromBody] ProveedorBancoEntity valores)
+        {
+            var result = await _proveedorService.ActualizarProveedorBanco(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpDelete]
+        [Route("deleteEliminarProveedorBanco")]
+        public async Task<IActionResult> EliminarProveedorBanco([FromBody] ProveedorBancoEntity valores)
+        {
+            var result = await _proveedorService.EliminarProveedorBanco(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPatch]
+        [Route("patchActualizarCuentaBancariaProveedor")]
+        public async Task<IActionResult> ActualizarCuentaBancariaProveedor([FromBody] ProveedorBancoEntity valores)
+        {
+            var result = await _proveedorService.ActualizarCuentaBancariaProveedor(valores);
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;
