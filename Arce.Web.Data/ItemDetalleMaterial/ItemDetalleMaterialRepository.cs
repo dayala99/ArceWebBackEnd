@@ -93,7 +93,7 @@ public class ItemDetalleMaterialRepository: IItemDetalleMaterialRepository
             try
             {
                 connection.Execute(
-                    "[dbo].[PA_Lg_Proveedor_U0001]"
+                    "[dbo].[PA_Lg_Detalle_Material_U0001]"
                     , parametros
                     , commandType: CommandType.StoredProcedure
                 );
