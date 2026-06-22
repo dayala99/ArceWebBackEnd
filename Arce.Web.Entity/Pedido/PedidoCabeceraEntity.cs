@@ -43,4 +43,6 @@ public class PedidoDetalleEntityReporte
 	public decimal? Ped_Can { get; set; }
 	public decimal? Ped_Cos_Uni { get; set; }
 	public decimal? Ped_Cos_Tot { get; set; }
+    public string? Cen_Cos_Des {  get; set; }
+    public string? Ped_Obs_Ped { get; set; }
 }

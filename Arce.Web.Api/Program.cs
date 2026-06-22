@@ -17,24 +17,24 @@ builder.Services.AddCors(options =>
     {
         /*DESARROLLO*/
 
-        // policy.WithOrigins(
-        //             "http://localhost:4200", 
-        //             "https://localhost:4200"
-        //             )  // Especifica el origen permitido
-        //         .AllowAnyHeader()                     // Permitir cualquier encabezado
-        //         .AllowAnyMethod()                   // Permitir cualquier método (GET, POST, etc.)
-        //         .AllowCredentials();
+        policy.WithOrigins(
+                    "http://localhost:4200", 
+                    "https://localhost:4200"
+                    )  // Especifica el origen permitido
+                .AllowAnyHeader()                     // Permitir cualquier encabezado
+                .AllowAnyMethod()                   // Permitir cualquier método (GET, POST, etc.)
+                .AllowCredentials();
 
         /*PRODUCCION*/
 
-        policy.WithOrigins(
-        // "http://192.168.1.36",
-        // "https://192.168.1.36",
-        "https://gestion.montajeseingenieriaarceperu.com",
-        "https://gestion.montajeseingenieriaarceperu.com:443"
-        )  // Especifica el origen permitido
-        .AllowAnyHeader()                     // Permitir cualquier encabezado
-        .AllowAnyMethod();                   // Permitir cualquier método (GET, POST, etc.) 
+        // policy.WithOrigins(
+        // // "http://192.168.1.36",
+        // // "https://192.168.1.36",
+        // "https://gestion.montajeseingenieriaarceperu.com",
+        // "https://gestion.montajeseingenieriaarceperu.com:443"
+        // )  // Especifica el origen permitido
+        // .AllowAnyHeader()                     // Permitir cualquier encabezado
+        // .AllowAnyMethod();                   // Permitir cualquier método (GET, POST, etc.) 
 
     }); 
 });
