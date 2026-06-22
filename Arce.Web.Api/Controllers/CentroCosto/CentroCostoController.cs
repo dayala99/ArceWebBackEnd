@@ -32,6 +32,22 @@ namespace MyApp.Namespace
             return BadRequest(result);
         }
 
+        [HttpGet]
+        [Route("getListarCentroCostoParaJefe")]
+        public async Task<IActionResult> ListarCentroCostoParaJefe()
+        {
+            var result = await _centroCostoService.ListarCentroCostoParaJefe();
+
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
         [HttpPost]
         [Route("postRegistrarCentroCosto")]
         public async Task<IActionResult> RegistrarCentroCosto([FromBody] CentroCostoEntity valores)

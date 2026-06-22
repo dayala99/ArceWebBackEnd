@@ -36,6 +36,23 @@ public class CentroCostoRepository: ICentroCostoRepository
         }
     }
 
+    public async Task<IEnumerable<CentroCostoEntity>?> ListarCentroCostoParaJefe()
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            const string sql = @"SELECT t1.Cen_Cos_Id, t1.Cen_Cos_Des FROM Lg_Cen_Cos t1";
+
+            var result = await connection.QueryAsync<CentroCostoEntity>(
+                sql
+                , commandType: CommandType.Text
+            );
+
+            return result;
+        }
+    }
+
     public async Task<(int Codigo, string Mensaje)> RegistrarCentroCosto(CentroCostoEntity valores)
     {
         using (var connection = new SqlConnection(_connectionString))

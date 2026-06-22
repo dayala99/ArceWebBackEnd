@@ -2,6 +2,7 @@ using Arce.Web.Data;
 using Arce.Web.Entity.Inspecciones;
 using Arce.Web.Entity.Usuario;
 using Arce.Web.Service.Comunes;
+using System;
 
 namespace Arce.Web.Service;
 
@@ -52,6 +53,32 @@ public class InspeccionesService : IInspeccionesService
         try
         {
             var resultData = await _inspeccionesRepository.ListarSubEstacionesPorCliente(Cliente_Id);
+            var elements = (resultData ?? Enumerable.Empty<SubEstacionEntity>()).ToList();
+            result.Success = true;
+            result.Message = elements.Any() ? "Completado con éxito" : "No existe información";
+            result.Elements = elements;
+            result.TotalElements = elements.Count;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepción no controlada " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponseList<SubEstacionEntity>?> ListarSubEstaciones(int? Id, string? Nombre, int? Cliente_Id, string? Estado)
+    {
+        var result = new ServiceResponseList<SubEstacionEntity>();
+        try
+        {
+            var resultData = await _inspeccionesRepository.ListarSubEstaciones(
+                Id ?? 0,
+                string.IsNullOrWhiteSpace(Nombre) ? string.Empty : Nombre.Trim(),
+                Cliente_Id ?? 0,
+                string.IsNullOrWhiteSpace(Estado) ? "A" : Estado.Trim().Substring(0, 1).ToUpperInvariant()
+            );
+
             var elements = (resultData ?? Enumerable.Empty<SubEstacionEntity>()).ToList();
             result.Success = true;
             result.Message = elements.Any() ? "Completado con éxito" : "No existe información";
@@ -206,12 +233,151 @@ public class InspeccionesService : IInspeccionesService
         }
     }
 
+    public async Task<ServiceResponseList<ObservacionPlaneadaListadoEntity>?> ConsultarEstadoObservaciones(string Estado)
+    {
+        var result = new ServiceResponseList<ObservacionPlaneadaListadoEntity>();
+        try
+        {
+            var estadoNormalizado = string.IsNullOrWhiteSpace(Estado) ? "I" : Estado.Trim().Substring(0, 1).ToUpperInvariant();
+            var resultData = await _inspeccionesRepository.ConsultarEstadoObservaciones(estadoNormalizado);
+            var elements = (resultData ?? Enumerable.Empty<ObservacionPlaneadaListadoEntity>()).ToList();
+            result.Success = true;
+            result.Message = elements.Any() ? "Completado con éxito" : "No existe información";
+            result.Elements = elements;
+            result.TotalElements = elements.Count;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepción no controlada " + ex.Message;
+            return result;
+        }
+    }
+
+    
+
+public async Task<ServiceResponseList<ObservacionPlaneadaListadoEntity>?> FiltrarObservaciones(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado)
+{
+    var result = new ServiceResponseList<ObservacionPlaneadaListadoEntity>();
+    try
+    {
+        if (!Fecha_Desde.HasValue || !Fecha_Hasta.HasValue)
+        {
+            result.Success = true;
+            result.Message = "No existe información";
+            result.Elements = new List<ObservacionPlaneadaListadoEntity>();
+            result.TotalElements = 0;
+            return result;
+        }
+
+        var estadoNormalizado = string.IsNullOrWhiteSpace(Estado)
+            ? "A"
+            : Estado.Trim().Substring(0, 1).ToUpperInvariant();
+
+        var resultData = await _inspeccionesRepository.FiltrarObservaciones(
+            Fecha_Desde.Value,
+            Fecha_Hasta.Value,
+            estadoNormalizado
+        );
+
+        var elements = (resultData ?? Enumerable.Empty<ObservacionPlaneadaListadoEntity>()).ToList();
+        result.Success = true;
+        result.Message = elements.Any() ? "Completado con éxito" : "No existe información";
+        result.Elements = elements;
+        result.TotalElements = elements.Count;
+        return result;
+    }
+    catch (Exception ex)
+    {
+        result.Message = "Excepción no controlada " + ex.Message;
+        return result;
+    }
+}
+
+public async Task<ServiceResponseList<ObservacionPlaneadaDetalleEntity>?> MostrarObservacionPlaneada(string Codigo_Obs)
+    {
+        var result = new ServiceResponseList<ObservacionPlaneadaDetalleEntity>();
+        try
+        {
+            var resultData = await _inspeccionesRepository.MostrarObservacionPlaneada(Codigo_Obs);
+            var elements = (resultData ?? Enumerable.Empty<ObservacionPlaneadaDetalleEntity>()).ToList();
+            result.Success = true;
+            result.Message = elements.Any() ? "Completado con éxito" : "No existe información";
+            result.Elements = elements;
+            result.TotalElements = elements.Count;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepción no controlada " + ex.Message;
+            return result;
+        }
+    }
+
     public async Task<ServiceResponse<int>> RegistrarObservacionPlaneada(ObservacionPlaneadaEntity valores)
     {
         var result = new ServiceResponse<int>();
         try
         {
             var resultData = await _inspeccionesRepository.RegistrarObservacionPlaneada(valores);
+            if (resultData.Codigo == 0)
+            {
+                result.Success = true;
+                result.Message = resultData.Mensaje;
+                result.CodeTransacc = resultData.Codigo;
+                result.Data = 1;
+                return result;
+            }
+
+            result.Success = false;
+            result.Message = resultData.Mensaje;
+            result.Data = 0;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Error inesperado " + ex.Message;
+            result.Data = 0;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponse<int>> ActualizarObservacionPlaneada(ActualizarObservacionPlaneadaEntity valores)
+    {
+        var result = new ServiceResponse<int>();
+        try
+        {
+            var resultData = await _inspeccionesRepository.ActualizarObservacionPlaneada(valores);
+            if (resultData.Codigo == 0)
+            {
+                result.Success = true;
+                result.Message = resultData.Mensaje;
+                result.CodeTransacc = resultData.Codigo;
+                result.Data = 1;
+                return result;
+            }
+
+            result.Success = false;
+            result.Message = resultData.Mensaje;
+            result.Data = 0;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Error inesperado " + ex.Message;
+            result.Data = 0;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponse<int>> EliminarObservacionPlaneada(EliminarObservacionPlaneadaEntity valores)
+    {
+        var result = new ServiceResponse<int>();
+        try
+        {
+            var resultData = await _inspeccionesRepository.EliminarObservacionPlaneada(valores);
             if (resultData.Codigo == 0)
             {
                 result.Success = true;

@@ -1,0 +1,10 @@
+Agregar estas líneas en Program.cs del backend existente:
+
+using Arce.Web.Data;
+using Arce.Web.Data.Inspecciones.Cliente;
+
+Y registrar el repositorio junto al resto de dependencias:
+
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+
+Si tu Program.cs ya tiene using globales o registros por otras capas, solo agrega la línea AddScoped.

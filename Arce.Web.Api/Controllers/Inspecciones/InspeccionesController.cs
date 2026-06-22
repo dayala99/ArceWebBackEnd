@@ -47,6 +47,21 @@ namespace Arce.Web.Api.Controllers.Inspecciones
         }
 
         [HttpGet]
+        [Route("getListarSubEstaciones")]
+        public async Task<IActionResult> ListarSubEstaciones(int? Id, string? Nombre, int? Cliente_Id, string? Estado)
+        {
+            var result = await _inspeccionesService.ListarSubEstaciones(Id, Nombre, Cliente_Id, Estado);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpGet]
         [Route("getListarClientes")]
         public async Task<IActionResult> ListarClientes()
         {
@@ -151,13 +166,86 @@ namespace Arce.Web.Api.Controllers.Inspecciones
             return BadRequest(result);
         }
 
+        [HttpGet]
+        [Route("getConsultarEstadoObservaciones")]
+        public async Task<IActionResult> ConsultarEstadoObservaciones(string Estado)
+        {
+            var result = await _inspeccionesService.ConsultarEstadoObservaciones(Estado);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpGet]
+        [Route("getFiltrarObservaciones")]
+        public async Task<IActionResult> FiltrarObservaciones(DateTime Fecha_Desde, DateTime Fecha_Hasta, string Estado)
+        {
+            var result = await _inspeccionesService.FiltrarObservaciones(Fecha_Desde, Fecha_Hasta, Estado);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpGet]
+        [Route("getMostrarObservacionPlaneada")]
+        public async Task<IActionResult> MostrarObservacionPlaneada(string Codigo_Obs)
+        {
+            var result = await _inspeccionesService.MostrarObservacionPlaneada(Codigo_Obs);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
         [HttpPost]
         [Route("postRegistrarObservacionPlaneada")]
-        [HttpPost]
-        [Route("registrarObservacionPlaneada")]
         public async Task<IActionResult> RegistrarObservacionPlaneada([FromBody] ObservacionPlaneadaEntity valores)
         {
             var result = await _inspeccionesService.RegistrarObservacionPlaneada(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPatch]
+        [Route("patchActualizarObservacionPlaneada")]
+        public async Task<IActionResult> ActualizarObservacionPlaneada([FromBody] ActualizarObservacionPlaneadaEntity valores)
+        {
+            var result = await _inspeccionesService.ActualizarObservacionPlaneada(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPost]
+        [Route("postEliminarObservacionPlaneada")]
+        public async Task<IActionResult> EliminarObservacionPlaneada([FromBody] EliminarObservacionPlaneadaEntity valores)
+        {
+            var result = await _inspeccionesService.EliminarObservacionPlaneada(valores);
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;

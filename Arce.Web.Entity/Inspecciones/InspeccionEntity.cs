@@ -11,6 +11,13 @@ namespace Arce.Web.Entity.Inspecciones
     {
         public int? Subestacion_Id { get; set; }
         public string? Subestacion_Nombre { get; set; }
+        public int? Cliente_Id { get; set; }
+        public string? Cliente_Nombre { get; set; }
+        public string? Estado { get; set; }
+        public string? Usr_Reg { get; set; }
+        public DateTime? Fec_Reg { get; set; }
+        public string? Usr_Mod { get; set; }
+        public DateTime? Fec_Mod { get; set; }
     }
 
     public class InsClienteEntity
@@ -67,6 +74,28 @@ namespace Arce.Web.Entity.Inspecciones
         public string? Usr_Reg { get; set; }
     }
 
+    public class ActualizarObservacionPlaneadaEntity
+    {
+        public string? Codigo_Obs { get; set; }
+        public int? Cliente_Id { get; set; }
+        public int? Subestacion_Id { get; set; }
+        public int? SubContrata_Id { get; set; }
+        public int? Jefe_Id { get; set; }
+        public int? Motivo_Id { get; set; }
+        public int? Clima_Id { get; set; }
+        public int? Tarea_Id { get; set; }
+        public string? Estado { get; set; }
+        public string? Obs_Detalle { get; set; }
+        public string? Obs_Actividad { get; set; }
+        public string? Usr_Mod { get; set; }
+    }
+
+    public class EliminarObservacionPlaneadaEntity
+    {
+        public string? Codigo_Obs { get; set; }
+        public string? Usr_Mod { get; set; }
+    }
+
     public class ObservacionPlaneadaListadoEntity
     {
         public int? Observacion_Id { get; set; }
@@ -78,5 +107,32 @@ namespace Arce.Web.Entity.Inspecciones
         public string? Subestacion_Nombre { get; set; }
         public string? Motivo_Nombre { get; set; }
         public string? Obs_Detalle { get; set; }
+    }
+
+    public class ObservacionPlaneadaDetalleEntity
+    {
+        public string? Usr_Cod { get; set; }
+        public string? Usr_Crg { get; set; }
+        public string? Usr_Doc_Nro { get; set; }
+        public string? Usr_Nom { get; set; }
+        public int? Cliente_Id { get; set; }
+        public string? Cliente_Nombre { get; set; }
+        public int? Subestacion_Id { get; set; }
+        public string? Subestacion_Nombre { get; set; }
+        public int? SubContrata_Id { get; set; }
+        public string? SubContrata_Nombre { get; set; }
+        public int? Jefe_Id { get; set; }
+        public string? Jef_Nombre { get; set; }
+        public string? Jef_DNI { get; set; }
+        public string? Cen_Cos_Des { get; set; }
+        public int? Motivo_Id { get; set; }
+        public string? Motivo_Nombre { get; set; }
+        public string? Obs_Detalle { get; set; }
+        public int? Clima_Id { get; set; }
+        public string? Clima_Nombre { get; set; }
+        public int? Tarea_Id { get; set; }
+        public string? Tarea_Nombre { get; set; }
+        public string? Obs_Actividad { get; set; }
+        public string? Estado { get; set; }
     }
 }

@@ -1,5 +1,10 @@
 using Arce.Web.Data;
+using Arce.Web.Data.Inspecciones.Cliente;
+using Arce.Web.Data.Inspecciones.Jefe;
+using Arce.Web.Data.Inspecciones.Subestaciones;
 using Arce.Web.Service;
+using Arce.Web.Service.Inspecciones.Jefe;
+using Arce.Web.Service.Inspecciones.Subestaciones;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +23,7 @@ builder.Services.AddCors(options =>
         /*DESARROLLO*/
 
         policy.WithOrigins(
-                    "http://localhost:4200", 
+                    "http://localhost:4200",
                     "https://localhost:4200"
                     )  // Especifica el origen permitido
                 .AllowAnyHeader()                     // Permitir cualquier encabezado
@@ -34,9 +39,9 @@ builder.Services.AddCors(options =>
         // "https://gestion.montajeseingenieriaarceperu.com:443"
         // )  // Especifica el origen permitido
         // .AllowAnyHeader()                     // Permitir cualquier encabezado
-        // .AllowAnyMethod();                   // Permitir cualquier método (GET, POST, etc.) 
+        // .AllowAnyMethod();                   // Permitir cualquier método (GET, POST, etc.)
 
-    }); 
+    });
 });
 
 #region INYECTION DEPENDECY
@@ -47,6 +52,7 @@ builder.Services.AddScoped<IProveedorService, ProveedorService>();
 builder.Services.AddScoped<IFormaPagoService, FormaPagoService>();
 builder.Services.AddScoped<ITipoServicioService, TipoServicioService>();
 builder.Services.AddScoped<IUnidadMedidaService, UnidadMedidaService>();
+builder.Services.AddScoped<IJefeService, JefeService>();
 builder.Services.AddScoped<ICentroCostoService, CentroCostoService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
 builder.Services.AddScoped<IGrupoItemService, GrupoItemService>();
@@ -59,10 +65,10 @@ builder.Services.AddScoped<IDetraccionService, DetraccionService>();
 builder.Services.AddScoped<ISubGrupoItemService, SubGrupoItemService>();
 builder.Services.AddScoped<IItemDetalleMaterialService, ItemDetalleMaterialService>();
 builder.Services.AddScoped<IUbicacionService, UbicacionService>();
-<<<<<<< HEAD
-builder.Services.AddScoped<IInspeccionesService, InspeccionesService>();
 
-=======
+builder.Services.AddScoped<IInspeccionesService, InspeccionesService>();
+builder.Services.AddScoped<ISubestacionesService, SubestacionesService>();
+
 builder.Services.AddScoped<IDireccionEntregaService, DireccionEntregaService>();
 builder.Services.AddScoped<IEnviarCorreoService, EnviarCorreoService>();
 builder.Services.AddScoped<IPerfilService, PerfilService>();
@@ -74,6 +80,7 @@ builder.Services.AddScoped<IProveedorRepository, ProveedorRepository>();
 builder.Services.AddScoped<IFormaPagoRepository, FormaPagoRepository>();
 builder.Services.AddScoped<ITipoServicioRepository, TipoServicioRepository>();
 builder.Services.AddScoped<IUnidadMedidaRepository, UnidadMedidaRepository>();
+builder.Services.AddScoped<IJefeRepository, JefeRepository>();
 builder.Services.AddScoped<ICentroCostoRepository, CentroCostoRepository>();
 builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
 builder.Services.AddScoped<IGrupoItemRepository, GrupoItemRepository>();
@@ -86,14 +93,12 @@ builder.Services.AddScoped<IDetraccionRepository, DetraccionRepository>();
 builder.Services.AddScoped<ISubGrupoItemRepository, SubGrupoItemRepository>();
 builder.Services.AddScoped<IItemDetalleMaterialRepository, ItemDetalleMaterialRepository>();
 builder.Services.AddScoped<IUbicacionRepository, UbicacionRepository>();
-<<<<<<< HEAD
 builder.Services.AddScoped<IInspeccionesRepository, InspeccionesRepository>();
-=======
+builder.Services.AddScoped<ISubestacionesRepository, SubestacionesRepository>();
 builder.Services.AddScoped<IDireccionEntregaRepository, DireccionEntregaRepository>();
 builder.Services.AddScoped<IPerfilRepository, PerfilRepository>();
 builder.Services.AddScoped<IAccesoRepository, AccesoRepository>();
->>>>>>> origin/main
-
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>(); // ← AGREGADO
 
 #endregion
 

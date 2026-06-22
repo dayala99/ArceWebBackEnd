@@ -43,6 +43,35 @@ public class CentroCostoService: ICentroCostoService
         }
     }
 
+    public async Task<ServiceResponseList<CentroCostoEntity>?> ListarCentroCostoParaJefe()
+    {
+        var result = new ServiceResponseList<CentroCostoEntity>();
+
+        try
+        {
+            var resultData = await _centroCostoRepository.ListarCentroCostoParaJefe();
+
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = false;
+                result.Message = "No existe información";
+                return result;
+            }
+
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = resultData.ToList();
+            result.TotalElements = resultData.ToList().Count();
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepcion no controlada " + ex.Message;
+            return result;
+        }
+    }
+
     public async Task<ServiceResponse<int>> RegistrarCentroCosto(CentroCostoEntity valores)
     {
         var result = new ServiceResponse<int>();

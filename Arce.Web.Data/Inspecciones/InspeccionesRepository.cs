@@ -1,5 +1,6 @@
 using Arce.Web.Entity.Inspecciones;
 using Arce.Web.Entity.Usuario;
+using System;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 using System.Data;
@@ -52,6 +53,46 @@ public class InspeccionesRepository : IInspeccionesRepository
             );
             return result;
         }
+    }
+
+    public async Task<IEnumerable<SubEstacionEntity>?> ListarSubEstaciones(int? Id, string? Nombre, int? Cliente_Id, string? Estado)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Subestacion_Id", Id ?? 0);
+            parametros.Add("@Subestacion_Nombre", string.IsNullOrWhiteSpace(Nombre) ? string.Empty : Nombre.Trim());
+            parametros.Add("@Cliente_Id", Cliente_Id ?? 0);
+            parametros.Add("@Estado", NormalizarEstado(Estado));
+
+            var result = await connection.QueryAsync<SubEstacionEntity>(
+                "[dbo].[SP_Filtrar_Subestaciones]",
+                parametros,
+                commandType: CommandType.StoredProcedure
+            );
+
+            return result;
+        }
+    }
+
+
+    private static string NormalizarEstado(string? estado)
+    {
+        if (string.IsNullOrWhiteSpace(estado))
+        {
+            return "A";
+        }
+
+        var limpio = estado.Trim().ToUpperInvariant();
+
+        if (limpio.StartsWith("I"))
+        {
+            return "I";
+        }
+
+        return "A";
     }
 
     public async Task<IEnumerable<InsClienteEntity>?> ListarClientes()
@@ -163,6 +204,59 @@ ORDER BY t1.Observacion_Id DESC",
         }
     }
 
+    public async Task<IEnumerable<ObservacionPlaneadaListadoEntity>?> ConsultarEstadoObservaciones(string Estado)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Estado", Estado);
+
+            return await connection.QueryAsync<ObservacionPlaneadaListadoEntity>(
+                "[dbo].[SP_Consultar_Estado_Observaciones]",
+                parametros,
+                commandType: CommandType.StoredProcedure
+            );
+        }
+    }
+
+    public async Task<IEnumerable<ObservacionPlaneadaListadoEntity>?> FiltrarObservaciones(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Fecha_Desde", Fecha_Desde ?? DateTime.MinValue);
+            parametros.Add("@Fecha_Hasta", Fecha_Hasta ?? DateTime.MinValue);
+            parametros.Add("@Estado", string.IsNullOrWhiteSpace(Estado) ? "A" : Estado);
+
+            return await connection.QueryAsync<ObservacionPlaneadaListadoEntity>(
+                "[dbo].[SP_Filtrar_Observaciones]",
+                parametros,
+                commandType: CommandType.StoredProcedure
+            );
+        }
+    }
+
+    public async Task<IEnumerable<ObservacionPlaneadaDetalleEntity>?> MostrarObservacionPlaneada(string Codigo_Obs)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Codigo_Obs", Codigo_Obs);
+
+            return await connection.QueryAsync<ObservacionPlaneadaDetalleEntity>(
+                "[dbo].[SP_Mostrar_Observaciones]",
+                parametros,
+                commandType: CommandType.StoredProcedure
+            );
+        }
+    }
+
     public async Task<(int Codigo, string Mensaje)> RegistrarObservacionPlaneada(ObservacionPlaneadaEntity valores)
     {
         using (var connection = new SqlConnection(_connectionString))
@@ -196,6 +290,80 @@ ORDER BY t1.Observacion_Id DESC",
                 }
 
                 return (1, "No se pudo registrar la observación planeada");
+            }
+            catch (SqlException ex)
+            {
+                return (1, ex.Message);
+            }
+        }
+    }
+
+    public async Task<(int Codigo, string Mensaje)> ActualizarObservacionPlaneada(ActualizarObservacionPlaneadaEntity valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Codigo_Obs", valores.Codigo_Obs);
+            parametros.Add("@Cliente_Id", valores.Cliente_Id);
+            parametros.Add("@Subestacion_Id", valores.Subestacion_Id);
+            parametros.Add("@SubContrata_Id", valores.SubContrata_Id);
+            parametros.Add("@Jefe_Id", valores.Jefe_Id);
+            parametros.Add("@Motivo_Id", valores.Motivo_Id);
+            parametros.Add("@Clima_Id", valores.Clima_Id);
+            parametros.Add("@Tarea_Id", valores.Tarea_Id);
+            parametros.Add("@Estado", valores.Estado);
+            parametros.Add("@Obs_Detalle", valores.Obs_Detalle);
+            parametros.Add("@Obs_Actividad", valores.Obs_Actividad);
+            parametros.Add("@Usr_Mod", valores.Usr_Mod);
+
+            try
+            {
+                var rows = await connection.ExecuteAsync(
+                    "SP_Actualizar_Observacion",
+                    parametros,
+                    commandType: CommandType.StoredProcedure
+                );
+
+                if (rows > 0)
+                {
+                    return (0, "Completado con éxito");
+                }
+
+                return (1, "No se pudo actualizar la observación planeada");
+            }
+            catch (SqlException ex)
+            {
+                return (1, ex.Message);
+            }
+        }
+    }
+
+    public async Task<(int Codigo, string Mensaje)> EliminarObservacionPlaneada(EliminarObservacionPlaneadaEntity valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Codigo_Obs", valores.Codigo_Obs);
+            parametros.Add("@Usr_Mod", valores.Usr_Mod);
+
+            try
+            {
+                var rows = await connection.ExecuteAsync(
+                    "SP_Eliminar_Observacion",
+                    parametros,
+                    commandType: CommandType.StoredProcedure
+                );
+
+                if (rows > 0)
+                {
+                    return (0, "Completado con éxito");
+                }
+
+                return (1, "No se pudo eliminar la observación planeada");
             }
             catch (SqlException ex)
             {
