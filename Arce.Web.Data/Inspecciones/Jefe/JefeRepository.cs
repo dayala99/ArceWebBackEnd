@@ -16,64 +16,29 @@ public class JefeRepository : IJefeRepository
         _connectionString = configuration.GetConnectionString("Connection")!;
     }
 
-    public async Task<IEnumerable<JefeEntity>?> ListarJefe(int? Id, string? Nombre, string? Dni, string? Estado)
+    public async Task<IEnumerable<JefeEntity>?> ListarJefe(int? Id, string? Nombre, string? Dni, string? Estado, int? Cen_Cos_Id)
     {
         using var connection = new SqlConnection(_connectionString);
         await connection.OpenAsync();
 
-        var estadoNormalizado = NormalizarEstado(Estado);
-
-        if (!string.IsNullOrWhiteSpace(estadoNormalizado))
-        {
-            var parametrosEstado = new DynamicParameters();
-            parametrosEstado.Add("@Estado", estadoNormalizado);
-
-            var filasEstado = await connection.QueryAsync(
-                "[dbo].[SP_Filtrar_Estado_Jefe]",
-                parametrosEstado,
-                commandType: CommandType.StoredProcedure
-            );
-
-            var resultadoEstado = filasEstado
-                .Select(MapearJefeDesdeFila)
-                .Where(jefe =>
-                    CoincideId(jefe.Id, Id) &&
-                    CoincideTexto(jefe.Nombre, Nombre) &&
-                    CoincideTexto(jefe.Dni, Dni))
-                .OrderByDescending(jefe => jefe.Id ?? 0)
-                .ToList();
-
-            return resultadoEstado;
-        }
-
         var parametros = new DynamicParameters();
-        parametros.Add("@Id", Id);
-        parametros.Add("@Nombre", Nombre);
-        parametros.Add("@Dni", Dni);
-        parametros.Add("@Estado", estadoNormalizado);
+        parametros.Add("@Jefe_Id", Id ?? 0);
+        parametros.Add("@Jef_Nombre", Nombre ?? string.Empty);
+        parametros.Add("@Jef_DNI", Dni ?? string.Empty);
+        parametros.Add("@Estado", NormalizarEstado(Estado) ?? "A");
+        parametros.Add("@Cen_Cos_Id", Cen_Cos_Id ?? 0);
 
-        var sql = @"
-SELECT
-    t1.Jefe_Id AS Id,
-    t1.Jef_Nombre AS Nombre,
-    t1.Jef_DNI AS Dni,
-    t2.Cen_Cos_Des AS Area,
-    t1.Estado AS Estado,
-    t1.Cen_Cos_Id AS Cen_Cos_Id,
-    t1.Usr_Reg AS Usr_Reg,
-    t1.Fec_Reg AS Fec_Reg
-FROM Ins_Jefe t1
-INNER JOIN Lg_Cen_Cos t2
-    ON t1.Cen_Cos_Id = t2.Cen_Cos_Id
-WHERE
-    (@Id IS NULL OR t1.Jefe_Id = @Id)
-    AND (@Nombre IS NULL OR LTRIM(RTRIM(@Nombre)) = '' OR t1.Jef_Nombre LIKE '%' + @Nombre + '%')
-    AND (@Dni IS NULL OR LTRIM(RTRIM(@Dni)) = '' OR t1.Jef_DNI LIKE '%' + @Dni + '%')
-    AND (@Estado IS NULL OR LTRIM(RTRIM(@Estado)) = '' OR t1.Estado = @Estado)
-ORDER BY t1.Jefe_Id DESC;";
+        var filas = await connection.QueryAsync(
+            "[dbo].[SP_Filtrar_Jefe]",
+            parametros,
+            commandType: CommandType.StoredProcedure
+        );
 
-        var result = await connection.QueryAsync<JefeEntity>(sql, parametros, commandType: CommandType.Text);
-        return result;
+        var resultado = filas
+            .Select(MapearJefeDesdeFila)
+            .ToList();
+
+        return resultado;
     }
 
     public async Task<IEnumerable<JefeEntity>?> ConsultarDatosJefe(int? Jefe_Id)
@@ -242,21 +207,6 @@ ORDER BY t1.Jefe_Id DESC;";
         }
 
         return null;
-    }
-
-    private static bool CoincideId(int? valor, int? filtro)
-    {
-        return !filtro.HasValue || valor == filtro;
-    }
-
-    private static bool CoincideTexto(string? valor, string? filtro)
-    {
-        if (string.IsNullOrWhiteSpace(filtro))
-        {
-            return true;
-        }
-
-        return (valor ?? string.Empty).Contains(filtro.Trim(), StringComparison.OrdinalIgnoreCase);
     }
 
     private static string? NormalizarEstado(string? estado)

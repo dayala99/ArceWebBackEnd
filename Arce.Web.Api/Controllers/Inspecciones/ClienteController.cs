@@ -17,7 +17,7 @@ namespace Arce.Web.Api.Controllers.Inspecciones
 
         [HttpGet]
         [Route("getListarCliente")]
-        public async Task<IActionResult> ListarCliente([FromQuery] int? Id, [FromQuery] string? Nombre, [FromQuery] string? Estado)
+        public async Task<IActionResult> ListarCliente([FromQuery] int? Id = 0, [FromQuery] string? Nombre = "", [FromQuery] string? Estado = "A")
         {
             var result = await _repository.ListarCliente(Id, Nombre, Estado);
             return Ok(result);

@@ -18,9 +18,9 @@ namespace Arce.Web.Api.Controllers.Inspecciones
 
         [HttpGet]
         [Route("getListarJefe")]
-        public async Task<IActionResult> ListarJefe(int? Id, string? Nombre, string? Dni, string? Estado)
+        public async Task<IActionResult> ListarJefe(int? Id, string? Nombre, string? Dni, string? Estado, int? Cen_Cos_Id)
         {
-            var result = await _service.ListarJefe(Id, Nombre, Dni, Estado);
+            var result = await _service.ListarJefe(Id, Nombre, Dni, Estado, Cen_Cos_Id ?? 0);
 
             if (result!.Success)
             {

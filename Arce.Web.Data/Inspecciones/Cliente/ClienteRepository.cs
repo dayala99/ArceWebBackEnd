@@ -23,26 +23,16 @@ public class ClienteRepository : IClienteRepository
         using var connection = new SqlConnection(_connectionString);
         await connection.OpenAsync();
 
-        var estadoNormalizado = NormalizarEstado(Estado);
-
         var parametros = new DynamicParameters();
-        parametros.Add("@Id", Id);
-        parametros.Add("@Nombre", Nombre);
-        parametros.Add("@Estado", estadoNormalizado);
+        parametros.Add("@Cliente_Id", Id ?? 0);
+        parametros.Add("@Cliente_Nombre", Nombre ?? string.Empty);
+        parametros.Add("@Estado", NormalizarEstado(Estado) ?? "A");
 
-        const string sql = @"
-SELECT
-    t1.Cliente_Id,
-    t1.Cliente_Nombre,
-    t1.Estado
-FROM Ins_Cliente t1
-WHERE
-    (@Id IS NULL OR t1.Cliente_Id = @Id)
-    AND (@Nombre IS NULL OR LTRIM(RTRIM(@Nombre)) = '' OR t1.Cliente_Nombre LIKE '%' + @Nombre + '%')
-    AND (@Estado IS NULL OR LTRIM(RTRIM(@Estado)) = '' OR t1.Estado = @Estado)
-ORDER BY t1.Cliente_Id DESC;";
-
-        var result = await connection.QueryAsync(sql, parametros, commandType: CommandType.Text);
+        var result = await connection.QueryAsync(
+            "[dbo].[SP_Filtrar_Cliente]",
+            parametros,
+            commandType: CommandType.StoredProcedure
+        );
 
         return result
             .OfType<IDictionary<string, object>>()

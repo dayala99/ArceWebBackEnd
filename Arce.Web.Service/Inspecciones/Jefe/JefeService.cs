@@ -14,12 +14,12 @@ public class JefeService : IJefeService
         _repository = repository;
     }
 
-    public async Task<ServiceResponseList<JefeEntity>?> ListarJefe(int? Id, string? Nombre, string? Dni, string? Estado)
+    public async Task<ServiceResponseList<JefeEntity>?> ListarJefe(int? Id, string? Nombre, string? Dni, string? Estado, int? Cen_Cos_Id)
     {
         var result = new ServiceResponseList<JefeEntity>();
         try
         {
-            var resultData = await _repository.ListarJefe(Id, Nombre, Dni, Estado);
+            var resultData = await _repository.ListarJefe(Id, Nombre, Dni, Estado, Cen_Cos_Id);
             var elements = (resultData ?? Enumerable.Empty<JefeEntity>()).ToList();
 
             result.Success = true;
