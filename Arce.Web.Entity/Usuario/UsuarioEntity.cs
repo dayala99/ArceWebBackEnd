@@ -27,5 +27,6 @@ namespace Arce.Web.Entity.Usuario
         public string? Usr_Corr { get; set; }
         public string? Usr_Prf { get; set; }
         public int? Usr_Crg { get; set; }
+        public string? Cargo_Nombre { get; set; }
     }
 }

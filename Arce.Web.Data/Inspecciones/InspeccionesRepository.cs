@@ -23,6 +23,8 @@ public class InspeccionesRepository : IInspeccionesRepository
         return Task.FromResult<IEnumerable<InspeccionEntity>?>(result);
     }
 
+    // FIX: Se reemplazó el SP (que usa INNER JOIN en Ins_Cargo) por SQL inline con LEFT JOIN
+    // para que siempre devuelva el registro aunque el usuario no tenga cargo asignado.
     public async Task<IEnumerable<UsuarioEntity>?> ConsultarDatosUsuario(string? Usr_Cod)
     {
         using (var connection = new SqlConnection(_connectionString))
@@ -31,9 +33,19 @@ public class InspeccionesRepository : IInspeccionesRepository
             var parametros = new DynamicParameters();
             parametros.Add("@Usr_Cod", Usr_Cod);
             var result = await connection.QueryAsync<UsuarioEntity>(
-                "[dbo].[SP_Consulta_Datos_Usuario]",
+                @"SELECT
+                    t1.Usr_Nom,
+                    t1.Usr_Doc_Nro,
+                    t3.Cargo_Nombre,
+                    t2.Cen_Cos_Des
+                FROM Sg_Usuario t1
+                LEFT JOIN Lg_Cen_Cos t2
+                    ON (t1.Usr_Cen_Cos_Id = t2.Cen_Cos_Id)
+                LEFT JOIN Ins_Cargo t3
+                    ON (t1.Usr_Crg = t3.Cargo_Id)
+                WHERE t1.Usr_Cod = @Usr_Cod",
                 parametros,
-                commandType: CommandType.StoredProcedure
+                commandType: CommandType.Text
             );
             return result;
         }
