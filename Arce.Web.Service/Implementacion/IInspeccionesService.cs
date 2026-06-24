@@ -23,5 +23,7 @@ public interface IInspeccionesService
     Task<ServiceResponseList<ObservacionPlaneadaDetalleEntity>?> MostrarObservacionPlaneada(string Codigo_Obs);
     Task<ServiceResponse<int>> RegistrarObservacionPlaneada(ObservacionPlaneadaEntity valores);
     Task<ServiceResponse<int>> ActualizarObservacionPlaneada(ActualizarObservacionPlaneadaEntity valores);
-    Task<ServiceResponse<int>> EliminarObservacionPlaneada(EliminarObservacionPlaneadaEntity valores);
+    Task<ServiceResponse<int>> EliminarObservacionPlaneada(EliminarObservacionPlaneadaEntity valores);    Task<ServiceResponseList<InsTipoInspeccionEntity>?> ListarTiposInspeccion();
+    Task<ServiceResponse<int>> InsertarMedioAmbiente(InsMedioAmbienteEntity valores);
+
 }

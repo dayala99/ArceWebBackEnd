@@ -400,4 +400,54 @@ public async Task<ServiceResponseList<ObservacionPlaneadaDetalleEntity>?> Mostra
             return result;
         }
     }
+    public async Task<ServiceResponseList<InsTipoInspeccionEntity>?> ListarTiposInspeccion()
+    {
+        var result = new ServiceResponseList<InsTipoInspeccionEntity>();
+        try
+        {
+            var resultData = await _inspeccionesRepository.ListarTiposInspeccion();
+            var elements = resultData?.ToList() ?? new List<InsTipoInspeccionEntity>();
+            result.Success = true;
+            result.Elements = elements;
+            result.TotalElements = elements.Count;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Error inesperado " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponse<int>> InsertarMedioAmbiente(InsMedioAmbienteEntity valores)
+    {
+        var result = new ServiceResponse<int>();
+        try
+        {
+            var resultData = await _inspeccionesRepository.InsertarMedioAmbiente(valores);
+            if (resultData.Codigo == 0)
+            {
+                result.Success = true;
+                result.Message = resultData.Mensaje;
+                result.CodeTransacc = resultData.Codigo;
+                result.Data = 1;
+                return result;
+            }
+
+            result.Success = false;
+            result.Message = resultData.Mensaje;
+            result.Data = 0;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Error inesperado " + ex.Message;
+            result.Data = 0;
+            return result;
+        }
+    }
+
+
 }

@@ -383,4 +383,46 @@ ORDER BY t1.Observacion_Id DESC",
             }
         }
     }
+    // ─── Tipos de Inspección ─────────────────────────────────────────
+    public async Task<IEnumerable<InsTipoInspeccionEntity>?> ListarTiposInspeccion()
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+            var result = await connection.QueryAsync<InsTipoInspeccionEntity>(
+                "SELECT t1.Tipo_Id, t1.Tipo_Nombre FROM Ins_Tipo_Inspeccion t1",
+                commandType: CommandType.Text
+            );
+            return result;
+        }
+    }
+
+    // ─── Medio Ambiente ──────────────────────────────────────────────
+    public async Task<(int Codigo, string Mensaje)> InsertarMedioAmbiente(InsMedioAmbienteEntity valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+            var parametros = new DynamicParameters();
+            parametros.Add("@Usr_Cod",               valores.Usr_Cod);
+            parametros.Add("@Cliente_Id",            valores.Cliente_Id);
+            parametros.Add("@Subestacion_Id",        valores.Subestacion_Id);
+            parametros.Add("@SubContrata_Id",        valores.SubContrata_Id);
+            parametros.Add("@Jefe_Id",               valores.Jefe_Id);
+            parametros.Add("@Actividad",             valores.Actividad);
+            parametros.Add("@Orden_Trabajo",         valores.Orden_Trabajo);
+            parametros.Add("@Procedimiento_Trabajo", valores.Procedimiento_Trabajo);
+            parametros.Add("@Tipo_Id",               valores.Tipo_Id);
+            parametros.Add("@Usr_Reg",               valores.Usr_Reg);
+
+            await connection.ExecuteAsync(
+                "SP_Insertar_Medio_Ambiente",
+                parametros,
+                commandType: CommandType.StoredProcedure
+            );
+            return (0, "Inspección de Medio Ambiente registrada correctamente.");
+        }
+    }
+
+
 }

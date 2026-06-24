@@ -255,5 +255,35 @@ namespace Arce.Web.Api.Controllers.Inspecciones
             result.CodeResult = StatusCodes.Status400BadRequest;
             return BadRequest(result);
         }
+        [HttpGet]
+        [Route("getListarTiposInspeccion")]
+        public async Task<IActionResult> ListarTiposInspeccion()
+        {
+            var result = await _inspeccionesService.ListarTiposInspeccion();
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPost]
+        [Route("postInsertarMedioAmbiente")]
+        public async Task<IActionResult> InsertarMedioAmbiente([FromBody] InsMedioAmbienteEntity valores)
+        {
+            var result = await _inspeccionesService.InsertarMedioAmbiente(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
     }
 }

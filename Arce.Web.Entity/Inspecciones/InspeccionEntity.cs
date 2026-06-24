@@ -135,4 +135,26 @@ namespace Arce.Web.Entity.Inspecciones
         public string? Obs_Actividad { get; set; }
         public string? Estado { get; set; }
     }
+    // ── Tipos de Inspección ───────────────────────────────────────────
+    public class InsTipoInspeccionEntity
+    {
+        public int? Tipo_Id { get; set; }
+        public string? Tipo_Nombre { get; set; }
+    }
+
+    // ── Medio Ambiente ────────────────────────────────────────────────
+    public class InsMedioAmbienteEntity
+    {
+        public string? Usr_Cod { get; set; }
+        public int? Cliente_Id { get; set; }
+        public int? Subestacion_Id { get; set; }
+        public int? SubContrata_Id { get; set; }
+        public int? Jefe_Id { get; set; }
+        public string? Actividad { get; set; }
+        public string? Orden_Trabajo { get; set; }
+        public string? Procedimiento_Trabajo { get; set; }
+        public int? Tipo_Id { get; set; }
+        public string? Usr_Reg { get; set; }
+    }
+
 }
