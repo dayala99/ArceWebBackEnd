@@ -23,7 +23,19 @@ public interface IInspeccionesService
     Task<ServiceResponseList<ObservacionPlaneadaDetalleEntity>?> MostrarObservacionPlaneada(string Codigo_Obs);
     Task<ServiceResponse<int>> RegistrarObservacionPlaneada(ObservacionPlaneadaEntity valores);
     Task<ServiceResponse<int>> ActualizarObservacionPlaneada(ActualizarObservacionPlaneadaEntity valores);
-    Task<ServiceResponse<int>> EliminarObservacionPlaneada(EliminarObservacionPlaneadaEntity valores);    Task<ServiceResponseList<InsTipoInspeccionEntity>?> ListarTiposInspeccion();
+    Task<ServiceResponse<int>> EliminarObservacionPlaneada(EliminarObservacionPlaneadaEntity valores);
+    Task<ServiceResponseList<InsTipoInspeccionEntity>?> ListarTiposInspeccion();
+    Task<ServiceResponseList<PrevencionListadoEntity>?> FiltrarPrevencion(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado);
+    Task<ServiceResponseList<PrevencionDetalleEntity>?> MostrarPrevencion(int Prevencion_Id);
+    Task<ServiceResponse<int>> InsertarPrevencion(InsPrevencionEntity valores);
+    Task<ServiceResponse<int>> ActualizarPrevencion(ActualizarPrevencionEntity valores);
+    Task<ServiceResponse<int>> EliminarPrevencion(EliminarPrevencionEntity valores);
     Task<ServiceResponse<int>> InsertarMedioAmbiente(InsMedioAmbienteEntity valores);
+
+
+    Task<ServiceResponseList<MedioAmbienteListadoEntity>?> FiltrarMedioAmbiente(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado);
+    Task<ServiceResponseList<MedioAmbienteDetalleEntity>?> MostrarMedioAmbiente(int Medio_Ambiente_Id);
+    Task<ServiceResponse<int>> ActualizarMedioAmbiente(ActualizarMedioAmbienteEntity valores);
+    Task<ServiceResponse<int>> EliminarMedioAmbiente(EliminarMedioAmbienteEntity valores);
 
 }

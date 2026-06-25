@@ -24,5 +24,16 @@ public interface IInspeccionesRepository
     Task<(int Codigo, string Mensaje)> ActualizarObservacionPlaneada(ActualizarObservacionPlaneadaEntity valores);
     Task<(int Codigo, string Mensaje)> EliminarObservacionPlaneada(EliminarObservacionPlaneadaEntity valores);    Task<IEnumerable<InsTipoInspeccionEntity>?> ListarTiposInspeccion();
     Task<(int Codigo, string Mensaje)> InsertarMedioAmbiente(InsMedioAmbienteEntity valores);
+    Task<IEnumerable<PrevencionListadoEntity>?> FiltrarPrevencion(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado);
+    Task<IEnumerable<PrevencionDetalleEntity>?> MostrarPrevencion(int Prevencion_Id);
+    Task<(int Codigo, string Mensaje)> InsertarPrevencion(InsPrevencionEntity valores);
+    Task<(int Codigo, string Mensaje)> ActualizarPrevencion(ActualizarPrevencionEntity valores);
+    Task<(int Codigo, string Mensaje)> EliminarPrevencion(EliminarPrevencionEntity valores);
+
+
+    Task<IEnumerable<MedioAmbienteListadoEntity>?> FiltrarMedioAmbiente(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado);
+    Task<IEnumerable<MedioAmbienteDetalleEntity>?> MostrarMedioAmbiente(int Medio_Ambiente_Id);
+    Task<(int Codigo, string Mensaje)> ActualizarMedioAmbiente(ActualizarMedioAmbienteEntity valores);
+    Task<(int Codigo, string Mensaje)> EliminarMedioAmbiente(EliminarMedioAmbienteEntity valores);
 
 }

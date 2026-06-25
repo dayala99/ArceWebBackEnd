@@ -425,4 +425,250 @@ ORDER BY t1.Observacion_Id DESC",
     }
 
 
+
+
+    // ─── Prevención ────────────────────────────────────────────────
+    public async Task<IEnumerable<PrevencionListadoEntity>?> FiltrarPrevencion(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Fecha_Desde", Fecha_Desde ?? DateTime.MinValue);
+            parametros.Add("@Fecha_Hasta", Fecha_Hasta ?? DateTime.MinValue);
+            parametros.Add("@Estado", string.IsNullOrWhiteSpace(Estado) ? "A" : Estado);
+
+            return await connection.QueryAsync<PrevencionListadoEntity>(
+                "[dbo].[SP_Filtrar_Prevencion]",
+                parametros,
+                commandType: CommandType.StoredProcedure
+            );
+        }
+    }
+
+    public async Task<IEnumerable<PrevencionDetalleEntity>?> MostrarPrevencion(int Prevencion_Id)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Prevencion_Id", Prevencion_Id);
+
+            return await connection.QueryAsync<PrevencionDetalleEntity>(
+                "[dbo].[SP_Mostrar_Prevencion]",
+                parametros,
+                commandType: CommandType.StoredProcedure
+            );
+        }
+    }
+
+    public async Task<(int Codigo, string Mensaje)> InsertarPrevencion(InsPrevencionEntity valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            try
+            {
+                await connection.OpenAsync();
+                var parametros = new DynamicParameters();
+                parametros.Add("@Usr_Cod", valores.Usr_Cod);
+                parametros.Add("@Cliente_Id", valores.Cliente_Id);
+                parametros.Add("@Subestacion_Id", valores.Subestacion_Id);
+                parametros.Add("@SubContrata_Id", valores.SubContrata_Id);
+                parametros.Add("@Jefe_Id", valores.Jefe_Id);
+                parametros.Add("@Actividad", valores.Actividad);
+                parametros.Add("@Orden_Trabajo", valores.Orden_Trabajo);
+                parametros.Add("@Procedimiento_Trabajo", valores.Procedimiento_Trabajo);
+                parametros.Add("@Tipo_Id", valores.Tipo_Id);
+                parametros.Add("@Usr_Reg", valores.Usr_Reg);
+
+                await connection.ExecuteAsync(
+                    "SP_Insertar_Inspeccion_Prevencion",
+                    parametros,
+                    commandType: CommandType.StoredProcedure
+                );
+                return (0, "Inspección de Prevención registrada correctamente.");
+            }
+            catch (SqlException ex)
+            {
+                return (1, ex.Message);
+            }
+        }
+    }
+
+    public async Task<(int Codigo, string Mensaje)> ActualizarPrevencion(ActualizarPrevencionEntity valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+            var parametros = new DynamicParameters();
+            parametros.Add("@Prevencion_Id", valores.Prevencion_Id);
+            parametros.Add("@Usr_Cod", valores.Usr_Cod);
+            parametros.Add("@Cliente_Id", valores.Cliente_Id);
+            parametros.Add("@Subestacion_Id", valores.Subestacion_Id);
+            parametros.Add("@SubContrata_Id", valores.SubContrata_Id);
+            parametros.Add("@Jefe_Id", valores.Jefe_Id);
+            parametros.Add("@Actividad", valores.Actividad);
+            parametros.Add("@Orden_Trabajo", valores.Orden_Trabajo);
+            parametros.Add("@Procedimiento_Trabajo", valores.Procedimiento_Trabajo);
+            parametros.Add("@Tipo_Id", valores.Tipo_Id);
+            parametros.Add("@Usr_Mod", valores.Usr_Mod);
+            parametros.Add("@Estado", valores.Estado);
+
+            await connection.ExecuteAsync(
+                "SP_Actualizar_Prevencion",
+                parametros,
+                commandType: CommandType.StoredProcedure
+            );
+            return (0, "Inspección de Prevención actualizada correctamente.");
+        }
+    }
+
+    public async Task<(int Codigo, string Mensaje)> EliminarPrevencion(EliminarPrevencionEntity valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+            var parametros = new DynamicParameters();
+            parametros.Add("@Prevencion_Id", valores.Prevencion_Id);
+            parametros.Add("@Usr_Mod", valores.Usr_Mod);
+
+            await connection.ExecuteAsync(
+                "SP_Eliminar_Prevencion",
+                parametros,
+                commandType: CommandType.StoredProcedure
+            );
+            return (0, "Inspección de Prevención eliminada correctamente.");
+        }
+    }
+
+
+
+private static string NormalizarEstadoMedioAmbiente(string? estado)
+{
+    if (string.IsNullOrWhiteSpace(estado))
+    {
+        return "A";
+    }
+
+    var limpio = estado.Trim().ToUpperInvariant();
+
+    if (limpio.StartsWith("I"))
+    {
+        return "I";
+    }
+
+    return "A";
+}
+
+public async Task<IEnumerable<MedioAmbienteListadoEntity>?> FiltrarMedioAmbiente(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado)
+{
+    using (var connection = new SqlConnection(_connectionString))
+    {
+        await connection.OpenAsync();
+
+        var parametros = new DynamicParameters();
+        parametros.Add("@Fecha_Desde", Fecha_Desde ?? DateTime.MinValue);
+        parametros.Add("@Fecha_Hasta", Fecha_Hasta ?? DateTime.MinValue);
+        parametros.Add("@Estado", NormalizarEstadoMedioAmbiente(Estado));
+
+        return await connection.QueryAsync<MedioAmbienteListadoEntity>(
+            "[dbo].[SP_Filtrar_Medio_Ambiente]",
+            parametros,
+            commandType: CommandType.StoredProcedure
+        );
+    }
+}
+
+public async Task<IEnumerable<MedioAmbienteDetalleEntity>?> MostrarMedioAmbiente(int Medio_Ambiente_Id)
+{
+    using (var connection = new SqlConnection(_connectionString))
+    {
+        await connection.OpenAsync();
+
+        var parametros = new DynamicParameters();
+        parametros.Add("@Medio_Ambiente_Id", Medio_Ambiente_Id);
+
+        return await connection.QueryAsync<MedioAmbienteDetalleEntity>(
+            "[dbo].[SP_Mostrar_Medio_Ambiente]",
+            parametros,
+            commandType: CommandType.StoredProcedure
+        );
+    }
+}
+
+public async Task<(int Codigo, string Mensaje)> ActualizarMedioAmbiente(ActualizarMedioAmbienteEntity valores)
+{
+    using (var connection = new SqlConnection(_connectionString))
+    {
+        await connection.OpenAsync();
+
+        var parametros = new DynamicParameters();
+        parametros.Add("@Medio_Ambiente_Id", valores.Medio_Ambiente_Id);
+        parametros.Add("@Usr_Cod", valores.Usr_Cod);
+        parametros.Add("@Cliente_Id", valores.Cliente_Id);
+        parametros.Add("@Subestacion_Id", valores.Subestacion_Id);
+        parametros.Add("@SubContrata_Id", valores.SubContrata_Id);
+        parametros.Add("@Jefe_Id", valores.Jefe_Id);
+        parametros.Add("@Actividad", valores.Actividad);
+        parametros.Add("@Orden_Trabajo", valores.Orden_Trabajo);
+        parametros.Add("@Procedimiento_Trabajo", valores.Procedimiento_Trabajo);
+        parametros.Add("@Tipo_Id", valores.Tipo_Id);
+        parametros.Add("@Usr_Mod", valores.Usr_Mod);
+        parametros.Add("@Estado", valores.Estado);
+
+        try
+        {
+            var rows = await connection.ExecuteAsync(
+                "SP_Actualizar_Medio_Ambiente",
+                parametros,
+                commandType: CommandType.StoredProcedure
+            );
+
+            if (rows > 0)
+            {
+                return (0, string.Empty);
+            }
+
+            return (1, "No se pudo actualizar la inspección de medio ambiente");
+        }
+        catch (SqlException ex)
+        {
+            return (1, ex.Message);
+        }
+    }
+}
+
+public async Task<(int Codigo, string Mensaje)> EliminarMedioAmbiente(EliminarMedioAmbienteEntity valores)
+{
+    using (var connection = new SqlConnection(_connectionString))
+    {
+        await connection.OpenAsync();
+
+        var parametros = new DynamicParameters();
+        parametros.Add("@Medio_Ambiente_Id", valores.Medio_Ambiente_Id);
+        parametros.Add("@Usr_Mod", valores.Usr_Mod);
+
+        try
+        {
+            var rows = await connection.ExecuteAsync(
+                "SP_Eliminar_Medio_Ambiente",
+                parametros,
+                commandType: CommandType.StoredProcedure
+            );
+
+            if (rows > 0)
+            {
+                return (0, string.Empty);
+            }
+
+            return (1, "No se pudo eliminar la inspección de medio ambiente");
+        }
+        catch (SqlException ex)
+        {
+            return (1, ex.Message);
+        }
+    }
+}
 }

@@ -285,5 +285,146 @@ namespace Arce.Web.Api.Controllers.Inspecciones
             return BadRequest(result);
         }
 
+        [HttpGet]
+        [Route("getFiltrarPrevencion")]
+        public async Task<IActionResult> FiltrarPrevencion(DateTime Fecha_Desde, DateTime Fecha_Hasta, string Estado)
+        {
+            var result = await _inspeccionesService.FiltrarPrevencion(Fecha_Desde, Fecha_Hasta, Estado);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpGet]
+        [Route("getMostrarPrevencion")]
+        public async Task<IActionResult> MostrarPrevencion(int Prevencion_Id)
+        {
+            var result = await _inspeccionesService.MostrarPrevencion(Prevencion_Id);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPost]
+        [Route("postInsertarPrevencion")]
+        public async Task<IActionResult> InsertarPrevencion([FromBody] InsPrevencionEntity valores)
+        {
+            var result = await _inspeccionesService.InsertarPrevencion(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPut]
+        [Route("putActualizarPrevencion")]
+        public async Task<IActionResult> ActualizarPrevencion([FromBody] ActualizarPrevencionEntity valores)
+        {
+            var result = await _inspeccionesService.ActualizarPrevencion(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpDelete]
+        [Route("deleteEliminarPrevencion")]
+        public async Task<IActionResult> EliminarPrevencion(int Prevencion_Id, string Usr_Mod)
+        {
+            var valores = new EliminarPrevencionEntity { Prevencion_Id = Prevencion_Id, Usr_Mod = Usr_Mod };
+            var result = await _inspeccionesService.EliminarPrevencion(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpGet]
+        [Route("getFiltrarMedioAmbiente")]
+        public async Task<IActionResult> FiltrarMedioAmbiente(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado)
+        {
+            var result = await _inspeccionesService.FiltrarMedioAmbiente(Fecha_Desde, Fecha_Hasta, Estado);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpGet]
+        [Route("getMostrarMedioAmbiente")]
+        public async Task<IActionResult> MostrarMedioAmbiente(int Medio_Ambiente_Id)
+        {
+            var result = await _inspeccionesService.MostrarMedioAmbiente(Medio_Ambiente_Id);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPut]
+        [Route("putActualizarMedioAmbiente")]
+        public async Task<IActionResult> ActualizarMedioAmbiente([FromBody] ActualizarMedioAmbienteEntity valores)
+        {
+            var result = await _inspeccionesService.ActualizarMedioAmbiente(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpDelete]
+        [Route("deleteEliminarMedioAmbiente")]
+        public async Task<IActionResult> EliminarMedioAmbiente(int Medio_Ambiente_Id, string? Usr_Mod)
+        {
+            var valores = new EliminarMedioAmbienteEntity
+            {
+                Medio_Ambiente_Id = Medio_Ambiente_Id,
+                Usr_Mod = Usr_Mod
+            };
+
+            var result = await _inspeccionesService.EliminarMedioAmbiente(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
     }
 }

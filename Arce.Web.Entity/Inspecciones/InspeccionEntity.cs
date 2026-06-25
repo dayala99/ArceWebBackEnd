@@ -142,6 +142,82 @@ namespace Arce.Web.Entity.Inspecciones
         public string? Tipo_Nombre { get; set; }
     }
 
+
+
+    // ── Prevención ──────────────────────────────────────────────────
+    public class InsPrevencionEntity
+    {
+        public string? Usr_Cod { get; set; }
+        public int? Cliente_Id { get; set; }
+        public int? Subestacion_Id { get; set; }
+        public int? SubContrata_Id { get; set; }
+        public int? Jefe_Id { get; set; }
+        public string? Actividad { get; set; }
+        public string? Orden_Trabajo { get; set; }
+        public string? Procedimiento_Trabajo { get; set; }
+        public int? Tipo_Id { get; set; }
+        public string? Usr_Reg { get; set; }
+    }
+
+    public class ActualizarPrevencionEntity
+    {
+        public int? Prevencion_Id { get; set; }
+        public string? Usr_Cod { get; set; }
+        public int? Cliente_Id { get; set; }
+        public int? Subestacion_Id { get; set; }
+        public int? SubContrata_Id { get; set; }
+        public int? Jefe_Id { get; set; }
+        public string? Actividad { get; set; }
+        public string? Orden_Trabajo { get; set; }
+        public string? Procedimiento_Trabajo { get; set; }
+        public int? Tipo_Id { get; set; }
+        public string? Usr_Mod { get; set; }
+        public string? Estado { get; set; }
+    }
+
+    public class EliminarPrevencionEntity
+    {
+        public int? Prevencion_Id { get; set; }
+        public string? Usr_Mod { get; set; }
+    }
+
+    public class PrevencionListadoEntity
+    {
+        public int? Prevencion_Id { get; set; }
+        public string? Prevencion_Cod { get; set; }
+        public string? Usr_Nom { get; set; }
+        public string? Jef_Nombre { get; set; }
+        public string? Cen_Cos_Des { get; set; }
+        public string? Cliente_Nombre { get; set; }
+        public string? Subestacion_Nombre { get; set; }
+        public string? Actividad { get; set; }
+        public string? Orden_Trabajo { get; set; }
+        public string? Tipo_Nombre { get; set; }
+    }
+
+    public class PrevencionDetalleEntity
+    {
+        public string? Usr_Cod { get; set; }
+        public string? Usr_Doc_Nro { get; set; }
+        public string? Usr_Nom { get; set; }
+        public int? Cliente_Id { get; set; }
+        public string? Cliente_Nombre { get; set; }
+        public int? Subestacion_Id { get; set; }
+        public string? Subestacion_Nombre { get; set; }
+        public int? SubContrata_Id { get; set; }
+        public string? SubContrata_Nombre { get; set; }
+        public int? Jefe_Id { get; set; }
+        public string? Jef_Nombre { get; set; }
+        public string? Jef_DNI { get; set; }
+        public string? Cen_Cos_Des { get; set; }
+        public string? Actividad { get; set; }
+        public string? Orden_Trabajo { get; set; }
+        public string? Procedimiento_Trabajo { get; set; }
+        public int? Tipo_Id { get; set; }
+        public string? Tipo_Nombre { get; set; }
+        public string? Estado { get; set; }
+    }
+
     // ── Medio Ambiente ────────────────────────────────────────────────
     public class InsMedioAmbienteEntity
     {
@@ -157,4 +233,57 @@ namespace Arce.Web.Entity.Inspecciones
         public string? Usr_Reg { get; set; }
     }
 
+}
+
+public class MedioAmbienteListadoEntity
+{
+    public int? Medio_Ambiente_Id { get; set; }
+    public string? Medio_Ambiente_Cod { get; set; }
+    public string? Jef_Nombre { get; set; }
+    public string? Cen_Cos_Des { get; set; }
+    public string? Cliente_Nombre { get; set; }
+    public string? Subestacion_Nombre { get; set; }
+    public string? Actividad { get; set; }
+    public string? Orden_Trabajo { get; set; }
+    public string? Tipo_Nombre { get; set; }
+}
+
+public class MedioAmbienteDetalleEntity
+{
+    public string? Usr_Cod { get; set; }
+    public string? Cen_Cos_Des { get; set; }
+    public string? Usr_Doc_Nro { get; set; }
+    public string? Cliente_Nombre { get; set; }
+    public string? Subestacion_Nombre { get; set; }
+    public string? SubContrata_Nombre { get; set; }
+    public string? Jef_Nombre { get; set; }
+    public string? Jef_DNI { get; set; }
+    public string? Cen_Cos_Des_Jefe { get; set; }
+    public string? Actividad { get; set; }
+    public string? Orden_Trabajo { get; set; }
+    public string? Procedimiento_Trabajo { get; set; }
+    public string? Tipo_Nombre { get; set; }
+    public string? Estado { get; set; }
+}
+
+public class ActualizarMedioAmbienteEntity
+{
+    public int? Medio_Ambiente_Id { get; set; }
+    public string? Usr_Cod { get; set; }
+    public int? Cliente_Id { get; set; }
+    public int? Subestacion_Id { get; set; }
+    public int? SubContrata_Id { get; set; }
+    public int? Jefe_Id { get; set; }
+    public string? Actividad { get; set; }
+    public string? Orden_Trabajo { get; set; }
+    public string? Procedimiento_Trabajo { get; set; }
+    public int? Tipo_Id { get; set; }
+    public string? Usr_Mod { get; set; }
+    public string? Estado { get; set; }
+}
+
+public class EliminarMedioAmbienteEntity
+{
+    public int? Medio_Ambiente_Id { get; set; }
+    public string? Usr_Mod { get; set; }
 }
