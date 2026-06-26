@@ -68,6 +68,7 @@ public class AlmacenRepository: IAlmacenRepository
             parametros.Add("@Alm_Sol_Dni", valores.Alm_Sol_Dni);
             parametros.Add("@Alm_Cen_Cos",valores.Alm_Cen_Cos);
             parametros.Add("@Alm_Tip_Ing", valores.Alm_Tip_Ing);
+            //parametros.Add("@Flg_Est_Apr", string.IsNullOrWhiteSpace(valores.Flg_Est_Apr) ? "I" : valores.Flg_Est_Apr);
             parametros.Add("@Usr_Reg",valores.Usr_Reg);
             parametros.Add("@Alm_Mov_Id",0);
             parametros.Add("@Codigo",0);

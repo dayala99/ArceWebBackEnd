@@ -20,4 +20,9 @@ public class ItemEntity
     public string? Itm_Cod { get; set; }
     public int? Uni_Med_Id { get; set; }
     public string? Uni_Med_Des { get; set; }
+    public decimal? Can_Stk { get; set; }
+    public decimal? Can_Ing { get; set; }
+    public int? Ord_Com_Id { get; set; }
+    public int? Alm_Mov_Id { get; set; }
+    public int? Alm_Det_Itm_Id { get; set; }
 }

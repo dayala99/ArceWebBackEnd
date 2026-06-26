@@ -60,5 +60,50 @@ namespace MyApp.Namespace
             result.CodeResult = StatusCodes.Status400BadRequest;
             return BadRequest(result);
         }
+
+        [HttpPatch]
+        [Route("patchActualizarStockItem")]
+        public async Task<IActionResult> ActualizarStockItem([FromBody] ItemEntity valores)
+        {           
+            var result = await _service.ActualizarStockItem(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPatch]
+        [Route("patchActualizarStockItemIngresoDirecto")]
+        public async Task<IActionResult> ActualizarStockItemIngresoDirecto([FromBody] ItemEntity valores)
+        {           
+            var result = await _service.ActualizarStockItemIngresoDirecto(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPatch]
+        [Route("patchActualizarStockItemSalida")]
+        public async Task<IActionResult> ActualizarStockItemSalida([FromBody] ItemEntity valores)
+        {           
+            var result = await _service.ActualizarStockItemSalida(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
     }
 }
