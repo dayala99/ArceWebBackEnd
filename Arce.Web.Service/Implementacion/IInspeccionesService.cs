@@ -17,6 +17,8 @@ public interface IInspeccionesService
     Task<ServiceResponseList<InsTareaEntity>?> ListarTareas();
     Task<ServiceResponseList<InsSubContrataEntity>?> ListarSubContratas();
     Task<ServiceResponseList<InsJefeAreaEntity>?> ListarJefesArea();
+    // NUEVO: devuelve Cen_Cos_Des y Usr_Doc_Nro del jefe
+    Task<ServiceResponseList<InsJefeDatosEntity>?> MostrarJefe(string Jefe_Cod);
     Task<ServiceResponseList<ObservacionPlaneadaListadoEntity>?> ListarObservacionesPlaneadas();
     Task<ServiceResponseList<ObservacionPlaneadaListadoEntity>?> ConsultarEstadoObservaciones(string Estado);
     Task<ServiceResponseList<ObservacionPlaneadaListadoEntity>?> FiltrarObservaciones(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado);
@@ -31,11 +33,8 @@ public interface IInspeccionesService
     Task<ServiceResponse<int>> ActualizarPrevencion(ActualizarPrevencionEntity valores);
     Task<ServiceResponse<int>> EliminarPrevencion(EliminarPrevencionEntity valores);
     Task<ServiceResponse<int>> InsertarMedioAmbiente(InsMedioAmbienteEntity valores);
-
-
     Task<ServiceResponseList<MedioAmbienteListadoEntity>?> FiltrarMedioAmbiente(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado);
     Task<ServiceResponseList<MedioAmbienteDetalleEntity>?> MostrarMedioAmbiente(int Medio_Ambiente_Id);
     Task<ServiceResponse<int>> ActualizarMedioAmbiente(ActualizarMedioAmbienteEntity valores);
     Task<ServiceResponse<int>> EliminarMedioAmbiente(EliminarMedioAmbienteEntity valores);
-
 }

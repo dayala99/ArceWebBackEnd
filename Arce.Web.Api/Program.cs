@@ -7,6 +7,7 @@ using Arce.Web.Data.Inspecciones.Clima;
 using Arce.Web.Data.Inspecciones.Tarea;
 using Arce.Web.Data.Inspecciones.SubContrata;
 using Arce.Web.Data.Inspecciones.Subestaciones;
+using Arce.Web.Data.Inspecciones.TipoInspeccion;
 using Arce.Web.Service;
 using Arce.Web.Service.Inspecciones.Jefe;
 using Arce.Web.Service.Inspecciones.Clima;
@@ -118,6 +119,7 @@ builder.Services.AddScoped<IAccesoRepository, AccesoRepository>();
 builder.Services.AddScoped<ICargoRepository, CargoRepository>();
 
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>(); // ← AGREGADO
+builder.Services.AddScoped<ITipoInspeccionRepository, TipoInspeccionRepository>();
 
 #endregion
 

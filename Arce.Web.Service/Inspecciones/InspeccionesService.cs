@@ -213,6 +213,37 @@ public class InspeccionesService : IInspeccionesService
         }
     }
 
+    // NUEVO: MostrarJefe — llama a SP_Mostrar_Jefe y devuelve Cen_Cos_Des + Usr_Doc_Nro
+    public async Task<ServiceResponseList<InsJefeDatosEntity>?> MostrarJefe(string Jefe_Cod)
+    {
+        var result = new ServiceResponseList<InsJefeDatosEntity>();
+        try
+        {
+            var datos = await _inspeccionesRepository.MostrarJefe(Jefe_Cod);
+            if (datos != null)
+            {
+                result.Success = true;
+                result.Message = "Completado con éxito";
+                result.Elements = new List<InsJefeDatosEntity> { datos };
+                result.TotalElements = 1;
+            }
+            else
+            {
+                result.Success = false;
+                result.Message = "No existe información";
+                result.Elements = new List<InsJefeDatosEntity>();
+                result.TotalElements = 0;
+            }
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Excepción no controlada " + ex.Message;
+            return result;
+        }
+    }
+
     public async Task<ServiceResponseList<ObservacionPlaneadaListadoEntity>?> ListarObservacionesPlaneadas()
     {
         var result = new ServiceResponseList<ObservacionPlaneadaListadoEntity>();

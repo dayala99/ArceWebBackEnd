@@ -151,6 +151,22 @@ namespace Arce.Web.Api.Controllers.Inspecciones
             return BadRequest(result);
         }
 
+        // NUEVO: devuelve Cen_Cos_Des y DNI del jefe a partir de su Usr_Cod
+        [HttpGet]
+        [Route("getMostrarJefe")]
+        public async Task<IActionResult> MostrarJefe(string Jefe_Cod)
+        {
+            var result = await _inspeccionesService.MostrarJefe(Jefe_Cod);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
         [HttpGet]
         [Route("getListarObservacionesPlaneadas")]
         public async Task<IActionResult> ListarObservacionesPlaneadas()
