@@ -873,5 +873,98 @@ public class PedidoRepository: IPedidoRepository
             return (Codigo, Mensaje);
         }
     }
+
+    public async Task<(int Codigo, string Mensaje)> RegistrarArchivoAdjunto(PedidoArchivo valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Ped_Cab_Arc_Id", valores.Ped_Cab_Arc_Id);
+            parametros.Add("@Ped_Cab_Id", valores.Ped_Cab_Id);
+            parametros.Add("@Ped_Cab_Arc_Rut", valores.Ped_Cab_Arc_Rut);
+            parametros.Add("@Ped_Cab_Arc_Nom", valores.Ped_Cab_Arc_Nom);
     
+
+            
+            parametros.Add("@Codigo", 0);
+            parametros.Add("@sMsj", "");
+
+            parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+
+            try
+            {
+                connection.Execute(
+                    "[dbo].[PA_Lg_Pedido_Cab_Archivo_I0001]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+                );
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            var Codigo = parametros.Get<int>("@Codigo");
+            var Mensaje = parametros.Get<string>("@sMsj");
+
+            return (Codigo, Mensaje);
+        }
+    }
+
+    public async Task<IEnumerable<PedidoArchivo>?> ListarArchivosAdjuntos(int? Ped_Cab_Id)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Ped_Cab_Id", Ped_Cab_Id);
+
+            var result = await connection.QueryAsync<PedidoArchivo>(
+                "[dbo].[PA_Lg_Pedido_Cab_Archivo_S0001]"
+                , parametros
+                , commandType: CommandType.StoredProcedure
+            );
+            return result;
+        }
+    }
+    
+    public async Task<(int Codigo, string Mensaje)> EliminarArchivoAdjunto(PedidoArchivo valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Ped_Cab_Arc_Id", valores.Ped_Cab_Arc_Id);
+            parametros.Add("@Ped_Cab_Id", valores.Ped_Cab_Id);
+            
+            parametros.Add("@Codigo", 0);
+            parametros.Add("@sMsj", "");
+
+            parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+
+            try
+            {
+                connection.Execute(
+                    "[dbo].[PA_Lg_Pedido_Cab_Archivo_D0001]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+                );
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            var Codigo = parametros.Get<int>("@Codigo");
+            var Mensaje = parametros.Get<string>("@sMsj");
+
+            return (Codigo, Mensaje);
+        }
+    }
 }

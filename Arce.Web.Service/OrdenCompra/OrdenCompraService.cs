@@ -186,4 +186,85 @@ public class OrdenCompraService : IOrdenCompraService
             return result;
         }
     }
+
+    public async Task<ServiceResponse<int>> RegistrarArchivoAdjuntoOrdenCompra(OrdenCompraArchivoEntity valores)
+    {
+        var result = new ServiceResponse<int>();
+        try
+        {
+            var resultData = await _repository.RegistrarArchivoAdjuntoOrdenCompra(valores);
+            if (resultData.Codigo == 0)
+            {
+                result.Success = true;
+                result.Message = resultData.Mensaje;
+                result.CodeTransacc = resultData.Codigo;
+                return result;
+            }
+            result.Success = false;
+            result.Message = resultData.Mensaje;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Error inesperado " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponseList<OrdenCompraArchivoEntity>?> ListarArchivosAdjuntosOrdenCompra(int? Ord_Com_Id)
+    {
+        var result = new ServiceResponseList<OrdenCompraArchivoEntity>();
+        try
+        {
+            var resultData = await _repository.ListarArchivosAdjuntosOrdenCompra(Ord_Com_Id);
+
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+                result.Elements = new List<OrdenCompraArchivoEntity>();
+                result.TotalElements = 0;
+                return result;
+            }
+
+            var elementos = resultData.ToList();
+
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = elementos;
+            result.TotalElements = elementos.Count;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepción no controlada " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponse<int>> EliminarArchivoAdjuntoOrdenCompra(OrdenCompraArchivoEntity valores)
+    {
+        var result = new ServiceResponse<int>();
+        try
+        {
+            var resultData = await _repository.EliminarArchivoAdjuntoOrdenCompra(valores);
+            if (resultData.Codigo == 0)
+            {
+                result.Success = true;
+                result.Message = resultData.Mensaje;
+                result.CodeTransacc = resultData.Codigo;
+                return result;
+            }
+            result.Success = false;
+            result.Message = resultData.Mensaje;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Error inesperado " + ex.Message;
+            return result;
+        }
+    }
 }

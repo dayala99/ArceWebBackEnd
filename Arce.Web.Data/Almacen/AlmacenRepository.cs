@@ -284,4 +284,77 @@ public class AlmacenRepository: IAlmacenRepository
             return (Codigo, Mensaje, Alm_Mov_Id);
         }
     }
+
+    public async Task<(int Codigo, string Mensaje)> ActualizarIngresoAlmacenDetalleOrdenCompra(AlmacenDetalleEntity valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+            var parametros = new DynamicParameters();
+
+            parametros.Add("@Alm_Det_Id", valores.Alm_Det_Id);
+            parametros.Add("@Alm_Det_Can", valores.Alm_Det_Can);
+            parametros.Add("@Usr_Mod",valores.Usr_Mod);
+
+            parametros.Add("@Codigo",0);
+            parametros.Add("@sMsj", "");
+
+            parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+
+            try
+            {
+                connection.Execute(
+                    "[dbo].[PA_Lg_Almacen_Det_Ing_U0002]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+                );
+            }
+            catch(SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            var Codigo = parametros.Get<int>("@Codigo");
+            var Mensaje = parametros.Get<string>("@sMsj");
+            
+            return (Codigo, Mensaje);
+        }
+    }
+
+    public async Task<(int Codigo, string Mensaje)> ActualizarMotivoRechazoAlmacen(AlmacenEntity valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+            var parametros = new DynamicParameters();
+
+            parametros.Add("@Alm_Mov_Id", valores.Alm_Mov_Id);
+            parametros.Add("@Alm_Mot_Rch", valores.Alm_Mot_Rch);
+
+            parametros.Add("@Codigo",0);
+            parametros.Add("@sMsj", "");
+
+            parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+
+            try
+            {
+                connection.Execute(
+                    "[dbo].[PA_Lg_Almacen_U0002]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+                );
+            }
+            catch(SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            var Codigo = parametros.Get<int>("@Codigo");
+            var Mensaje = parametros.Get<string>("@sMsj");
+            
+            return (Codigo, Mensaje);
+        }
+    }
 }

@@ -12,4 +12,6 @@ public interface IAlmacenRepository
     Task<(int Codigo, string Mensaje)> RegistrarIngresoAlmacenDetalle(AlmacenDetalleEntity valores);
     Task<(int Codigo, string Mensaje)> ActualizarIngresoAlmacenDetalle(AlmacenDetalleEntity valores);
     Task<(int Codigo, string Mensaje, int Alm_Mov_Id)> RegistrarIngresoAlmacenOrdenCompra(AlmacenEntity valores);
+    Task<(int Codigo, string Mensaje)> ActualizarIngresoAlmacenDetalleOrdenCompra(AlmacenDetalleEntity valores);
+    Task<(int Codigo, string Mensaje)> ActualizarMotivoRechazoAlmacen(AlmacenEntity valores);
 }

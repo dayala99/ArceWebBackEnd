@@ -599,5 +599,73 @@ namespace MyApp.Namespace
             return BadRequest(result);
         }
 
+        [HttpPost]
+        [Route("postRegistrarArchivoAdjunto")]
+        public async Task<IActionResult> RegistrarArchivoAdjunto([FromForm] PedidoArchivo valores, IFormFile archivo)
+        {
+            if (valores == null)
+            {
+                return BadRequest(new { Success = false, Message = "Datos incompletos" });
+            }
+
+            if (archivo != null && archivo.Length > 0)
+            {
+                var carpeta = Path.Combine(@"C:\Archivos");
+                if (!Directory.Exists(carpeta))
+                    Directory.CreateDirectory(carpeta);
+
+                var nombreArchivo = $"{Path.GetFileName(archivo.FileName)}";
+                var rutaCompleta = Path.Combine(carpeta, nombreArchivo);
+
+                using (var stream = new FileStream(rutaCompleta, FileMode.Create))
+                {
+                    await archivo.CopyToAsync(stream);
+                }
+
+                valores.Ped_Cab_Arc_Nom = archivo.FileName;
+                valores.Ped_Cab_Arc_Rut = rutaCompleta;
+            }
+
+            var result = await _service.RegistrarArchivoAdjunto(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpGet]
+        [Route("getListarArchivosAdjuntos")]
+        public async Task<IActionResult> ListarArchivosAdjuntos(int? Ped_Cab_Id)
+        {
+            var result = await _service.ListarArchivosAdjuntos(Ped_Cab_Id ?? 0);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpDelete]
+        [Route("deleteEliminarArchivoAdjunto")]
+        public async Task<IActionResult> EliminarArchivoAdjunto([FromBody] PedidoArchivo valores)
+        {          
+            var result = await _service.EliminarArchivoAdjunto(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
     }
 }

@@ -164,4 +164,31 @@ public class ItemService: IItemService
             return result;
         }
     }
+
+    public async Task<ServiceResponseList<ItemEntity>?> ListarStocksItems(int? Usr_Cen_Cos_Id, int? Alm_Det_Itm_Id)
+    {
+        var result = new ServiceResponseList<ItemEntity>();
+        try
+        {
+            var resultData = await _repository.ListarStocksItems(Usr_Cen_Cos_Id, Alm_Det_Itm_Id);
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+                result.Elements = new List<ItemEntity>();
+                result.TotalElements = 0;
+                return result;
+            }
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = resultData.ToList();
+            result.TotalElements = resultData.ToList().Count();
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepción no controlada " + ex.Message;
+            return result;
+        }
+    }
 }

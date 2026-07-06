@@ -33,4 +33,7 @@ public interface IPedidoService
     Task<ServiceResponse<int>> ActualizarPedidoDetalleIngresoAlmacen(PedidoDetalleEntity valores);
     Task<ServiceResponse<int>> RechazarPedido(PedidoCabeceraEntity valores);
     Task<ServiceResponse<int>> ActualizarReferenciaGeneral(PedidoCabeceraEntity valores);
+    Task<ServiceResponse<int>> RegistrarArchivoAdjunto(PedidoArchivo valores);
+    Task<ServiceResponseList<PedidoArchivo>?> ListarArchivosAdjuntos(int? Ped_Cab_Id);
+    Task<ServiceResponse<int>> EliminarArchivoAdjunto(PedidoArchivo valores);
 }

@@ -105,5 +105,20 @@ namespace MyApp.Namespace
             result.CodeResult = StatusCodes.Status400BadRequest;
             return BadRequest(result);
         }
+
+        [HttpGet]
+        [Route("getListarStocksItems")]
+        public async Task<IActionResult> ListarStocksItems(int? Usr_Cen_Cos_Id, int? Alm_Det_Itm_Id)
+        {
+            var result = await _service.ListarStocksItems(Usr_Cen_Cos_Id, Alm_Det_Itm_Id);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
     }
 }

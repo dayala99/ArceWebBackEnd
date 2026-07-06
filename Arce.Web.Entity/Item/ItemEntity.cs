@@ -25,4 +25,7 @@ public class ItemEntity
     public int? Ord_Com_Id { get; set; }
     public int? Alm_Mov_Id { get; set; }
     public int? Alm_Det_Itm_Id { get; set; }
+    public decimal? Disponible { get; set; }
+    public decimal? Reservado { get; set; }
+    public decimal? Total { get; set; }
 }

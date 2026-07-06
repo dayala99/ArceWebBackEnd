@@ -12,4 +12,7 @@ public interface IOrdenCompraRepository
     Task<IEnumerable<OrdenCompraEntity>?> ListarOrdenCompraPendienteAlmacen(int? Ord_Com_Id, string? Ord_Com_Prv, string? Flg_Est);
     Task<IEnumerable<OrdenCompraEntity>?> ListarCabeceraIngresoAlmacen(int? Ord_Com_Id);
     Task<(int Codigo, string Mensaje)> CambiarEstadoOrdenCompra(OrdenCompraEntity valores);
+    Task<(int Codigo, string Mensaje)> RegistrarArchivoAdjuntoOrdenCompra(OrdenCompraArchivoEntity valores);
+    Task<IEnumerable<OrdenCompraArchivoEntity>?> ListarArchivosAdjuntosOrdenCompra(int? Ord_Com_Id);
+    Task<(int Codigo, string Mensaje)> EliminarArchivoAdjuntoOrdenCompra(OrdenCompraArchivoEntity valores);
 }

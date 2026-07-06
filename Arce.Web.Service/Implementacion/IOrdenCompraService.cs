@@ -12,4 +12,7 @@ public interface IOrdenCompraService
     Task<ServiceResponseList<OrdenCompraEntity>?> ListarOrdenCompraPendienteAlmacen(int? Ord_Com_Id, string? Ord_Com_Prv, string? Flg_Est);
     Task<ServiceResponseList<OrdenCompraEntity>?> ListarCabeceraIngresoAlmacen(int? Ord_Com_Id);
     Task<ServiceResponse<int>> CambiarEstadoOrdenCompra(OrdenCompraEntity valores);
+    Task<ServiceResponse<int>> RegistrarArchivoAdjuntoOrdenCompra(OrdenCompraArchivoEntity valores);
+    Task<ServiceResponseList<OrdenCompraArchivoEntity>?> ListarArchivosAdjuntosOrdenCompra(int? Ord_Com_Id);
+    Task<ServiceResponse<int>> EliminarArchivoAdjuntoOrdenCompra(OrdenCompraArchivoEntity valores);
 }

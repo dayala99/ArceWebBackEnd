@@ -143,5 +143,37 @@ namespace MyApp.Namespace
             result.CodeResult = StatusCodes.Status400BadRequest;
             return BadRequest(result);
         }
+
+        [HttpPatch]
+        [Route("patchActualizarIngresoAlmacenDetalleOrdenCompra")]
+        public async Task<IActionResult> ActualizarIngresoAlmacenDetalleOrdenCompra([FromBody] AlmacenDetalleEntity valores)
+        {
+            var result = await _service.ActualizarIngresoAlmacenDetalleOrdenCompra(valores);
+
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPatch]
+        [Route("patchActualizarMotivoRechazoAlmacen")]
+        public async Task<IActionResult> ActualizarMotivoRechazoAlmacen([FromBody] AlmacenEntity valores)
+        {
+            var result = await _service.ActualizarMotivoRechazoAlmacen(valores);
+
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
     }
 }

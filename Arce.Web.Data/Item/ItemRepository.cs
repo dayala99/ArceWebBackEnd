@@ -226,4 +226,24 @@ public class ItemRepository: IItemRepository
             return (Codigo, mensaje);
         }
     }
+
+    public async Task<IEnumerable<ItemEntity>?> ListarStocksItems(int? Usr_Cen_Cos_Id, int? Alm_Det_Itm_Id)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Usr_Cen_Cos_Id", Usr_Cen_Cos_Id);
+            parametros.Add("@Alm_Det_Itm_Id", Alm_Det_Itm_Id);
+
+            var result = await connection.QueryAsync<ItemEntity>(
+                "[dbo].[PA_Lg_Almacen_Det_Ing_S0002]"
+                , parametros
+                , commandType: CommandType.StoredProcedure
+            );
+
+            return result;
+        }
+    }
 }
