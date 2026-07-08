@@ -366,44 +366,6 @@ public async Task<ServiceResponseList<ObservacionPlaneadaDetalleEntity>?> Mostra
         }
     }
 
-    public async Task<ServiceResponseList<WeReportListadoEntity>?> FiltrarWeReport(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado)
-    {
-        var result = new ServiceResponseList<WeReportListadoEntity>();
-        try
-        {
-            if (!Fecha_Desde.HasValue || !Fecha_Hasta.HasValue)
-            {
-                result.Success = true;
-                result.Message = "No existe información";
-                result.Elements = new List<WeReportListadoEntity>();
-                result.TotalElements = 0;
-                return result;
-            }
-
-            var estadoNormalizado = string.IsNullOrWhiteSpace(Estado)
-                ? "A"
-                : Estado.Trim().Substring(0, 1).ToUpperInvariant();
-
-            var resultData = await _inspeccionesRepository.FiltrarWeReport(
-                Fecha_Desde.Value,
-                Fecha_Hasta.Value,
-                estadoNormalizado
-            );
-
-            var elements = (resultData ?? Enumerable.Empty<WeReportListadoEntity>()).ToList();
-            result.Success = true;
-            result.Message = elements.Any() ? "Completado con éxito" : "No existe información";
-            result.Elements = elements;
-            result.TotalElements = elements.Count;
-            return result;
-        }
-        catch (Exception ex)
-        {
-            result.Message = "Excepción no controlada " + ex.Message;
-            return result;
-        }
-    }
-
     public async Task<ServiceResponse<int>> RegistrarObservacionPlaneada(ObservacionPlaneadaEntity valores)
     {
         var result = new ServiceResponse<int>();
@@ -517,6 +479,26 @@ public async Task<ServiceResponseList<ObservacionPlaneadaDetalleEntity>?> Mostra
         {
             var resultData = await _inspeccionesRepository.ListarTiposReporte();
             var elements = resultData?.ToList() ?? new List<InsTipoReporteEntity>();
+            result.Success = true;
+            result.Elements = elements;
+            result.TotalElements = elements.Count;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Error inesperado " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponseList<WeReportListadoEntity>?> FiltrarWeReport(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado)
+    {
+        var result = new ServiceResponseList<WeReportListadoEntity>();
+        try
+        {
+            var resultData = await _inspeccionesRepository.FiltrarWeReport(Fecha_Desde, Fecha_Hasta, Estado);
+            var elements = resultData?.ToList() ?? new List<WeReportListadoEntity>();
             result.Success = true;
             result.Elements = elements;
             result.TotalElements = elements.Count;
@@ -655,6 +637,35 @@ public async Task<ServiceResponseList<ObservacionPlaneadaDetalleEntity>?> Mostra
         try
         {
             var resultData = await _inspeccionesRepository.InsertarWeReport(valores);
+            if (resultData.Codigo == 0)
+            {
+                result.Success = true;
+                result.Message = resultData.Mensaje;
+                result.CodeTransacc = resultData.Codigo;
+                result.Data = 1;
+                return result;
+            }
+
+            result.Success = false;
+            result.Message = resultData.Mensaje;
+            result.Data = 0;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Error inesperado " + ex.Message;
+            result.Data = 0;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponse<int>> EliminarWeReport(EliminarWeReportEntity valores)
+    {
+        var result = new ServiceResponse<int>();
+        try
+        {
+            var resultData = await _inspeccionesRepository.EliminarWeReport(valores);
             if (resultData.Codigo == 0)
             {
                 result.Success = true;

@@ -546,6 +546,25 @@ ORDER BY t1.Observacion_Id DESC",
     }
 
     // ─── Medio Ambiente ──────────────────────────────────────────────
+    public async Task<IEnumerable<WeReportListadoEntity>?> FiltrarWeReport(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Fecha_Desde", Fecha_Desde ?? DateTime.Today);
+            parametros.Add("@Fecha_Hasta", Fecha_Hasta ?? DateTime.Today);
+            parametros.Add("@Estado", string.IsNullOrWhiteSpace(Estado) ? "A" : Estado.Trim());
+
+            return await connection.QueryAsync<WeReportListadoEntity>(
+                "SP_Filtrar_We_Report",
+                parametros,
+                commandType: CommandType.StoredProcedure
+            );
+        }
+    }
+
     public async Task<(int Codigo, string Mensaje)> InsertarMedioAmbiente(InsMedioAmbienteEntity valores)
     {
         using (var connection = new SqlConnection(_connectionString))
@@ -618,15 +637,6 @@ ORDER BY t1.Observacion_Id DESC",
         }
     }
 
-    // FIX: SP_Mostrar_Actualizar_Prevencion devuelve columnas duplicadas sin alias
-    // (Usr_Nom, Usr_Doc_Nro, Cen_Cos_Des aparecen dos veces para supervisor y jefe).
-    // Se usa SqlDataReader con lectura por posición para evitar el conflicto de Dapper.
-    // Columnas por posición:
-    //  0: Usr_Nom (supervisor)       1: Cen_Cos_Des (sup área)    2: Usr_Doc_Nro (sup DNI)
-    //  3: Cliente_Nombre             4: Subestacion_Nombre         5: SubContrata_Nombre
-    //  6: Usr_Nom (jefe)             7: Usr_Doc_Nro (jefe DNI)    8: Cen_Cos_Des (jefe área)
-    //  9: Actividad                  10: Orden_Trabajo             11: Procedimiento_Trabajo
-    // 12: Tipo_Nombre               13: Estado
     public async Task<IEnumerable<PrevencionDetalleEntity>?> MostrarPrevencion(int Prevencion_Id)
     {
         using (var connection = new SqlConnection(_connectionString))
@@ -722,12 +732,6 @@ ORDER BY t1.Observacion_Id DESC",
                 parametros.Add("@Report_Aplica", valores.Report_Aplica);
                 parametros.Add("@Usr_Reg", valores.Usr_Reg);
                 parametros.Add("@Estado", string.IsNullOrWhiteSpace(valores.Estado) ? "A" : valores.Estado);
-                // NOTA: se quitó "@Fec_Reg". El SP actualmente desplegado en la BD
-                // (SP_Insertar_We_Report) no declara ese parámetro: calcula la fecha
-                // internamente con GETDATE(). Enviarlo hacía que Dapper mandara 16
-                // argumentos contra un SP que solo acepta 15, provocando el error
-                // "SP_Insertar_We_Report has too many arguments specified".
-
                 var rows = await connection.ExecuteAsync(
                     "SP_Insertar_We_Report",
                     parametros,
@@ -740,6 +744,37 @@ ORDER BY t1.Observacion_Id DESC",
                 }
 
                 return (1, "No se pudo registrar We Report");
+            }
+            catch (SqlException ex)
+            {
+                return (1, ex.Message);
+            }
+        }
+    }
+
+    public async Task<(int Codigo, string Mensaje)> EliminarWeReport(EliminarWeReportEntity valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@We_Report_Id", valores.We_Report_Id);
+
+            try
+            {
+                var rows = await connection.ExecuteAsync(
+                    "SP_Eliminar_We_Report",
+                    parametros,
+                    commandType: CommandType.StoredProcedure
+                );
+
+                if (rows > 0)
+                {
+                    return (0, "We Report eliminado correctamente.");
+                }
+
+                return (1, "No se pudo eliminar We Report");
             }
             catch (SqlException ex)
             {
@@ -809,25 +844,6 @@ ORDER BY t1.Observacion_Id DESC",
         }
 
         return "A";
-    }
-
-    public async Task<IEnumerable<WeReportListadoEntity>?> FiltrarWeReport(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado)
-    {
-        using (var connection = new SqlConnection(_connectionString))
-        {
-            await connection.OpenAsync();
-
-            var parametros = new DynamicParameters();
-            parametros.Add("@Fecha_Desde", Fecha_Desde ?? DateTime.Today);
-            parametros.Add("@Fecha_Hasta", Fecha_Hasta ?? DateTime.Today);
-            parametros.Add("@Estado", string.IsNullOrWhiteSpace(Estado) ? "A" : Estado.Trim());
-
-            return await connection.QueryAsync<WeReportListadoEntity>(
-                "SP_Filtrar_We_Report",
-                parametros,
-                commandType: CommandType.StoredProcedure
-            );
-        }
     }
 
     public async Task<IEnumerable<MedioAmbienteListadoEntity>?> FiltrarMedioAmbiente(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado)

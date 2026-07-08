@@ -3,6 +3,8 @@ using Arce.Web.Entity.Inspecciones;
 using Arce.Web.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Arce.Web.Api.Controllers.Inspecciones
@@ -56,8 +58,8 @@ namespace Arce.Web.Api.Controllers.Inspecciones
             var carpeta = @"C:\Inspecciones\We_Report";
             Directory.CreateDirectory(carpeta);
 
-            var foto1Ubicacion = await GuardarArchivoAsync(valores.Report_Foto1, carpeta, "Foto1");
-            var foto2Ubicacion = await GuardarArchivoAsync(valores.Report_Foto2, carpeta, "Foto2");
+            var foto1Ubicacion = await GuardarArchivosAsync(valores.Report_Foto1, carpeta, "Foto1");
+            var foto2Ubicacion = await GuardarArchivosAsync(valores.Report_Foto2, carpeta, "Foto2");
 
             var entidad = new WeReportEntity
             {
@@ -88,6 +90,37 @@ namespace Arce.Web.Api.Controllers.Inspecciones
 
             result.CodeResult = StatusCodes.Status400BadRequest;
             return BadRequest(result);
+        }
+
+
+        [HttpGet]
+        [Route("getArchivoWeReport")]
+        public IActionResult GetArchivoWeReport(string rutaArchivo)
+        {
+            if (string.IsNullOrWhiteSpace(rutaArchivo))
+            {
+                return BadRequest("La ruta del archivo es obligatoria");
+            }
+
+            var ruta = rutaArchivo.Trim();
+            if (!Path.IsPathRooted(ruta))
+            {
+                ruta = Path.Combine(@"C:\Inspecciones\We_Report", ruta);
+            }
+
+            if (!System.IO.File.Exists(ruta))
+            {
+                return NotFound("El archivo no existe en disco");
+            }
+
+            var provider = new FileExtensionContentTypeProvider();
+            if (!provider.TryGetContentType(ruta, out var mimeType))
+            {
+                mimeType = "application/octet-stream";
+            }
+
+            var fileBytes = System.IO.File.ReadAllBytes(ruta);
+            return File(fileBytes, mimeType);
         }
 
         [HttpGet]
@@ -226,6 +259,21 @@ namespace Arce.Web.Api.Controllers.Inspecciones
             return BadRequest(result);
         }
 
+        [HttpGet]
+        [Route("getFiltrarWeReport")]
+        public async Task<IActionResult> FiltrarWeReport(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado)
+        {
+            var result = await _inspeccionesService.FiltrarWeReport(Fecha_Desde, Fecha_Hasta, Estado);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
         // NUEVO: devuelve Cen_Cos_Des y DNI del jefe a partir de su Usr_Cod
         [HttpGet]
         [Route("getMostrarJefe")]
@@ -277,21 +325,6 @@ namespace Arce.Web.Api.Controllers.Inspecciones
         public async Task<IActionResult> FiltrarObservaciones(DateTime Fecha_Desde, DateTime Fecha_Hasta, string Estado)
         {
             var result = await _inspeccionesService.FiltrarObservaciones(Fecha_Desde, Fecha_Hasta, Estado);
-            if (result!.Success)
-            {
-                result.CodeResult = StatusCodes.Status200OK;
-                return Ok(result);
-            }
-
-            result.CodeResult = StatusCodes.Status400BadRequest;
-            return BadRequest(result);
-        }
-
-        [HttpGet]
-        [Route("getFiltrarWeReport")]
-        public async Task<IActionResult> FiltrarWeReport(DateTime Fecha_Desde, DateTime Fecha_Hasta, string Estado)
-        {
-            var result = await _inspeccionesService.FiltrarWeReport(Fecha_Desde, Fecha_Hasta, Estado);
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;
@@ -533,25 +566,57 @@ namespace Arce.Web.Api.Controllers.Inspecciones
             return BadRequest(result);
         }
 
-        private static async Task<string> GuardarArchivoAsync(IFormFile? archivo, string carpeta, string prefijo)
+        [HttpDelete]
+        [Route("deleteEliminarWeReport")]
+        public async Task<IActionResult> EliminarWeReport(int We_Report_Id)
         {
-            if (archivo is null || archivo.Length <= 0)
+            var valores = new EliminarWeReportEntity
+            {
+                We_Report_Id = We_Report_Id
+            };
+
+            var result = await _inspeccionesService.EliminarWeReport(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        private static async Task<string> GuardarArchivosAsync(List<IFormFile>? archivos, string carpeta, string prefijo)
+        {
+            if (archivos is null || archivos.Count == 0)
             {
                 return string.Empty;
             }
 
-            var extension = Path.GetExtension(archivo.FileName);
-            if (string.IsNullOrWhiteSpace(extension))
+            var rutas = new List<string>();
+
+            foreach (var archivo in archivos)
             {
-                extension = ".jpg";
+                if (archivo is null || archivo.Length <= 0)
+                {
+                    continue;
+                }
+
+                var extension = Path.GetExtension(archivo.FileName);
+                if (string.IsNullOrWhiteSpace(extension))
+                {
+                    extension = ".jpg";
+                }
+
+                var nombreArchivo = $"{prefijo}_{DateTime.Now:yyyyMMdd_HHmmssfff}_{Guid.NewGuid():N}{extension}";
+                var rutaCompleta = Path.Combine(carpeta, nombreArchivo);
+
+                await using var stream = new FileStream(rutaCompleta, FileMode.Create, FileAccess.Write, FileShare.None);
+                await archivo.CopyToAsync(stream);
+                rutas.Add(rutaCompleta);
             }
 
-            var nombreArchivo = $"{prefijo}_{DateTime.Now:yyyyMMdd_HHmmssfff}_{Guid.NewGuid():N}{extension}";
-            var rutaCompleta = Path.Combine(carpeta, nombreArchivo);
-
-            await using var stream = new FileStream(rutaCompleta, FileMode.Create, FileAccess.Write, FileShare.None);
-            await archivo.CopyToAsync(stream);
-            return rutaCompleta;
+            return string.Join(" | ", rutas);
         }
 
         private static string NormalizarMarca(string? valor)
