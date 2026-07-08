@@ -37,7 +37,9 @@ public class InspeccionesRepository : IInspeccionesRepository
                     t1.Usr_Nom,
                     t1.Usr_Doc_Nro,
                     t3.Cargo_Nombre,
-                    t2.Cen_Cos_Des
+                    t2.Cen_Cos_Des,
+                    t1.Usr_Cen_Cos_Id,
+                    t1.Usr_Corr
                 FROM Sg_Usuario t1
                 LEFT JOIN Lg_Cen_Cos t2
                     ON (t1.Usr_Cen_Cos_Id = t2.Cen_Cos_Id)
@@ -56,13 +58,16 @@ public class InspeccionesRepository : IInspeccionesRepository
         using (var connection = new SqlConnection(_connectionString))
         {
             await connection.OpenAsync();
+
             var parametros = new DynamicParameters();
             parametros.Add("@Cliente_Id", Cliente_Id);
+
             var result = await connection.QueryAsync<SubEstacionEntity>(
-                "[dbo].[SP_Ins_SubEstacion_ListarPorCliente]",
+                "SP_Consutar_Subestacion",
                 parametros,
                 commandType: CommandType.StoredProcedure
             );
+
             return result;
         }
     }
@@ -79,10 +84,26 @@ public class InspeccionesRepository : IInspeccionesRepository
             parametros.Add("@Cliente_Id", Cliente_Id ?? 0);
             parametros.Add("@Estado", NormalizarEstado(Estado));
 
+            const string sql = @"
+                SELECT
+                    t1.Subestacion_Id,
+                    t1.Subestacion_Nombre,
+                    t1.Cliente_Id,
+                    t2.Cliente_Nombre,
+                    t1.Estado
+                FROM Ins_SubEstacion t1
+                LEFT JOIN Ins_Cliente t2
+                    ON t1.Cliente_Id = t2.Cliente_Id
+                WHERE (@Subestacion_Id = 0 OR t1.Subestacion_Id = @Subestacion_Id)
+                  AND (@Cliente_Id = 0 OR t1.Cliente_Id = @Cliente_Id)
+                  AND (LTRIM(RTRIM(@Subestacion_Nombre)) = '' OR t1.Subestacion_Nombre LIKE '%' + @Subestacion_Nombre + '%')
+                  AND (@Estado = '' OR t1.Estado = @Estado)
+                ORDER BY t1.Subestacion_Nombre";
+
             var result = await connection.QueryAsync<SubEstacionEntity>(
-                "[dbo].[SP_Filtrar_Subestaciones]",
+                sql,
                 parametros,
-                commandType: CommandType.StoredProcedure
+                commandType: CommandType.Text
             );
 
             return result;
@@ -105,6 +126,20 @@ public class InspeccionesRepository : IInspeccionesRepository
         }
 
         return "A";
+    }
+
+    // NUEVO: listado simple (sin filtros) de subestaciones, usado para llenar el combo de We Report
+    public async Task<IEnumerable<SubEstacionEntity>?> ListarSubEstacionesReporte()
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+            var result = await connection.QueryAsync<SubEstacionEntity>(
+                "SELECT t1.Subestacion_Id, t1.Subestacion_Nombre FROM Ins_SubEstacion t1 ORDER BY t1.Subestacion_Nombre",
+                commandType: CommandType.Text
+            );
+            return result;
+        }
     }
 
     public async Task<IEnumerable<InsClienteEntity>?> ListarClientes()
@@ -496,6 +531,20 @@ ORDER BY t1.Observacion_Id DESC",
         }
     }
 
+    // ─── Tipos de Reporte ────────────────────────────────────────────
+    public async Task<IEnumerable<InsTipoReporteEntity>?> ListarTiposReporte()
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+            var result = await connection.QueryAsync<InsTipoReporteEntity>(
+                "SELECT t1.Reporte_Id, t1.Reporte_Tipo FROM Ins_Tipo_Reporte t1 ORDER BY t1.Reporte_Tipo",
+                commandType: CommandType.Text
+            );
+            return result;
+        }
+    }
+
     // ─── Medio Ambiente ──────────────────────────────────────────────
     public async Task<(int Codigo, string Mensaje)> InsertarMedioAmbiente(InsMedioAmbienteEntity valores)
     {
@@ -649,6 +698,56 @@ ORDER BY t1.Observacion_Id DESC",
         }
     }
 
+    public async Task<(int Codigo, string Mensaje)> InsertarWeReport(WeReportEntity valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            try
+            {
+                await connection.OpenAsync();
+
+                var parametros = new DynamicParameters();
+                parametros.Add("@Usr_Cod", valores.Usr_Cod);
+                parametros.Add("@Report_Anonimo", valores.Report_Anonimo);
+                parametros.Add("@Reporte_Id", valores.Reporte_Id);
+                parametros.Add("@Cen_Cos_Id", valores.Cen_Cos_Id);
+                parametros.Add("@Cliente_Id", valores.Cliente_Id);
+                parametros.Add("@Subestacion_Id", valores.Subestacion_Id);
+                parametros.Add("@Report_Descripcion", valores.Report_Descripcion);
+                parametros.Add("@Report_Foto1_Ubicacion", valores.Report_Foto1_Ubicacion);
+                parametros.Add("@Report_Acciones_Inmediata", valores.Report_Acciones_Inmediata);
+                parametros.Add("@Report_Foto2_Ubicacion", valores.Report_Foto2_Ubicacion);
+                parametros.Add("@Report_Acciones_Propuestas", valores.Report_Acciones_Propuestas);
+                parametros.Add("@Report_Potencial", valores.Report_Potencial);
+                parametros.Add("@Report_Aplica", valores.Report_Aplica);
+                parametros.Add("@Usr_Reg", valores.Usr_Reg);
+                parametros.Add("@Estado", string.IsNullOrWhiteSpace(valores.Estado) ? "A" : valores.Estado);
+                // NOTA: se quitó "@Fec_Reg". El SP actualmente desplegado en la BD
+                // (SP_Insertar_We_Report) no declara ese parámetro: calcula la fecha
+                // internamente con GETDATE(). Enviarlo hacía que Dapper mandara 16
+                // argumentos contra un SP que solo acepta 15, provocando el error
+                // "SP_Insertar_We_Report has too many arguments specified".
+
+                var rows = await connection.ExecuteAsync(
+                    "SP_Insertar_We_Report",
+                    parametros,
+                    commandType: CommandType.StoredProcedure
+                );
+
+                if (rows > 0)
+                {
+                    return (0, "We Report registrado correctamente.");
+                }
+
+                return (1, "No se pudo registrar We Report");
+            }
+            catch (SqlException ex)
+            {
+                return (1, ex.Message);
+            }
+        }
+    }
+
     public async Task<(int Codigo, string Mensaje)> ActualizarPrevencion(ActualizarPrevencionEntity valores)
     {
         using (var connection = new SqlConnection(_connectionString))
@@ -710,6 +809,25 @@ ORDER BY t1.Observacion_Id DESC",
         }
 
         return "A";
+    }
+
+    public async Task<IEnumerable<WeReportListadoEntity>?> FiltrarWeReport(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Fecha_Desde", Fecha_Desde ?? DateTime.Today);
+            parametros.Add("@Fecha_Hasta", Fecha_Hasta ?? DateTime.Today);
+            parametros.Add("@Estado", string.IsNullOrWhiteSpace(Estado) ? "A" : Estado.Trim());
+
+            return await connection.QueryAsync<WeReportListadoEntity>(
+                "SP_Filtrar_We_Report",
+                parametros,
+                commandType: CommandType.StoredProcedure
+            );
+        }
     }
 
     public async Task<IEnumerable<MedioAmbienteListadoEntity>?> FiltrarMedioAmbiente(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado)

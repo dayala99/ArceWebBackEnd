@@ -10,6 +10,8 @@ public interface IInspeccionesRepository
     Task<IEnumerable<UsuarioEntity>?> ConsultarDatosUsuario(string? Usr_Cod);
     Task<IEnumerable<SubEstacionEntity>?> ListarSubEstacionesPorCliente(int Cliente_Id);
     Task<IEnumerable<SubEstacionEntity>?> ListarSubEstaciones(int? Id, string? Nombre, int? Cliente_Id, string? Estado);
+    // NUEVO: listado simple (sin filtros) de subestaciones para combos, usado en We Report
+    Task<IEnumerable<SubEstacionEntity>?> ListarSubEstacionesReporte();
     Task<IEnumerable<InsClienteEntity>?> ListarClientes();
     Task<IEnumerable<InsMotivoEntity>?> ListarMotivos();
     Task<IEnumerable<InsClimaEntity>?> ListarClimas();
@@ -21,15 +23,18 @@ public interface IInspeccionesRepository
     Task<IEnumerable<ObservacionPlaneadaListadoEntity>?> ListarObservacionesPlaneadas();
     Task<IEnumerable<ObservacionPlaneadaListadoEntity>?> ConsultarEstadoObservaciones(string Estado);
     Task<IEnumerable<ObservacionPlaneadaListadoEntity>?> FiltrarObservaciones(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado);
+    Task<IEnumerable<WeReportListadoEntity>?> FiltrarWeReport(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado);
     Task<IEnumerable<ObservacionPlaneadaDetalleEntity>?> MostrarObservacionPlaneada(string Codigo_Obs);
     Task<(int Codigo, string Mensaje)> RegistrarObservacionPlaneada(ObservacionPlaneadaEntity valores);
     Task<(int Codigo, string Mensaje)> ActualizarObservacionPlaneada(ActualizarObservacionPlaneadaEntity valores);
     Task<(int Codigo, string Mensaje)> EliminarObservacionPlaneada(EliminarObservacionPlaneadaEntity valores);
     Task<IEnumerable<InsTipoInspeccionEntity>?> ListarTiposInspeccion();
+    Task<IEnumerable<InsTipoReporteEntity>?> ListarTiposReporte();
     Task<(int Codigo, string Mensaje)> InsertarMedioAmbiente(InsMedioAmbienteEntity valores);
     Task<IEnumerable<PrevencionListadoEntity>?> FiltrarPrevencion(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado);
     Task<IEnumerable<PrevencionDetalleEntity>?> MostrarPrevencion(int Prevencion_Id);
     Task<(int Codigo, string Mensaje)> InsertarPrevencion(InsPrevencionEntity valores);
+    Task<(int Codigo, string Mensaje)> InsertarWeReport(WeReportEntity valores);
     Task<(int Codigo, string Mensaje)> ActualizarPrevencion(ActualizarPrevencionEntity valores);
     Task<(int Codigo, string Mensaje)> EliminarPrevencion(EliminarPrevencionEntity valores);
     Task<IEnumerable<MedioAmbienteListadoEntity>?> FiltrarMedioAmbiente(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado);

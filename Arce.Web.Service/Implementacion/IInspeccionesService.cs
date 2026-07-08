@@ -11,6 +11,8 @@ public interface IInspeccionesService
     Task<ServiceResponseList<UsuarioEntity>?> ConsultarDatosUsuario(string? Usr_Cod);
     Task<ServiceResponseList<SubEstacionEntity>?> ListarSubEstacionesPorCliente(int Cliente_Id);
     Task<ServiceResponseList<SubEstacionEntity>?> ListarSubEstaciones(int? Id, string? Nombre, int? Cliente_Id, string? Estado);
+    // NUEVO: listado simple (sin filtros) de subestaciones para combos, usado en We Report
+    Task<ServiceResponseList<SubEstacionEntity>?> ListarSubEstacionesReporte();
     Task<ServiceResponseList<InsClienteEntity>?> ListarClientes();
     Task<ServiceResponseList<InsMotivoEntity>?> ListarMotivos();
     Task<ServiceResponseList<InsClimaEntity>?> ListarClimas();
@@ -22,14 +24,17 @@ public interface IInspeccionesService
     Task<ServiceResponseList<ObservacionPlaneadaListadoEntity>?> ListarObservacionesPlaneadas();
     Task<ServiceResponseList<ObservacionPlaneadaListadoEntity>?> ConsultarEstadoObservaciones(string Estado);
     Task<ServiceResponseList<ObservacionPlaneadaListadoEntity>?> FiltrarObservaciones(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado);
+    Task<ServiceResponseList<WeReportListadoEntity>?> FiltrarWeReport(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado);
     Task<ServiceResponseList<ObservacionPlaneadaDetalleEntity>?> MostrarObservacionPlaneada(string Codigo_Obs);
     Task<ServiceResponse<int>> RegistrarObservacionPlaneada(ObservacionPlaneadaEntity valores);
     Task<ServiceResponse<int>> ActualizarObservacionPlaneada(ActualizarObservacionPlaneadaEntity valores);
     Task<ServiceResponse<int>> EliminarObservacionPlaneada(EliminarObservacionPlaneadaEntity valores);
     Task<ServiceResponseList<InsTipoInspeccionEntity>?> ListarTiposInspeccion();
+    Task<ServiceResponseList<InsTipoReporteEntity>?> ListarTiposReporte();
     Task<ServiceResponseList<PrevencionListadoEntity>?> FiltrarPrevencion(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado);
     Task<ServiceResponseList<PrevencionDetalleEntity>?> MostrarPrevencion(int Prevencion_Id);
     Task<ServiceResponse<int>> InsertarPrevencion(InsPrevencionEntity valores);
+    Task<ServiceResponse<int>> InsertarWeReport(WeReportEntity valores);
     Task<ServiceResponse<int>> ActualizarPrevencion(ActualizarPrevencionEntity valores);
     Task<ServiceResponse<int>> EliminarPrevencion(EliminarPrevencionEntity valores);
     Task<ServiceResponse<int>> InsertarMedioAmbiente(InsMedioAmbienteEntity valores);

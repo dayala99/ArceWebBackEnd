@@ -1,7 +1,9 @@
+using Arce.Web.Api.Models.Inspecciones;
 using Arce.Web.Entity.Inspecciones;
 using Arce.Web.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
 
 namespace Arce.Web.Api.Controllers.Inspecciones
 {
@@ -46,11 +48,69 @@ namespace Arce.Web.Api.Controllers.Inspecciones
             return BadRequest(result);
         }
 
+        [HttpPost]
+        [Route("postInsertarWeReport")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> InsertarWeReport([FromForm] RegistrarWeReportFormRequest valores)
+        {
+            var carpeta = @"C:\Inspecciones\We_Report";
+            Directory.CreateDirectory(carpeta);
+
+            var foto1Ubicacion = await GuardarArchivoAsync(valores.Report_Foto1, carpeta, "Foto1");
+            var foto2Ubicacion = await GuardarArchivoAsync(valores.Report_Foto2, carpeta, "Foto2");
+
+            var entidad = new WeReportEntity
+            {
+                Usr_Cod = valores.Usr_Cod,
+                Report_Anonimo = NormalizarMarca(valores.Report_Anonimo),
+                Reporte_Id = valores.Reporte_Id,
+                Cen_Cos_Id = valores.Cen_Cos_Id,
+                Cliente_Id = valores.Cliente_Id,
+                Subestacion_Id = valores.Subestacion_Id,
+                Report_Descripcion = valores.Report_Descripcion,
+                Report_Foto1_Ubicacion = foto1Ubicacion,
+                Report_Acciones_Inmediata = valores.Report_Acciones_Inmediata,
+                Report_Foto2_Ubicacion = foto2Ubicacion,
+                Report_Acciones_Propuestas = valores.Report_Acciones_Propuestas,
+                Report_Potencial = valores.Report_Potencial,
+                Report_Aplica = NormalizarMarca(valores.Report_Aplica),
+                Usr_Reg = valores.Usr_Reg,
+                Fec_Reg = DateTime.Now,
+                Estado = "A"
+            };
+
+            var result = await _inspeccionesService.InsertarWeReport(entidad);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
         [HttpGet]
         [Route("getListarSubEstaciones")]
         public async Task<IActionResult> ListarSubEstaciones(int? Id, string? Nombre, int? Cliente_Id, string? Estado)
         {
             var result = await _inspeccionesService.ListarSubEstaciones(Id, Nombre, Cliente_Id, Estado);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        // NUEVO: listado simple (sin filtros) de subestaciones para el combo de We Report
+        [HttpGet]
+        [Route("getListarSubEstacionesReporte")]
+        public async Task<IActionResult> ListarSubEstacionesReporte()
+        {
+            var result = await _inspeccionesService.ListarSubEstacionesReporte();
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;
@@ -151,6 +211,21 @@ namespace Arce.Web.Api.Controllers.Inspecciones
             return BadRequest(result);
         }
 
+        [HttpGet]
+        [Route("getListarTiposReporte")]
+        public async Task<IActionResult> ListarTiposReporte()
+        {
+            var result = await _inspeccionesService.ListarTiposReporte();
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
         // NUEVO: devuelve Cen_Cos_Des y DNI del jefe a partir de su Usr_Cod
         [HttpGet]
         [Route("getMostrarJefe")]
@@ -202,6 +277,21 @@ namespace Arce.Web.Api.Controllers.Inspecciones
         public async Task<IActionResult> FiltrarObservaciones(DateTime Fecha_Desde, DateTime Fecha_Hasta, string Estado)
         {
             var result = await _inspeccionesService.FiltrarObservaciones(Fecha_Desde, Fecha_Hasta, Estado);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpGet]
+        [Route("getFiltrarWeReport")]
+        public async Task<IActionResult> FiltrarWeReport(DateTime Fecha_Desde, DateTime Fecha_Hasta, string Estado)
+        {
+            var result = await _inspeccionesService.FiltrarWeReport(Fecha_Desde, Fecha_Hasta, Estado);
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;
@@ -441,6 +531,38 @@ namespace Arce.Web.Api.Controllers.Inspecciones
 
             result.CodeResult = StatusCodes.Status400BadRequest;
             return BadRequest(result);
+        }
+
+        private static async Task<string> GuardarArchivoAsync(IFormFile? archivo, string carpeta, string prefijo)
+        {
+            if (archivo is null || archivo.Length <= 0)
+            {
+                return string.Empty;
+            }
+
+            var extension = Path.GetExtension(archivo.FileName);
+            if (string.IsNullOrWhiteSpace(extension))
+            {
+                extension = ".jpg";
+            }
+
+            var nombreArchivo = $"{prefijo}_{DateTime.Now:yyyyMMdd_HHmmssfff}_{Guid.NewGuid():N}{extension}";
+            var rutaCompleta = Path.Combine(carpeta, nombreArchivo);
+
+            await using var stream = new FileStream(rutaCompleta, FileMode.Create, FileAccess.Write, FileShare.None);
+            await archivo.CopyToAsync(stream);
+            return rutaCompleta;
+        }
+
+        private static string NormalizarMarca(string? valor)
+        {
+            if (string.IsNullOrWhiteSpace(valor))
+            {
+                return "N";
+            }
+
+            var limpio = valor.Trim().ToUpperInvariant();
+            return limpio.StartsWith("S") ? "S" : "N";
         }
     }
 }

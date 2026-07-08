@@ -20,6 +20,42 @@ namespace Arce.Web.Entity.Inspecciones
         public DateTime? Fec_Mod { get; set; }
     }
 
+
+    public class WeReportEntity
+    {
+        public string? Usr_Cod { get; set; }
+        public string? Report_Anonimo { get; set; }
+        public int? Reporte_Id { get; set; }
+        public int? Cen_Cos_Id { get; set; }
+        public int? Cliente_Id { get; set; }
+        public int? Subestacion_Id { get; set; }
+        public string? Report_Descripcion { get; set; }
+        public string? Report_Foto1_Ubicacion { get; set; }
+        public string? Report_Acciones_Inmediata { get; set; }
+        public string? Report_Foto2_Ubicacion { get; set; }
+        public string? Report_Acciones_Propuestas { get; set; }
+        public string? Report_Potencial { get; set; }
+        public string? Report_Aplica { get; set; }
+        public string? Usr_Reg { get; set; }
+        public DateTime? Fec_Reg { get; set; }
+        public string? Estado { get; set; }
+    }
+
+    public class WeReportListadoEntity
+    {
+        public string? Codigo_We_Report { get; set; }
+        public string? Usr_Nom { get; set; }
+        public string? Reporte_Tipo { get; set; }
+        public string? Cen_Cos_Des { get; set; }
+        public string? Cliente_Nombre { get; set; }
+        public string? Report_Descripcion { get; set; }
+        public string? Report_Acciones_Inmediata { get; set; }
+        public string? Report_Foto1_Ubicacion { get; set; }
+        public string? Report_Foto2_Ubicacion { get; set; }
+        public string? Estado { get; set; }
+        public string? Fec_Reg { get; set; }
+    }
+
     public class InsClienteEntity
     {
         public int? Cliente_Id { get; set; }
@@ -160,6 +196,12 @@ namespace Arce.Web.Entity.Inspecciones
     {
         public int? Tipo_Id { get; set; }
         public string? Tipo_Nombre { get; set; }
+    }
+
+    public class InsTipoReporteEntity
+    {
+        public int? Reporte_Id { get; set; }
+        public string? Reporte_Tipo { get; set; }
     }
 
     // ── Prevención ──────────────────────────────────────────────────
