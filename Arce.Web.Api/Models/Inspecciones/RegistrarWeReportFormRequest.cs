@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 
 namespace Arce.Web.Api.Models.Inspecciones;
 
@@ -12,12 +13,11 @@ public class RegistrarWeReportFormRequest
     public int? Cliente_Id { get; set; }
     public int? Subestacion_Id { get; set; }
     public string? Report_Descripcion { get; set; }
-    public IFormFile? Report_Foto1 { get; set; }
+    public List<IFormFile>? Report_Foto1 { get; set; }
     public string? Report_Acciones_Inmediata { get; set; }
     public IFormFile? Report_Foto2 { get; set; }
     public string? Report_Acciones_Propuestas { get; set; }
     public string? Report_Potencial { get; set; }
     public string? Report_Aplica { get; set; }
-    public string? Estado { get; set; }
     public string? Usr_Reg { get; set; }
 }

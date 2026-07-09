@@ -4,7 +4,9 @@ using Arce.Web.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Arce.Web.Api.Controllers.Inspecciones
 {
@@ -57,8 +59,11 @@ namespace Arce.Web.Api.Controllers.Inspecciones
             var carpeta = @"C:\Inspecciones\We_Report";
             Directory.CreateDirectory(carpeta);
 
-            var foto1Ubicacion = await GuardarArchivoAsync(valores.Report_Foto1, carpeta, "Foto1");
+            var foto1Ubicaciones = await GuardarArchivosAsync(valores.Report_Foto1, carpeta, "Foto1");
             var foto2Ubicacion = await GuardarArchivoAsync(valores.Report_Foto2, carpeta, "Foto2");
+
+            Console.WriteLine($"[WeReport][Controller][Insertar] Foto1 archivos: {foto1Ubicaciones.Count}");
+            Console.WriteLine($"[WeReport][Controller][Insertar] Foto2 archivo: {(string.IsNullOrWhiteSpace(foto2Ubicacion) ? "ninguno" : foto2Ubicacion)}");
 
             var entidad = new WeReportEntity
             {
@@ -69,7 +74,7 @@ namespace Arce.Web.Api.Controllers.Inspecciones
                 Cliente_Id = valores.Cliente_Id,
                 Subestacion_Id = valores.Subestacion_Id,
                 Report_Descripcion = valores.Report_Descripcion,
-                Report_Foto1_Ubicacion = foto1Ubicacion,
+                Report_Foto1_Ubicacion = CombinarRutas(foto1Ubicaciones),
                 Report_Acciones_Inmediata = valores.Report_Acciones_Inmediata,
                 Report_Foto2_Ubicacion = foto2Ubicacion,
                 Report_Acciones_Propuestas = valores.Report_Acciones_Propuestas,
@@ -99,55 +104,19 @@ namespace Arce.Web.Api.Controllers.Inspecciones
             var carpeta = @"C:\Inspecciones\We_Report";
             Directory.CreateDirectory(carpeta);
 
-            var eliminarFoto1 = NormalizarMarca(valores.Eliminar_Report_Foto1) == "S";
-            var eliminarFoto2 = NormalizarMarca(valores.Eliminar_Report_Foto2) == "S";
+            var foto1Nuevas = await GuardarArchivosAsync(valores.Report_Foto1, carpeta, "Foto1");
+            var foto1Existentes = NormalizarRutasExistentes(valores.Report_Foto1_Ubicacion, carpeta);
+            var foto1Ubicacion = CombinarRutas(foto1Existentes.Concat(foto1Nuevas));
 
-            Console.WriteLine("[WeReport][API] postActualizarWeReport -> datos recibidos:");
-            Console.WriteLine($"  We_Report_Id: {valores.We_Report_Id}");
-            Console.WriteLine($"  Usr_Cod: {valores.Usr_Cod}");
-            Console.WriteLine($"  Report_Anonimo: {valores.Report_Anonimo}");
-            Console.WriteLine($"  Reporte_Id: {valores.Reporte_Id}");
-            Console.WriteLine($"  Cen_Cos_Id: {valores.Cen_Cos_Id}");
-            Console.WriteLine($"  Cliente_Id: {valores.Cliente_Id}");
-            Console.WriteLine($"  Subestacion_Id: {valores.Subestacion_Id}");
-            Console.WriteLine($"  Report_Descripcion: {valores.Report_Descripcion}");
-            Console.WriteLine($"  Report_Acciones_Inmediata: {valores.Report_Acciones_Inmediata}");
-            Console.WriteLine($"  Report_Acciones_Propuestas: {valores.Report_Acciones_Propuestas}");
-            Console.WriteLine($"  Report_Potencial: {valores.Report_Potencial}");
-            Console.WriteLine($"  Report_Aplica: {valores.Report_Aplica}");
-            Console.WriteLine($"  Estado: {valores.Estado}");
-            Console.WriteLine($"  Eliminar_Report_Foto1: {valores.Eliminar_Report_Foto1}");
-            Console.WriteLine($"  Eliminar_Report_Foto2: {valores.Eliminar_Report_Foto2}");
-            Console.WriteLine($"  Foto1 recibida: {(valores.Report_Foto1 != null ? valores.Report_Foto1.FileName : "(null)")}");
-            Console.WriteLine($"  Foto2 recibida: {(valores.Report_Foto2 != null ? valores.Report_Foto2.FileName : "(null)")}");
-
-            string foto1Ubicacion;
-            if (valores.Report_Foto1 != null)
-            {
-                foto1Ubicacion = await GuardarArchivoAsync(valores.Report_Foto1, carpeta, "Foto1");
-            }
-            else if (eliminarFoto1)
-            {
-                foto1Ubicacion = string.Empty;
-            }
-            else
-            {
-                foto1Ubicacion = NormalizarRutaExistente(valores.Report_Foto1_Ubicacion, carpeta);
-            }
-
-            string foto2Ubicacion;
-            if (valores.Report_Foto2 != null)
-            {
-                foto2Ubicacion = await GuardarArchivoAsync(valores.Report_Foto2, carpeta, "Foto2");
-            }
-            else if (eliminarFoto2)
-            {
-                foto2Ubicacion = string.Empty;
-            }
-            else
+            var foto2Ubicacion = await GuardarArchivoAsync(valores.Report_Foto2, carpeta, "Foto2");
+            if (string.IsNullOrWhiteSpace(foto2Ubicacion))
             {
                 foto2Ubicacion = NormalizarRutaExistente(valores.Report_Foto2_Ubicacion, carpeta);
             }
+
+            Console.WriteLine($"[WeReport][Controller][Actualizar] Foto1 nuevas: {foto1Nuevas.Count}");
+            Console.WriteLine($"[WeReport][Controller][Actualizar] Foto1 existentes: {foto1Existentes.Count}");
+            Console.WriteLine($"[WeReport][Controller][Actualizar] Foto2 archivo: {(string.IsNullOrWhiteSpace(foto2Ubicacion) ? "ninguno" : foto2Ubicacion)}");
 
             var entidad = new WeReportActualizarEntity
             {
@@ -700,6 +669,71 @@ namespace Arce.Web.Api.Controllers.Inspecciones
 
             result.CodeResult = StatusCodes.Status400BadRequest;
             return BadRequest(result);
+        }
+
+
+        private static async Task<List<string>> GuardarArchivosAsync(IEnumerable<IFormFile>? archivos, string carpeta, string prefijo)
+        {
+            var rutas = new List<string>();
+
+            if (archivos is null)
+            {
+                return rutas;
+            }
+
+            foreach (var archivo in archivos)
+            {
+                var ruta = await GuardarArchivoAsync(archivo, carpeta, prefijo);
+                if (!string.IsNullOrWhiteSpace(ruta))
+                {
+                    rutas.Add(ruta);
+                }
+            }
+
+            return rutas;
+        }
+
+        private static List<string> NormalizarRutasExistentes(IEnumerable<string>? rutasArchivos, string carpetaBase)
+        {
+            var rutas = new List<string>();
+
+            if (rutasArchivos is null)
+            {
+                return rutas;
+            }
+
+            foreach (var rutaArchivo in rutasArchivos)
+            {
+                if (string.IsNullOrWhiteSpace(rutaArchivo))
+                {
+                    continue;
+                }
+
+                var ruta = rutaArchivo.Trim();
+                if (!Path.IsPathRooted(ruta))
+                {
+                    ruta = Path.Combine(carpetaBase, ruta);
+                }
+
+                rutas.Add(ruta);
+            }
+
+            return rutas;
+        }
+
+        private static string CombinarRutas(IEnumerable<string>? rutasArchivos)
+        {
+            if (rutasArchivos is null)
+            {
+                return string.Empty;
+            }
+
+            var rutas = rutasArchivos
+                .Select(ruta => (ruta ?? string.Empty).Trim())
+                .Where(ruta => !string.IsNullOrWhiteSpace(ruta))
+                .ToList();
+
+            return rutas.Count > 0 ? string.Join(Environment.NewLine, rutas) : string.Empty;
         }
 
         private static async Task<string> GuardarArchivoAsync(IFormFile? archivo, string carpeta, string prefijo)
