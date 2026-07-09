@@ -4,7 +4,6 @@ using Arce.Web.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
-using System.Collections.Generic;
 using System.IO;
 
 namespace Arce.Web.Api.Controllers.Inspecciones
@@ -58,8 +57,8 @@ namespace Arce.Web.Api.Controllers.Inspecciones
             var carpeta = @"C:\Inspecciones\We_Report";
             Directory.CreateDirectory(carpeta);
 
-            var foto1Ubicacion = await GuardarArchivosAsync(valores.Report_Foto1, carpeta, "Foto1");
-            var foto2Ubicacion = await GuardarArchivosAsync(valores.Report_Foto2, carpeta, "Foto2");
+            var foto1Ubicacion = await GuardarArchivoAsync(valores.Report_Foto1, carpeta, "Foto1");
+            var foto2Ubicacion = await GuardarArchivoAsync(valores.Report_Foto2, carpeta, "Foto2");
 
             var entidad = new WeReportEntity
             {
@@ -92,6 +91,143 @@ namespace Arce.Web.Api.Controllers.Inspecciones
             return BadRequest(result);
         }
 
+        [HttpPost]
+        [Route("postActualizarWeReport")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> ActualizarWeReport([FromForm] ActualizarWeReportFormRequest valores)
+        {
+            var carpeta = @"C:\Inspecciones\We_Report";
+            Directory.CreateDirectory(carpeta);
+
+            var eliminarFoto1 = NormalizarMarca(valores.Eliminar_Report_Foto1) == "S";
+            var eliminarFoto2 = NormalizarMarca(valores.Eliminar_Report_Foto2) == "S";
+
+            Console.WriteLine("[WeReport][API] postActualizarWeReport -> datos recibidos:");
+            Console.WriteLine($"  We_Report_Id: {valores.We_Report_Id}");
+            Console.WriteLine($"  Usr_Cod: {valores.Usr_Cod}");
+            Console.WriteLine($"  Report_Anonimo: {valores.Report_Anonimo}");
+            Console.WriteLine($"  Reporte_Id: {valores.Reporte_Id}");
+            Console.WriteLine($"  Cen_Cos_Id: {valores.Cen_Cos_Id}");
+            Console.WriteLine($"  Cliente_Id: {valores.Cliente_Id}");
+            Console.WriteLine($"  Subestacion_Id: {valores.Subestacion_Id}");
+            Console.WriteLine($"  Report_Descripcion: {valores.Report_Descripcion}");
+            Console.WriteLine($"  Report_Acciones_Inmediata: {valores.Report_Acciones_Inmediata}");
+            Console.WriteLine($"  Report_Acciones_Propuestas: {valores.Report_Acciones_Propuestas}");
+            Console.WriteLine($"  Report_Potencial: {valores.Report_Potencial}");
+            Console.WriteLine($"  Report_Aplica: {valores.Report_Aplica}");
+            Console.WriteLine($"  Estado: {valores.Estado}");
+            Console.WriteLine($"  Eliminar_Report_Foto1: {valores.Eliminar_Report_Foto1}");
+            Console.WriteLine($"  Eliminar_Report_Foto2: {valores.Eliminar_Report_Foto2}");
+            Console.WriteLine($"  Foto1 recibida: {(valores.Report_Foto1 != null ? valores.Report_Foto1.FileName : "(null)")}");
+            Console.WriteLine($"  Foto2 recibida: {(valores.Report_Foto2 != null ? valores.Report_Foto2.FileName : "(null)")}");
+
+            string foto1Ubicacion;
+            if (valores.Report_Foto1 != null)
+            {
+                foto1Ubicacion = await GuardarArchivoAsync(valores.Report_Foto1, carpeta, "Foto1");
+            }
+            else if (eliminarFoto1)
+            {
+                foto1Ubicacion = string.Empty;
+            }
+            else
+            {
+                foto1Ubicacion = NormalizarRutaExistente(valores.Report_Foto1_Ubicacion, carpeta);
+            }
+
+            string foto2Ubicacion;
+            if (valores.Report_Foto2 != null)
+            {
+                foto2Ubicacion = await GuardarArchivoAsync(valores.Report_Foto2, carpeta, "Foto2");
+            }
+            else if (eliminarFoto2)
+            {
+                foto2Ubicacion = string.Empty;
+            }
+            else
+            {
+                foto2Ubicacion = NormalizarRutaExistente(valores.Report_Foto2_Ubicacion, carpeta);
+            }
+
+            var entidad = new WeReportActualizarEntity
+            {
+                We_Report_Id = valores.We_Report_Id,
+                Usr_Cod = valores.Usr_Cod,
+                Report_Anonimo = NormalizarMarca(valores.Report_Anonimo),
+                Reporte_Id = valores.Reporte_Id,
+                Cen_Cos_Id = valores.Cen_Cos_Id,
+                Cliente_Id = valores.Cliente_Id,
+                Subestacion_Id = valores.Subestacion_Id,
+                Report_Descripcion = valores.Report_Descripcion,
+                Report_Foto1_Ubicacion = foto1Ubicacion,
+                Report_Acciones_Inmediata = valores.Report_Acciones_Inmediata,
+                Report_Foto2_Ubicacion = foto2Ubicacion,
+                Report_Acciones_Propuestas = valores.Report_Acciones_Propuestas,
+                Report_Potencial = valores.Report_Potencial,
+                Report_Aplica = NormalizarMarca(valores.Report_Aplica),
+                Usr_Mod = valores.Usr_Mod,
+                Fec_Mod = DateTime.Now,
+                Estado = "A"
+            };
+
+            var result = await _inspeccionesService.ActualizarWeReport(entidad);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+
+
+
+        [HttpGet]
+        [Route("getMostrarActualizarWeReport")]
+        public async Task<IActionResult> MostrarActualizarWeReport(int We_Report_Id)
+        {
+            var result = await _inspeccionesService.MostrarActualizarWeReport(We_Report_Id);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPatch]
+        [Route("patchActualizarWeReport")]
+        public async Task<IActionResult> ActualizarWeReport([FromBody] WeReportActualizarEntity valores)
+        {
+            var result = await _inspeccionesService.ActualizarWeReport(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPost]
+        [Route("postEliminarWeReport")]
+        public async Task<IActionResult> EliminarWeReport([FromBody] EliminarWeReportEntity valores)
+        {
+            var result = await _inspeccionesService.EliminarWeReport(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
 
         [HttpGet]
         [Route("getArchivoWeReport")]
@@ -566,57 +702,41 @@ namespace Arce.Web.Api.Controllers.Inspecciones
             return BadRequest(result);
         }
 
-        [HttpDelete]
-        [Route("deleteEliminarWeReport")]
-        public async Task<IActionResult> EliminarWeReport(int We_Report_Id)
+        private static async Task<string> GuardarArchivoAsync(IFormFile? archivo, string carpeta, string prefijo)
         {
-            var valores = new EliminarWeReportEntity
-            {
-                We_Report_Id = We_Report_Id
-            };
-
-            var result = await _inspeccionesService.EliminarWeReport(valores);
-            if (result!.Success)
-            {
-                result.CodeResult = StatusCodes.Status200OK;
-                return Ok(result);
-            }
-
-            result.CodeResult = StatusCodes.Status400BadRequest;
-            return BadRequest(result);
-        }
-
-        private static async Task<string> GuardarArchivosAsync(List<IFormFile>? archivos, string carpeta, string prefijo)
-        {
-            if (archivos is null || archivos.Count == 0)
+            if (archivo is null || archivo.Length <= 0)
             {
                 return string.Empty;
             }
 
-            var rutas = new List<string>();
-
-            foreach (var archivo in archivos)
+            var extension = Path.GetExtension(archivo.FileName);
+            if (string.IsNullOrWhiteSpace(extension))
             {
-                if (archivo is null || archivo.Length <= 0)
-                {
-                    continue;
-                }
-
-                var extension = Path.GetExtension(archivo.FileName);
-                if (string.IsNullOrWhiteSpace(extension))
-                {
-                    extension = ".jpg";
-                }
-
-                var nombreArchivo = $"{prefijo}_{DateTime.Now:yyyyMMdd_HHmmssfff}_{Guid.NewGuid():N}{extension}";
-                var rutaCompleta = Path.Combine(carpeta, nombreArchivo);
-
-                await using var stream = new FileStream(rutaCompleta, FileMode.Create, FileAccess.Write, FileShare.None);
-                await archivo.CopyToAsync(stream);
-                rutas.Add(rutaCompleta);
+                extension = ".jpg";
             }
 
-            return string.Join(" | ", rutas);
+            var nombreArchivo = $"{prefijo}_{DateTime.Now:yyyyMMdd_HHmmssfff}_{Guid.NewGuid():N}{extension}";
+            var rutaCompleta = Path.Combine(carpeta, nombreArchivo);
+
+            await using var stream = new FileStream(rutaCompleta, FileMode.Create, FileAccess.Write, FileShare.None);
+            await archivo.CopyToAsync(stream);
+            return rutaCompleta;
+        }
+
+        private static string NormalizarRutaExistente(string? rutaArchivo, string carpetaBase)
+        {
+            if (string.IsNullOrWhiteSpace(rutaArchivo))
+            {
+                return string.Empty;
+            }
+
+            var ruta = rutaArchivo.Trim();
+            if (!Path.IsPathRooted(ruta))
+            {
+                ruta = Path.Combine(carpetaBase, ruta);
+            }
+
+            return ruta;
         }
 
         private static string NormalizarMarca(string? valor)

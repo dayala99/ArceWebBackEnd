@@ -34,7 +34,9 @@ public interface IInspeccionesService
     Task<ServiceResponseList<PrevencionListadoEntity>?> FiltrarPrevencion(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado);
     Task<ServiceResponseList<PrevencionDetalleEntity>?> MostrarPrevencion(int Prevencion_Id);
     Task<ServiceResponse<int>> InsertarPrevencion(InsPrevencionEntity valores);
+    Task<ServiceResponseList<WeReportActualizarEntity>?> MostrarActualizarWeReport(int We_Report_Id);
     Task<ServiceResponse<int>> InsertarWeReport(WeReportEntity valores);
+    Task<ServiceResponse<int>> ActualizarWeReport(WeReportActualizarEntity valores);
     Task<ServiceResponse<int>> EliminarWeReport(EliminarWeReportEntity valores);
     Task<ServiceResponse<int>> ActualizarPrevencion(ActualizarPrevencionEntity valores);
     Task<ServiceResponse<int>> EliminarPrevencion(EliminarPrevencionEntity valores);

@@ -3,16 +3,20 @@ using Arce.Web.Entity.Inspecciones;
 using Arce.Web.Entity.Usuario;
 using Arce.Web.Service.Comunes;
 using System;
+using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace Arce.Web.Service;
 
 public class InspeccionesService : IInspeccionesService
 {
     private readonly IInspeccionesRepository _inspeccionesRepository;
+    private readonly ILogger<InspeccionesService> _logger;
 
-    public InspeccionesService(IInspeccionesRepository inspeccionesRepository)
+    public InspeccionesService(IInspeccionesRepository inspeccionesRepository, ILogger<InspeccionesService> logger)
     {
         _inspeccionesRepository = inspeccionesRepository;
+        _logger = logger;
     }
 
     public async Task<IEnumerable<InspeccionEntity>?> ListarInspeccionesAsync()
@@ -512,6 +516,28 @@ public async Task<ServiceResponseList<ObservacionPlaneadaDetalleEntity>?> Mostra
         }
     }
 
+
+
+    public async Task<ServiceResponseList<WeReportActualizarEntity>?> MostrarActualizarWeReport(int We_Report_Id)
+    {
+        var result = new ServiceResponseList<WeReportActualizarEntity>();
+        try
+        {
+            var resultData = await _inspeccionesRepository.MostrarActualizarWeReport(We_Report_Id);
+            var elements = (resultData ?? Enumerable.Empty<WeReportActualizarEntity>()).ToList();
+            result.Success = true;
+            result.Message = elements.Any() ? "Completado con éxito" : "No existe información";
+            result.Elements = elements;
+            result.TotalElements = elements.Count;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepción no controlada " + ex.Message;
+            return result;
+        }
+    }
+
     public async Task<ServiceResponse<int>> InsertarMedioAmbiente(InsMedioAmbienteEntity valores)
     {
         var result = new ServiceResponse<int>();
@@ -636,7 +662,21 @@ public async Task<ServiceResponseList<ObservacionPlaneadaDetalleEntity>?> Mostra
         var result = new ServiceResponse<int>();
         try
         {
+            _logger.LogInformation(
+                "Service InsertarWeReport: Usr_Cod={UsrCod}, Reporte_Id={ReporteId}, Cen_Cos_Id={CenCosId}, Cliente_Id={ClienteId}, Subestacion_Id={SubestacionId}, Report_Potencial={Potencial}, Report_Aplica={Aplica}, Estado={Estado}",
+                valores.Usr_Cod,
+                valores.Reporte_Id,
+                valores.Cen_Cos_Id,
+                valores.Cliente_Id,
+                valores.Subestacion_Id,
+                valores.Report_Potencial,
+                valores.Report_Aplica,
+                valores.Estado
+            );
+
             var resultData = await _inspeccionesRepository.InsertarWeReport(valores);
+            _logger.LogInformation("Service InsertarWeReport resultado repo: Codigo={Codigo}, Mensaje={Mensaje}", resultData.Codigo, resultData.Mensaje);
+
             if (resultData.Codigo == 0)
             {
                 result.Success = true;
@@ -653,6 +693,54 @@ public async Task<ServiceResponseList<ObservacionPlaneadaDetalleEntity>?> Mostra
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Error inesperado en InsertarWeReport");
+            result.Success = false;
+            result.Message = "Error inesperado " + ex.Message;
+            result.Data = 0;
+            return result;
+        }
+    }
+
+
+
+    public async Task<ServiceResponse<int>> ActualizarWeReport(WeReportActualizarEntity valores)
+    {
+        var result = new ServiceResponse<int>();
+        try
+        {
+            _logger.LogInformation(
+                "Service ActualizarWeReport: We_Report_Id={WeReportId}, Usr_Cod={UsrCod}, Reporte_Id={ReporteId}, Cen_Cos_Id={CenCosId}, Cliente_Id={ClienteId}, Subestacion_Id={SubestacionId}, Report_Potencial={Potencial}, Report_Aplica={Aplica}, Estado={Estado}",
+                valores.We_Report_Id,
+                valores.Usr_Cod,
+                valores.Reporte_Id,
+                valores.Cen_Cos_Id,
+                valores.Cliente_Id,
+                valores.Subestacion_Id,
+                valores.Report_Potencial,
+                valores.Report_Aplica,
+                valores.Estado
+            );
+
+            var resultData = await _inspeccionesRepository.ActualizarWeReport(valores);
+            _logger.LogInformation("Service ActualizarWeReport resultado repo: Codigo={Codigo}, Mensaje={Mensaje}", resultData.Codigo, resultData.Mensaje);
+
+            if (resultData.Codigo == 0)
+            {
+                result.Success = true;
+                result.Message = resultData.Mensaje;
+                result.CodeTransacc = resultData.Codigo;
+                result.Data = 1;
+                return result;
+            }
+
+            result.Success = false;
+            result.Message = resultData.Mensaje;
+            result.Data = 0;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error inesperado en ActualizarWeReport");
             result.Success = false;
             result.Message = "Error inesperado " + ex.Message;
             result.Data = 0;
@@ -688,7 +776,6 @@ public async Task<ServiceResponseList<ObservacionPlaneadaDetalleEntity>?> Mostra
             return result;
         }
     }
-
     public async Task<ServiceResponse<int>> ActualizarPrevencion(ActualizarPrevencionEntity valores)
     {
         var result = new ServiceResponse<int>();

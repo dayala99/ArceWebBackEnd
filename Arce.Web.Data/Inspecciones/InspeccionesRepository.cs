@@ -3,6 +3,7 @@ using Arce.Web.Entity.Usuario;
 using System;
 using Dapper;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -11,10 +12,29 @@ namespace Arce.Web.Data;
 public class InspeccionesRepository : IInspeccionesRepository
 {
     public readonly string _connectionString;
+    private readonly ILogger<InspeccionesRepository> _logger;
 
-    public InspeccionesRepository(IConfiguration configuration)
+    public InspeccionesRepository(IConfiguration configuration, ILogger<InspeccionesRepository> logger)
     {
         _connectionString = configuration.GetConnectionString("Connection")!;
+        _logger = logger;
+    }
+
+
+    private async Task<bool> ExisteWeReportAsync(SqlConnection connection, int? weReportId)
+    {
+        if (!weReportId.HasValue || weReportId.Value <= 0)
+        {
+            return false;
+        }
+
+        var existe = await connection.ExecuteScalarAsync<int>(
+            "SELECT COUNT(1) FROM Ins_We_Report WHERE We_Report_Id = @We_Report_Id",
+            new { We_Report_Id = weReportId.Value },
+            commandType: CommandType.Text
+        );
+
+        return existe > 0;
     }
 
     public Task<IEnumerable<InspeccionEntity>?> ListarInspeccionesAsync()
@@ -716,6 +736,18 @@ ORDER BY t1.Observacion_Id DESC",
             {
                 await connection.OpenAsync();
 
+                _logger.LogInformation(
+                    "Repo InsertarWeReport: Usr_Cod={UsrCod}, Reporte_Id={ReporteId}, Cen_Cos_Id={CenCosId}, Cliente_Id={ClienteId}, Subestacion_Id={SubestacionId}, Estado={Estado}, Foto1={Foto1}, Foto2={Foto2}",
+                    valores.Usr_Cod,
+                    valores.Reporte_Id,
+                    valores.Cen_Cos_Id,
+                    valores.Cliente_Id,
+                    valores.Subestacion_Id,
+                    valores.Estado,
+                    valores.Report_Foto1_Ubicacion,
+                    valores.Report_Foto2_Ubicacion
+                );
+
                 var parametros = new DynamicParameters();
                 parametros.Add("@Usr_Cod", valores.Usr_Cod);
                 parametros.Add("@Report_Anonimo", valores.Report_Anonimo);
@@ -738,6 +770,8 @@ ORDER BY t1.Observacion_Id DESC",
                     commandType: CommandType.StoredProcedure
                 );
 
+                _logger.LogInformation("Repo InsertarWeReport filas afectadas={Rows}", rows);
+
                 if (rows > 0)
                 {
                     return (0, "We Report registrado correctamente.");
@@ -747,10 +781,159 @@ ORDER BY t1.Observacion_Id DESC",
             }
             catch (SqlException ex)
             {
+                _logger.LogError(ex, "Error SQL en InsertarWeReport");
                 return (1, ex.Message);
             }
         }
     }
+
+
+
+    // FIX: SP_Mostrar_Actualizar_We_Report devuelve dos columnas Cen_Cos_Des sin alias
+    // (t4: centro de costos del cargo del usuario, t6: centro de costos del reporte),
+    // lo que impide el mapeo automático de Dapper. Se usa SQL inline con aliases explícitos,
+    // y se agregan las columnas que la entidad necesita y el SP original no seleccionaba.
+    // FIX 2 (causa real del error "No se pudo cargar la información del We Report para editar"):
+    // el JOIN contra Ins_Cargo comparaba t2.Usr_Crg (que almacena el Cargo_Id) contra
+    // t3.Cargo_Nombre (texto). Al no coincidir nunca, el INNER JOIN descartaba la fila completa
+    // y la consulta devolvía 0 registros. Se corrige la condición a Usr_Crg = Cargo_Id.
+    // FIX 3: se cambian los INNER JOIN por LEFT JOIN en las tablas relacionadas (Cargo, Cen_Cos,
+    // Tipo_Reporte, Cliente, SubEstacion) para que el registro se siga mostrando aunque alguna
+    // referencia sea NULL o quede huérfana (por ejemplo, reportes anónimos sin Cliente_Id /
+    // Subestacion_Id, o catálogos editados después de creado el reporte).
+    public async Task<IEnumerable<WeReportActualizarEntity>?> MostrarActualizarWeReport(int We_Report_Id)
+    {
+        const string sql = @"
+            SELECT
+                t1.We_Report_Id,
+                t1.Codigo_We_Report,
+                t1.Usr_Cod,
+                CASE WHEN t1.Report_Anonimo = 'S' THEN 'ANONIMO' ELSE t2.Usr_Nom END AS Usr_Nom,
+                CASE WHEN t1.Report_Anonimo = 'S' THEN 'ANONIMO' ELSE t3.Cargo_Nombre END AS Cargo_Nombre,
+                CASE WHEN t1.Report_Anonimo = 'S' THEN 'ANONIMO' ELSE t4.Cen_Cos_Des END AS Cen_Cos_Des_Usr,
+                t2.Usr_Corr,
+                t1.Report_Anonimo,
+                t1.Reporte_Id,
+                t5.Reporte_Tipo   AS Reporte_Tipo,
+                t1.Cen_Cos_Id,
+                t6.Cen_Cos_Des    AS Cen_Cos_Des,
+                t1.Cliente_Id,
+                t7.Cliente_Nombre AS Cliente_Nombre,
+                t1.Subestacion_Id,
+                t8.Subestacion_Nombre AS Subestacion_Nombre,
+                t1.Report_Descripcion,
+                t1.Report_Foto1_Ubicacion,
+                t1.Report_Acciones_Inmediata,
+                t1.Report_Foto2_Ubicacion,
+                t1.Report_Acciones_Propuestas,
+                t1.Report_Potencial,
+                t1.Report_Aplica,
+                t1.Usr_Reg,
+                t1.Fec_Reg,
+                t1.Usr_Mod,
+                t1.Fec_Mod,
+                t1.Estado
+            FROM Ins_We_Report t1
+            JOIN Sg_Usuario t2
+                ON t1.Usr_Cod = t2.Usr_Cod
+            LEFT JOIN Ins_Cargo t3
+                ON t2.Usr_Crg = t3.Cargo_Id
+            LEFT JOIN Lg_Cen_Cos t4
+                ON t2.Usr_Cen_Cos_Id = t4.Cen_Cos_Id
+            LEFT JOIN Ins_Tipo_Reporte t5
+                ON t1.Reporte_Id = t5.Reporte_Id
+            LEFT JOIN Lg_Cen_Cos t6
+                ON t1.Cen_Cos_Id = t6.Cen_Cos_Id
+            LEFT JOIN Ins_Cliente t7
+                ON t1.Cliente_Id = t7.Cliente_Id
+            LEFT JOIN Ins_SubEstacion t8
+                ON t1.Subestacion_Id = t8.Subestacion_Id
+            WHERE t1.We_Report_Id = @We_Report_Id";
+
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@We_Report_Id", We_Report_Id);
+
+            var result = await connection.QueryAsync<WeReportActualizarEntity>(sql, parametros);
+
+            return result;
+        }
+    }
+
+    public async Task<(int Codigo, string Mensaje)> ActualizarWeReport(WeReportActualizarEntity valores)
+{
+    using (var connection = new SqlConnection(_connectionString))
+    {
+        await connection.OpenAsync();
+
+        Console.WriteLine("[WeReport][Repository] SP_Actualizar_We_Report -> datos a enviar:");
+        Console.WriteLine($"  We_Report_Id: {valores.We_Report_Id}");
+        Console.WriteLine($"  Report_Anonimo: {valores.Report_Anonimo}");
+        Console.WriteLine($"  Reporte_Id: {valores.Reporte_Id}");
+        Console.WriteLine($"  Cen_Cos_Id: {valores.Cen_Cos_Id}");
+        Console.WriteLine($"  Cliente_Id: {valores.Cliente_Id}");
+        Console.WriteLine($"  Subestacion_Id: {valores.Subestacion_Id}");
+        Console.WriteLine($"  Report_Descripcion: {valores.Report_Descripcion}");
+        Console.WriteLine($"  Report_Foto1_Ubicacion: {valores.Report_Foto1_Ubicacion}");
+        Console.WriteLine($"  Report_Acciones_Inmediata: {valores.Report_Acciones_Inmediata}");
+        Console.WriteLine($"  Report_Foto2_Ubicacion: {valores.Report_Foto2_Ubicacion}");
+        Console.WriteLine($"  Report_Acciones_Propuestas: {valores.Report_Acciones_Propuestas}");
+        Console.WriteLine($"  Report_Potencial: {valores.Report_Potencial}");
+        Console.WriteLine($"  Report_Aplica: {valores.Report_Aplica}");
+        Console.WriteLine($"  Usr_Mod: {valores.Usr_Mod}");
+        Console.WriteLine($"  Estado: {valores.Estado}");
+
+        var parametros = new DynamicParameters();
+        parametros.Add("@We_Report_Id", valores.We_Report_Id);
+        parametros.Add("@Report_Anonimo", valores.Report_Anonimo);
+        parametros.Add("@Reporte_Id", valores.Reporte_Id);
+        parametros.Add("@Cen_Cos_Id", valores.Cen_Cos_Id);
+        parametros.Add("@Cliente_Id", valores.Cliente_Id);
+        parametros.Add("@Subestacion_Id", valores.Subestacion_Id);
+        parametros.Add("@Report_Descripcion", valores.Report_Descripcion);
+        parametros.Add("@Report_Foto1_Ubicacion", valores.Report_Foto1_Ubicacion);
+        parametros.Add("@Report_Acciones_Inmediata", valores.Report_Acciones_Inmediata);
+        parametros.Add("@Report_Foto2_Ubicacion", valores.Report_Foto2_Ubicacion);
+        parametros.Add("@Report_Acciones_Propuestas", valores.Report_Acciones_Propuestas);
+        parametros.Add("@Report_Potencial", valores.Report_Potencial);
+        parametros.Add("@Report_Aplica", valores.Report_Aplica);
+        parametros.Add("@Usr_Mod", valores.Usr_Mod);
+        parametros.Add("@Estado", string.IsNullOrWhiteSpace(valores.Estado) ? "A" : valores.Estado);
+
+        try
+        {
+            var rows = await connection.ExecuteAsync(
+                "SP_Actualizar_We_Report",
+                parametros,
+                commandType: CommandType.StoredProcedure
+            );
+
+            Console.WriteLine($"[WeReport][Repository] Filas afectadas: {rows}");
+
+            if (rows > 0)
+            {
+                return (0, "Completado con éxito");
+            }
+
+            return (1, "No se pudo actualizar We Report");
+        }
+        catch (SqlException ex)
+        {
+            Console.WriteLine("[WeReport][Repository] Error SQL al actualizar We Report:");
+            Console.WriteLine(ex.ToString());
+            return (1, ex.Message);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[WeReport][Repository] Error inesperado al actualizar We Report:");
+            Console.WriteLine(ex.ToString());
+            return (1, ex.Message);
+        }
+    }
+}
 
     public async Task<(int Codigo, string Mensaje)> EliminarWeReport(EliminarWeReportEntity valores)
     {
@@ -771,7 +954,7 @@ ORDER BY t1.Observacion_Id DESC",
 
                 if (rows > 0)
                 {
-                    return (0, "We Report eliminado correctamente.");
+                    return (0, "Completado con éxito");
                 }
 
                 return (1, "No se pudo eliminar We Report");
