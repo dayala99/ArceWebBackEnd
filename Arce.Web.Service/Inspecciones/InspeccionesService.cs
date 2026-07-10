@@ -713,6 +713,7 @@ public async Task<ServiceResponseList<StopReportDetalleEntity>?> MostrarStopRepo
     }
 }
 
+
 public async Task<ServiceResponse<int>> InsertarStopReport(InsStopReportEntity valores)
 {
     var result = new ServiceResponse<int>();
@@ -724,7 +725,7 @@ public async Task<ServiceResponse<int>> InsertarStopReport(InsStopReportEntity v
             result.Success = true;
             result.Message = resultData.Mensaje;
             result.CodeTransacc = resultData.Codigo;
-            result.Data = 1;
+            result.Data = resultData.Id ?? 0;
             return result;
         }
 
@@ -800,53 +801,52 @@ public async Task<ServiceResponse<int>> EliminarStopReport(EliminarStopReportEnt
     }
 }
 
-    public async Task<ServiceResponse<int>> InsertarWeReport(WeReportEntity valores)
+    
+public async Task<ServiceResponse<int>> InsertarWeReport(WeReportEntity valores)
+{
+    var result = new ServiceResponse<int>();
+    try
     {
-        var result = new ServiceResponse<int>();
-        try
+        _logger.LogInformation(
+            "Service InsertarWeReport: Usr_Cod={UsrCod}, Reporte_Id={ReporteId}, Cen_Cos_Id={CenCosId}, Cliente_Id={ClienteId}, Subestacion_Id={SubestacionId}, Report_Potencial={Potencial}, Report_Aplica={Aplica}, Estado={Estado}",
+            valores.Usr_Cod,
+            valores.Reporte_Id,
+            valores.Cen_Cos_Id,
+            valores.Cliente_Id,
+            valores.Subestacion_Id,
+            valores.Report_Potencial,
+            valores.Report_Aplica,
+            valores.Estado
+        );
+
+        var resultData = await _inspeccionesRepository.InsertarWeReport(valores);
+        _logger.LogInformation("Service InsertarWeReport resultado repo: Codigo={Codigo}, Mensaje={Mensaje}, Id={Id}", resultData.Codigo, resultData.Mensaje, resultData.Id);
+
+        if (resultData.Codigo == 0)
         {
-            _logger.LogInformation(
-                "Service InsertarWeReport: Usr_Cod={UsrCod}, Reporte_Id={ReporteId}, Cen_Cos_Id={CenCosId}, Cliente_Id={ClienteId}, Subestacion_Id={SubestacionId}, Report_Potencial={Potencial}, Report_Aplica={Aplica}, Estado={Estado}",
-                valores.Usr_Cod,
-                valores.Reporte_Id,
-                valores.Cen_Cos_Id,
-                valores.Cliente_Id,
-                valores.Subestacion_Id,
-                valores.Report_Potencial,
-                valores.Report_Aplica,
-                valores.Estado
-            );
-
-            var resultData = await _inspeccionesRepository.InsertarWeReport(valores);
-            _logger.LogInformation("Service InsertarWeReport resultado repo: Codigo={Codigo}, Mensaje={Mensaje}", resultData.Codigo, resultData.Mensaje);
-
-            if (resultData.Codigo == 0)
-            {
-                result.Success = true;
-                result.Message = resultData.Mensaje;
-                result.CodeTransacc = resultData.Codigo;
-                result.Data = 1;
-                return result;
-            }
-
-            result.Success = false;
+            result.Success = true;
             result.Message = resultData.Mensaje;
-            result.Data = 0;
+            result.CodeTransacc = resultData.Codigo;
+            result.Data = resultData.Id ?? 0;
             return result;
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error inesperado en InsertarWeReport");
-            result.Success = false;
-            result.Message = "Error inesperado " + ex.Message;
-            result.Data = 0;
-            return result;
-        }
+
+        result.Success = false;
+        result.Message = resultData.Mensaje;
+        result.Data = 0;
+        return result;
     }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Error inesperado en InsertarWeReport");
+        result.Success = false;
+        result.Message = "Error inesperado " + ex.Message;
+        result.Data = 0;
+        return result;
+    }
+}
 
-
-
-    public async Task<ServiceResponse<int>> ActualizarWeReport(WeReportActualizarEntity valores)
+public async Task<ServiceResponse<int>> ActualizarWeReport(WeReportActualizarEntity valores)
     {
         var result = new ServiceResponse<int>();
         try

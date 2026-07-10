@@ -432,6 +432,7 @@ namespace Arce.Web.Api.Controllers.Inspecciones
             const string sql = @"
                 SELECT
                     sw.Stop_Work_Id,
+                    sw.We_Report_Cod AS We_Report_Cod,
                     sw.We_Report_Cod AS Codigo_We_Report,
                     sw.Codigo_Stop_Work AS Codigo_Stop_Work,
                     sw.Usr_Cod,
@@ -972,6 +973,7 @@ namespace Arce.Web.Api.Controllers.Inspecciones
         private sealed class StopReportDetalleDto
         {
             public int? Stop_Work_Id { get; set; }
+            public string? We_Report_Cod { get; set; }
             public string? Codigo_We_Report { get; set; }
             public string? Codigo_Stop_Work { get; set; }
             public string? Usr_Cod { get; set; }

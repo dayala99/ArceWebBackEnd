@@ -728,7 +728,7 @@ ORDER BY t1.Observacion_Id DESC",
         }
     }
 
-    public async Task<(int Codigo, string Mensaje)> InsertarWeReport(WeReportEntity valores)
+    public async Task<(int Codigo, string Mensaje, int? Id)> InsertarWeReport(WeReportEntity valores)
     {
         using (var connection = new SqlConnection(_connectionString))
         {
@@ -764,6 +764,7 @@ ORDER BY t1.Observacion_Id DESC",
                 parametros.Add("@Report_Aplica", valores.Report_Aplica);
                 parametros.Add("@Usr_Reg", valores.Usr_Reg);
                 parametros.Add("@Estado", string.IsNullOrWhiteSpace(valores.Estado) ? "A" : valores.Estado);
+
                 var rows = await connection.ExecuteAsync(
                     "SP_Insertar_We_Report",
                     parametros,
@@ -774,34 +775,65 @@ ORDER BY t1.Observacion_Id DESC",
 
                 if (rows > 0)
                 {
-                    return (0, "We Report registrado correctamente.");
+                    const string sqlId = @"
+                        SELECT TOP (1) We_Report_Id
+                        FROM Ins_We_Report
+                        WHERE
+                            Usr_Cod = @Usr_Cod
+                            AND Reporte_Id = @Reporte_Id
+                            AND Cen_Cos_Id = @Cen_Cos_Id
+                            AND Cliente_Id = @Cliente_Id
+                            AND Subestacion_Id = @Subestacion_Id
+                            AND ISNULL(Report_Descripcion, '') = ISNULL(@Report_Descripcion, '')
+                            AND ISNULL(Report_Acciones_Inmediata, '') = ISNULL(@Report_Acciones_Inmediata, '')
+                            AND ISNULL(Report_Foto1_Ubicacion, '') = ISNULL(@Report_Foto1_Ubicacion, '')
+                            AND ISNULL(Report_Foto2_Ubicacion, '') = ISNULL(@Report_Foto2_Ubicacion, '')
+                            AND ISNULL(Report_Acciones_Propuestas, '') = ISNULL(@Report_Acciones_Propuestas, '')
+                            AND ISNULL(Report_Potencial, '') = ISNULL(@Report_Potencial, '')
+                            AND ISNULL(Report_Aplica, '') = ISNULL(@Report_Aplica, '')
+                            AND ISNULL(Usr_Reg, '') = ISNULL(@Usr_Reg, '')
+                        ORDER BY We_Report_Id DESC;";
+
+                    var nuevoId = await connection.QueryFirstOrDefaultAsync<int?>(
+                        sqlId,
+                        parametros,
+                        commandType: CommandType.Text
+                    );
+
+                    if (!nuevoId.HasValue)
+                    {
+                        const string sqlFallback = @"
+                            SELECT TOP (1) We_Report_Id
+                            FROM Ins_We_Report
+                            WHERE
+                                Usr_Cod = @Usr_Cod
+                                AND Reporte_Id = @Reporte_Id
+                                AND Cen_Cos_Id = @Cen_Cos_Id
+                                AND Cliente_Id = @Cliente_Id
+                                AND Subestacion_Id = @Subestacion_Id
+                            ORDER BY We_Report_Id DESC;";
+
+                        nuevoId = await connection.QueryFirstOrDefaultAsync<int?>(
+                            sqlFallback,
+                            parametros,
+                            commandType: CommandType.Text
+                        );
+                    }
+
+                    return (0, "We Report registrado correctamente.", nuevoId);
                 }
 
-                return (1, "No se pudo registrar We Report");
+                return (1, "No se pudo registrar We Report", null);
             }
             catch (SqlException ex)
             {
                 _logger.LogError(ex, "Error SQL en InsertarWeReport");
-                return (1, ex.Message);
+                return (1, ex.Message, null);
             }
         }
     }
 
-
-
-    // FIX: SP_Mostrar_Actualizar_We_Report devuelve dos columnas Cen_Cos_Des sin alias
-    // (t4: centro de costos del cargo del usuario, t6: centro de costos del reporte),
-    // lo que impide el mapeo automático de Dapper. Se usa SQL inline con aliases explícitos,
-    // y se agregan las columnas que la entidad necesita y el SP original no seleccionaba.
-    // FIX 2 (causa real del error "No se pudo cargar la información del We Report para editar"):
-    // el JOIN contra Ins_Cargo comparaba t2.Usr_Crg (que almacena el Cargo_Id) contra
-    // t3.Cargo_Nombre (texto). Al no coincidir nunca, el INNER JOIN descartaba la fila completa
-    // y la consulta devolvía 0 registros. Se corrige la condición a Usr_Crg = Cargo_Id.
-    // FIX 3: se cambian los INNER JOIN por LEFT JOIN en las tablas relacionadas (Cargo, Cen_Cos,
-    // Tipo_Reporte, Cliente, SubEstacion) para que el registro se siga mostrando aunque alguna
-    // referencia sea NULL o quede huérfana (por ejemplo, reportes anónimos sin Cliente_Id /
-    // Subestacion_Id, o catálogos editados después de creado el reporte).
-    public async Task<IEnumerable<WeReportActualizarEntity>?> MostrarActualizarWeReport(int We_Report_Id)
+public async Task<IEnumerable<WeReportActualizarEntity>?> MostrarActualizarWeReport(int We_Report_Id)
     {
         const string sql = @"
             SELECT
@@ -983,43 +1015,90 @@ public async Task<IEnumerable<StopReportDetalleEntity>?> MostrarStopReport(int S
     }
 }
 
-public async Task<(int Codigo, string Mensaje)> InsertarStopReport(InsStopReportEntity valores)
-{
-    using (var connection = new SqlConnection(_connectionString))
+    public async Task<(int Codigo, string Mensaje, int? Id)> InsertarStopReport(InsStopReportEntity valores)
     {
-        try
+        using (var connection = new SqlConnection(_connectionString))
         {
-            await connection.OpenAsync();
+            try
+            {
+                await connection.OpenAsync();
 
-            var codigo = valores.We_Report_Cod?.Trim() ?? string.Empty;
+                var codigo = valores.We_Report_Cod?.Trim() ?? string.Empty;
 
-            var parametros = new DynamicParameters();
-            parametros.Add("@We_Report_Cod", codigo);
-            parametros.Add("@Usr_Cod", valores.Usr_Cod);
-            parametros.Add("@Stop_Supervisor", valores.Stop_Supervisor);
-            parametros.Add("@Stop_Inspector", valores.Stop_Inspector);
-            parametros.Add("@Cliente_Id", valores.Cliente_Id);
-            parametros.Add("@Subestacion_Id", valores.Subestacion_Id);
-            parametros.Add("@Stop_OT", valores.Stop_OP);
-            parametros.Add("@Stop_Trabajo", valores.Stop_Trabajo);
-            parametros.Add("@Stop_Procedimiento", valores.Stop_Procedimiento);
-            parametros.Add("@Tipo_Riesgo_Id", valores.Tipo_Riesgo_Id);
-            parametros.Add("@Usr_Reg", valores.Usr_Reg);
+                var parametros = new DynamicParameters();
+                parametros.Add("@We_Report_Cod", codigo);
+                parametros.Add("@Usr_Cod", valores.Usr_Cod);
+                parametros.Add("@Stop_Supervisor", valores.Stop_Supervisor);
+                parametros.Add("@Stop_Inspector", valores.Stop_Inspector);
+                parametros.Add("@Cliente_Id", valores.Cliente_Id);
+                parametros.Add("@Subestacion_Id", valores.Subestacion_Id);
+                parametros.Add("@Stop_OT", valores.Stop_OP);
+                parametros.Add("@Stop_Trabajo", valores.Stop_Trabajo);
+                parametros.Add("@Stop_Procedimiento", valores.Stop_Procedimiento);
+                parametros.Add("@Tipo_Riesgo_Id", valores.Tipo_Riesgo_Id);
+                parametros.Add("@Usr_Reg", valores.Usr_Reg);
 
-            await connection.ExecuteAsync(
-                "SP_Insertar_Stop_Report",
-                parametros,
-                commandType: CommandType.StoredProcedure
-            );
+                var rows = await connection.ExecuteAsync(
+                    "SP_Insertar_Stop_Report",
+                    parametros,
+                    commandType: CommandType.StoredProcedure
+                );
 
-            return (0, "Stop Report registrado correctamente.");
-        }
-        catch (SqlException ex)
-        {
-            return (1, ex.Message);
+                if (rows > 0)
+                {
+                    const string sqlId = @"
+                        SELECT TOP (1) Stop_Work_Id
+                        FROM Ins_Stop_Work
+                        WHERE
+                            We_Report_Cod = @We_Report_Cod
+                            AND Usr_Cod = @Usr_Cod
+                            AND ISNULL(Stop_Supervisor, '') = ISNULL(@Stop_Supervisor, '')
+                            AND ISNULL(Stop_Inspector, '') = ISNULL(@Stop_Inspector, '')
+                            AND Cliente_Id = @Cliente_Id
+                            AND Subestacion_Id = @Subestacion_Id
+                            AND ISNULL(Stop_OT, '') = ISNULL(@Stop_OT, '')
+                            AND ISNULL(Stop_Trabajo, '') = ISNULL(@Stop_Trabajo, '')
+                            AND ISNULL(Stop_Procedimiento, '') = ISNULL(@Stop_Procedimiento, '')
+                            AND Tipo_Riesgo_Id = @Tipo_Riesgo_Id
+                            AND ISNULL(Usr_Reg, '') = ISNULL(@Usr_Reg, '')
+                        ORDER BY Stop_Work_Id DESC;";
+
+                    var nuevoId = await connection.QueryFirstOrDefaultAsync<int?>(
+                        sqlId,
+                        parametros,
+                        commandType: CommandType.Text
+                    );
+
+                    if (!nuevoId.HasValue)
+                    {
+                        const string sqlFallback = @"
+                            SELECT TOP (1) Stop_Work_Id
+                            FROM Ins_Stop_Work
+                            WHERE
+                                We_Report_Cod = @We_Report_Cod
+                                AND Usr_Cod = @Usr_Cod
+                                AND Cliente_Id = @Cliente_Id
+                                AND Subestacion_Id = @Subestacion_Id
+                            ORDER BY Stop_Work_Id DESC;";
+
+                        nuevoId = await connection.QueryFirstOrDefaultAsync<int?>(
+                            sqlFallback,
+                            parametros,
+                            commandType: CommandType.Text
+                        );
+                    }
+
+                    return (0, "Stop Report registrado correctamente.", nuevoId);
+                }
+
+                return (1, "No se pudo registrar Stop Report", null);
+            }
+            catch (SqlException ex)
+            {
+                return (1, ex.Message, null);
+            }
         }
     }
-}
 
 public async Task<(int Codigo, string Mensaje)> ActualizarStopReport(ActualizarStopReportEntity valores)
 {
