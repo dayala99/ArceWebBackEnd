@@ -13,12 +13,12 @@ public class OrdenCompraService : IOrdenCompraService
         _repository = repository;
     }
 
-    public async Task<ServiceResponseList<OrdenCompraEntity>?> ListarOrdenCompraActivo(int? Ord_Com_Id, string? Ord_Com_Prv, string? Flg_Est)
+    public async Task<ServiceResponseList<OrdenCompraEntity>?> ListarOrdenCompraActivo(int? Ord_Com_Id, string? Ord_Com_Prv, string? Flg_Est, int? Ord_Com_Tip)
     {
         var result = new ServiceResponseList<OrdenCompraEntity>();
         try
         {
-            var resultData = await _repository.ListarOrdenCompraActivo(Ord_Com_Id, Ord_Com_Prv, Flg_Est);
+            var resultData = await _repository.ListarOrdenCompraActivo(Ord_Com_Id, Ord_Com_Prv, Flg_Est, Ord_Com_Tip);
             if (resultData == null || !resultData.Any())
             {
                 result.Success = true;

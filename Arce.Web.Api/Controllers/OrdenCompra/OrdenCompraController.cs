@@ -20,9 +20,9 @@ namespace MyApp.Namespace
         
         [HttpGet]
         [Route("getListarOrdenCompraActivo")]
-        public async Task<IActionResult> ListarOrdenCompraActivo(int? Ord_Com_Id, string? Ord_Com_Prv, string? Flg_Est)
+        public async Task<IActionResult> ListarOrdenCompraActivo(int? Ord_Com_Id, string? Ord_Com_Prv, string? Flg_Est, int? Ord_Com_Tip)
         {
-            var result = await _service.ListarOrdenCompraActivo(Ord_Com_Id ?? 0, Ord_Com_Prv ?? "", Flg_Est ?? "");
+            var result = await _service.ListarOrdenCompraActivo(Ord_Com_Id ?? 0, Ord_Com_Prv ?? "", Flg_Est ?? "", Ord_Com_Tip ?? 0);
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;

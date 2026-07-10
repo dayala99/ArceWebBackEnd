@@ -5,6 +5,7 @@ public class OrdenCompraEntity
     public int? Ord_Com_Id { get; set; }
 	public int? Ord_Com_Prv { get; set; }
 	public int? Ord_Com_For_Pag { get; set; }
+	public int? Mon_Id { get; set; }
 	public string? Ord_Com_Ref_Obr { get; set; }
 	//public int? Ord_Com_Cen_Cos VARCHAR(55
 	public string? Ord_Com_Obs { get; set; }
@@ -32,4 +33,7 @@ public class OrdenCompraEntity
 	public string? Det_Des { get; set; }
 	public string? Flg_Igv_Aut { get; set; }
 	public decimal? Igv_Por { get; set; }
+	public string? Mon_Abr { get; set; }
+	public string? Con_Nom { get; set; }
+	public string? Mon_Des { get; set; }
 }

@@ -99,6 +99,7 @@ public class PedidoRepository: IPedidoRepository
             parametros.Add("@Usr_Reg", valores.Usr_Reg);
             parametros.Add("@Ped_Can_Tot", valores.Ped_Can_Tot);
             parametros.Add("@Ped_Ref_Gral", valores.Ped_Ref_Gral);
+            parametros.Add("@Ped_Acl", valores.Ped_Acl);
 
             parametros.Add("@Ped_Id", 0);
             parametros.Add("@Codigo", 0);
@@ -152,6 +153,7 @@ public class PedidoRepository: IPedidoRepository
             parametros.Add("@Usr_Mod", valores.Usr_Mod);
             parametros.Add("@Ped_Can_Tot", valores.Ped_Can_Tot);
             parametros.Add("@Ped_Ref_Gral", valores.Ped_Ref_Gral);
+            parametros.Add("@Ped_Acl", valores.Ped_Acl);
 
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
@@ -408,6 +410,8 @@ public class PedidoRepository: IPedidoRepository
             parametros.Add("@Ped_Cen_Cos_Asg", valores.Ped_Cen_Cos_Asg);
             parametros.Add("@Usr_Reg", valores.Usr_Reg);
             parametros.Add("@Ped_Obs_Ped", valores.Ped_Obs_Ped);
+            parametros.Add("@Ped_Com", valores.Ped_Com);
+            parametros.Add("@Ped_Req", valores.Ped_Req);
             
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
@@ -452,6 +456,9 @@ public class PedidoRepository: IPedidoRepository
             parametros.Add("@Ped_Cen_Cos_Asg", valores.Ped_Cen_Cos_Asg);
             parametros.Add("@Ped_Obs_Ped", valores.Ped_Obs_Ped);
             parametros.Add("@Usr_Mod", valores.Usr_Mod);
+            parametros.Add("@Ped_Com", valores.Ped_Com);
+            parametros.Add("@Ped_Req", valores.Ped_Req);
+
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
 
@@ -569,7 +576,7 @@ public class PedidoRepository: IPedidoRepository
             try
             {
                 connection.Execute(
-                    "[dbo].[PA_Lg_Pedido_Det_U0002]"
+                    "[dbo].[PA_Lg_Pedido_Det_U0002_DAYALA]"
                     , parametros
                     , commandType: CommandType.StoredProcedure
                 );

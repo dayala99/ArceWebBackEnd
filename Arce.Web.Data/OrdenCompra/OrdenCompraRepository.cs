@@ -16,7 +16,7 @@ public class OrdenCompraRepository: IOrdenCompraRepository
         _connectionString = configuration.GetConnectionString("Connection")!;
     }
 
-    public async Task<IEnumerable<OrdenCompraEntity>?> ListarOrdenCompraActivo(int? Ord_Com_Id, string? Ord_Com_Prv, string? Flg_Est)
+    public async Task<IEnumerable<OrdenCompraEntity>?> ListarOrdenCompraActivo(int? Ord_Com_Id, string? Ord_Com_Prv, string? Flg_Est, int? Ord_Com_Tip)
     {
         using (var connection = new SqlConnection(_connectionString))
         {
@@ -25,6 +25,8 @@ public class OrdenCompraRepository: IOrdenCompraRepository
             parametros.Add("@Ord_Com_Id", Ord_Com_Id);
             parametros.Add("@Ord_Com_Prv", Ord_Com_Prv);
             parametros.Add("@Flg_Est", Flg_Est);
+            parametros.Add("@Ord_Com_Tip", Ord_Com_Tip);
+
             var result = await connection.QueryAsync<OrdenCompraEntity>(
                     "[dbo].[PA_Lg_Orden_Compra_S0001]"
                     , parametros
@@ -60,6 +62,7 @@ public class OrdenCompraRepository: IOrdenCompraRepository
             
             parametros.Add("@Ord_Com_Prv", valores.Ord_Com_Prv);
             parametros.Add("@Ord_Com_For_Pag", valores.Ord_Com_For_Pag);
+            parametros.Add("@Mon_Id", valores.Mon_Id);
             parametros.Add("@Ord_Com_Ref_Obr", valores.Ord_Com_Ref_Obr);
             parametros.Add("@Ord_Com_Obs", valores.Ord_Com_Obs);
             parametros.Add("@Ord_Com_Ref", valores.Ord_Com_Ref);
@@ -74,6 +77,7 @@ public class OrdenCompraRepository: IOrdenCompraRepository
             parametros.Add("@Ord_Com_Det_Mon", valores.Ord_Com_Det_Mon);
             parametros.Add("@Flg_Igv_Aut", valores.Flg_Igv_Aut);
             parametros.Add("@Igv_Por", valores.Igv_Por);
+            parametros.Add("@Con_Nom", valores.Con_Nom);
 
             parametros.Add("@Ord_Com_Id", 0);
             parametros.Add("@Codigo", 0);
@@ -85,7 +89,7 @@ public class OrdenCompraRepository: IOrdenCompraRepository
             try
             {
                 connection.Execute(
-                    "[dbo].[PA_Lg_Orden_Compra_I0001]"
+                    "[dbo].[PA_Lg_Orden_Compra_I0001_DAYALA]"
                     , parametros
                     , commandType: CommandType.StoredProcedure
                 );
@@ -112,6 +116,7 @@ public class OrdenCompraRepository: IOrdenCompraRepository
             parametros.Add("@Ord_Com_Id", valores.Ord_Com_Id);
             parametros.Add("@Ord_Com_Prv", valores.Ord_Com_Prv);
             parametros.Add("@Ord_Com_For_Pag", valores.Ord_Com_For_Pag);
+            parametros.Add("@Mon_Id", valores.Mon_Id);
             parametros.Add("@Ord_Com_Ref_Obr", valores.Ord_Com_Ref_Obr);
             parametros.Add("@Ord_Com_Obs", valores.Ord_Com_Obs);
             parametros.Add("@Ord_Com_Ref", valores.Ord_Com_Ref);
@@ -127,6 +132,7 @@ public class OrdenCompraRepository: IOrdenCompraRepository
             parametros.Add("@Ord_Com_Det_Mon", valores.Ord_Com_Det_Mon);
             parametros.Add("@Flg_Igv_Aut", valores.Flg_Igv_Aut);
             parametros.Add("@Igv_Por", valores.Igv_Por);
+            parametros.Add("@Con_Nom", valores.Con_Nom);
             
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
@@ -136,7 +142,7 @@ public class OrdenCompraRepository: IOrdenCompraRepository
             try
             {
                 connection.Execute(
-                    "[dbo].[PA_Lg_Orden_Compra_U0001]"
+                    "[dbo].[PA_Lg_Orden_Compra_U0001_DAYALA]"
                     , parametros
                     , commandType: CommandType.StoredProcedure
                 );
@@ -301,7 +307,7 @@ public class OrdenCompraRepository: IOrdenCompraRepository
             try
             {
                 connection.Execute(
-                    "[dbo].[PA_Lg_Pedido_Cab_Archivo_D0001]"
+                    "[dbo].[PA_Lg_Orden_Compra_Archivo_D0001]"
                     , parametros
                     , commandType: CommandType.StoredProcedure
                 );
