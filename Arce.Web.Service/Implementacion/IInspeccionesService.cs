@@ -35,6 +35,11 @@ public interface IInspeccionesService
     Task<ServiceResponseList<PrevencionDetalleEntity>?> MostrarPrevencion(int Prevencion_Id);
     Task<ServiceResponse<int>> InsertarPrevencion(InsPrevencionEntity valores);
     Task<ServiceResponseList<WeReportActualizarEntity>?> MostrarActualizarWeReport(int We_Report_Id);
+    Task<ServiceResponseList<StopReportListadoEntity>?> FiltrarStopReport(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado);
+    Task<ServiceResponseList<StopReportDetalleEntity>?> MostrarStopReport(int Stop_Work_Id);
+    Task<ServiceResponse<int>> InsertarStopReport(InsStopReportEntity valores);
+    Task<ServiceResponse<int>> ActualizarStopReport(ActualizarStopReportEntity valores);
+    Task<ServiceResponse<int>> EliminarStopReport(EliminarStopReportEntity valores);
     Task<ServiceResponse<int>> InsertarWeReport(WeReportEntity valores);
     Task<ServiceResponse<int>> ActualizarWeReport(WeReportActualizarEntity valores);
     Task<ServiceResponse<int>> EliminarWeReport(EliminarWeReportEntity valores);

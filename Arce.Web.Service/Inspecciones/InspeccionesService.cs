@@ -657,6 +657,149 @@ public async Task<ServiceResponseList<ObservacionPlaneadaDetalleEntity>?> Mostra
         }
     }
 
+
+public async Task<ServiceResponseList<StopReportListadoEntity>?> FiltrarStopReport(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado)
+{
+    var result = new ServiceResponseList<StopReportListadoEntity>();
+    try
+    {
+        if (!Fecha_Desde.HasValue || !Fecha_Hasta.HasValue)
+        {
+            result.Success = true;
+            result.Message = "No existe información";
+            result.Elements = new List<StopReportListadoEntity>();
+            result.TotalElements = 0;
+            return result;
+        }
+
+        var resultData = await _inspeccionesRepository.FiltrarStopReport(Fecha_Desde, Fecha_Hasta, Estado);
+        var elements = (resultData ?? Enumerable.Empty<StopReportListadoEntity>()).ToList();
+        result.Success = true;
+        result.Message = elements.Any() ? "Completado con éxito" : "No existe información";
+        result.Elements = elements;
+        result.TotalElements = elements.Count;
+        return result;
+    }
+    catch (Exception ex)
+    {
+        result.Success = false;
+        result.Message = "Excepción no controlada " + ex.Message;
+        result.Elements = new List<StopReportListadoEntity>();
+        result.TotalElements = 0;
+        return result;
+    }
+}
+
+public async Task<ServiceResponseList<StopReportDetalleEntity>?> MostrarStopReport(int Stop_Work_Id)
+{
+    var result = new ServiceResponseList<StopReportDetalleEntity>();
+    try
+    {
+        var resultData = await _inspeccionesRepository.MostrarStopReport(Stop_Work_Id);
+        var elements = (resultData ?? Enumerable.Empty<StopReportDetalleEntity>()).ToList();
+        result.Success = true;
+        result.Message = "Completado con éxito";
+        result.Elements = elements;
+        result.TotalElements = elements.Count;
+        return result;
+    }
+    catch (Exception ex)
+    {
+        result.Success = false;
+        result.Message = "Excepción no controlada " + ex.Message;
+        result.Elements = new List<StopReportDetalleEntity>();
+        result.TotalElements = 0;
+        return result;
+    }
+}
+
+public async Task<ServiceResponse<int>> InsertarStopReport(InsStopReportEntity valores)
+{
+    var result = new ServiceResponse<int>();
+    try
+    {
+        var resultData = await _inspeccionesRepository.InsertarStopReport(valores);
+        if (resultData.Codigo == 0)
+        {
+            result.Success = true;
+            result.Message = resultData.Mensaje;
+            result.CodeTransacc = resultData.Codigo;
+            result.Data = 1;
+            return result;
+        }
+
+        result.Success = false;
+        result.Message = resultData.Mensaje;
+        result.Data = 0;
+        return result;
+    }
+    catch (Exception ex)
+    {
+        result.Success = false;
+        result.Message = "Error inesperado " + ex.Message;
+        result.Data = 0;
+        return result;
+    }
+}
+
+public async Task<ServiceResponse<int>> ActualizarStopReport(ActualizarStopReportEntity valores)
+{
+    var result = new ServiceResponse<int>();
+    try
+    {
+        var resultData = await _inspeccionesRepository.ActualizarStopReport(valores);
+        if (resultData.Codigo == 0)
+        {
+            result.Success = true;
+            result.Message = resultData.Mensaje;
+            result.CodeTransacc = resultData.Codigo;
+            result.Data = 1;
+            return result;
+        }
+
+        result.Success = false;
+        result.Message = resultData.Mensaje;
+        result.Data = 0;
+        return result;
+    }
+    catch (Exception ex)
+    {
+        result.Success = false;
+        result.Message = "Error inesperado " + ex.Message;
+        result.Data = 0;
+        return result;
+    }
+}
+
+public async Task<ServiceResponse<int>> EliminarStopReport(EliminarStopReportEntity valores)
+{
+    var result = new ServiceResponse<int>();
+    try
+    {
+        var resultData = await _inspeccionesRepository.EliminarStopReport(valores);
+        if (resultData.Codigo == 0)
+        {
+            result.Success = true;
+            result.Message = resultData.Mensaje;
+            result.CodeTransacc = resultData.Codigo;
+            result.Data = 1;
+            return result;
+        }
+
+        result.Success = false;
+        result.Message = resultData.Mensaje;
+        result.Data = 0;
+        return result;
+    }
+    catch (Exception ex)
+    {
+        result.Success = false;
+        result.Message = "Error inesperado " + ex.Message;
+        result.Data = 0;
+        return result;
+    }
+}
+
     public async Task<ServiceResponse<int>> InsertarWeReport(WeReportEntity valores)
     {
         var result = new ServiceResponse<int>();

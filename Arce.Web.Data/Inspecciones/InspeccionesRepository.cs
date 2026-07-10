@@ -863,6 +863,241 @@ ORDER BY t1.Observacion_Id DESC",
         }
     }
 
+
+// FIX: la columna real de la tabla Ins_Stop_Work es "Stop_OT" (ver SP_Filtrar_Stop_Work
+// y el SELECT de getMostrarStopReport), NO "Stop_OP". Referenciar "Stop_OP" hacía fallar
+// el SELECT con una excepción SQL que el service atrapaba silenciosamente devolviendo
+// una lista vacía, por eso el botón Filtrar siempre mostraba "No se encontró ningún registro".
+public async Task<IEnumerable<StopReportListadoEntity>?> FiltrarStopReport(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado)
+{
+    const string sql = @"
+        SELECT
+            t1.Stop_Work_Id      AS Stop_Work_Id,
+            t1.We_Report_Cod     AS Codigo_We_Report,
+            t1.Codigo_Stop_Work  AS Codigo_Stop_Work,
+            t2.Usr_Nom           AS Usr_Nom,
+            t4.Cen_Cos_Des       AS Cen_Cos_Des,
+            t3.Usr_Nom           AS Stop_Supervisor_Nom,
+            t1.Stop_Inspector    AS Stop_Inspector,
+            t5.Cliente_Nombre    AS Cliente_Nombre,
+            t1.Stop_OT           AS OT,
+            t6.Tipo_Riesgo       AS Tipo_Riesgo,
+            t1.Estado            AS Estado
+        FROM Ins_Stop_Work t1
+        LEFT JOIN Sg_Usuario t2
+            ON t1.Usr_Cod = t2.Usr_Cod
+        LEFT JOIN Lg_Cen_Cos t4
+            ON t2.Usr_Cen_Cos_Id = t4.Cen_Cos_Id
+        LEFT JOIN Sg_Usuario t3
+            ON t1.Stop_Supervisor = t3.Usr_Cod
+        LEFT JOIN Ins_Cliente t5
+            ON t1.Cliente_Id = t5.Cliente_Id
+        LEFT JOIN Ins_Tipo_Riesgo t6
+            ON t1.Tipo_Riesgo_Id = t6.Tipo_Riesgo_Id
+        WHERE
+            t1.Fec_Reg >= @Fecha_Desde
+            AND t1.Fec_Reg < DATEADD(DAY, 1, @Fecha_Hasta)
+            AND t1.Estado = @Estado
+        ORDER BY t1.Stop_Work_Id ASC";
+
+    using (var connection = new SqlConnection(_connectionString))
+    {
+        await connection.OpenAsync();
+        var parametros = new DynamicParameters();
+        parametros.Add("@Fecha_Desde", Fecha_Desde ?? DateTime.MinValue);
+        parametros.Add("@Fecha_Hasta", Fecha_Hasta ?? DateTime.MinValue);
+        parametros.Add("@Estado", NormalizarEstadoStopReport(Estado));
+        return await connection.QueryAsync<StopReportListadoEntity>(
+            sql,
+            parametros,
+            commandType: CommandType.Text
+        );
+    }
+}
+
+// Mismo criterio de normalización que se usa en Prevención / Medio Ambiente:
+// solo "A" o "I", por defecto "A" si viene vacío.
+private static string NormalizarEstadoStopReport(string? estado)
+{
+    if (string.IsNullOrWhiteSpace(estado))
+    {
+        return "A";
+    }
+
+    var valor = estado.Trim().Substring(0, 1).ToUpperInvariant();
+    return valor == "I" ? "I" : "A";
+}
+
+public async Task<IEnumerable<StopReportDetalleEntity>?> MostrarStopReport(int Stop_Work_Id)
+{
+    const string sql = @"
+        SELECT
+            t1.Stop_Work_Id      AS Stop_Work_Id,
+            t1.We_Report_Cod     AS We_Report_Cod,
+            t1.We_Report_Cod     AS Codigo_We_Report,
+            t1.Codigo_Stop_Work  AS Codigo_Stop_Work,
+            t1.Usr_Cod           AS Usr_Cod,
+            t2.Usr_Nom           AS Usr_Nom,
+            t3.Cargo_Nombre      AS Cargo_Nombre,
+            t4.Cen_Cos_Des       AS Cen_Cos_Des,
+            t1.Stop_Supervisor   AS Stop_Supervisor,
+            t5.Usr_Nom           AS Stop_Supervisor_Nom,
+            t1.Stop_Inspector    AS Stop_Inspector,
+            t1.Cliente_Id        AS Cliente_Id,
+            t6.Cliente_Nombre    AS Cliente_Nombre,
+            t1.Subestacion_Id    AS Subestacion_Id,
+            t7.Subestacion_Nombre AS Subestacion_Nombre,
+            t1.Stop_OT           AS Stop_OP,
+            t1.Stop_Trabajo      AS Stop_Trabajo,
+            t1.Stop_Procedimiento AS Stop_Procedimiento,
+            t1.Tipo_Riesgo_Id    AS Tipo_Riesgo_Id,
+            t8.Tipo_Riesgo       AS Tipo_Riesgo,
+            t1.Usr_Reg           AS Usr_Reg,
+            t1.Fec_Reg           AS Fec_Reg,
+            t1.Usr_Mod           AS Usr_Mod,
+            t1.Fec_Mod           AS Fec_Mod,
+            t1.Estado            AS Estado
+        FROM Ins_Stop_Work t1
+        LEFT JOIN Sg_Usuario t2
+            ON t1.Usr_Cod = t2.Usr_Cod
+        LEFT JOIN Ins_Cargo t3
+            ON t2.Usr_Crg = t3.Cargo_Id
+        LEFT JOIN Lg_Cen_Cos t4
+            ON t2.Usr_Cen_Cos_Id = t4.Cen_Cos_Id
+        LEFT JOIN Sg_Usuario t5
+            ON t1.Stop_Supervisor = t5.Usr_Cod
+        LEFT JOIN Ins_Cliente t6
+            ON t1.Cliente_Id = t6.Cliente_Id
+        LEFT JOIN Ins_SubEstacion t7
+            ON t1.Subestacion_Id = t7.Subestacion_Id
+        LEFT JOIN Ins_Tipo_Riesgo t8
+            ON t1.Tipo_Riesgo_Id = t8.Tipo_Riesgo_Id
+        WHERE t1.Stop_Work_Id = @Stop_Work_Id";
+
+    using (var connection = new SqlConnection(_connectionString))
+    {
+        await connection.OpenAsync();
+        var parametros = new DynamicParameters();
+        parametros.Add("@Stop_Work_Id", Stop_Work_Id);
+        return await connection.QueryAsync<StopReportDetalleEntity>(sql, parametros);
+    }
+}
+
+public async Task<(int Codigo, string Mensaje)> InsertarStopReport(InsStopReportEntity valores)
+{
+    using (var connection = new SqlConnection(_connectionString))
+    {
+        try
+        {
+            await connection.OpenAsync();
+
+            var codigo = valores.We_Report_Cod?.Trim() ?? string.Empty;
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@We_Report_Cod", codigo);
+            parametros.Add("@Usr_Cod", valores.Usr_Cod);
+            parametros.Add("@Stop_Supervisor", valores.Stop_Supervisor);
+            parametros.Add("@Stop_Inspector", valores.Stop_Inspector);
+            parametros.Add("@Cliente_Id", valores.Cliente_Id);
+            parametros.Add("@Subestacion_Id", valores.Subestacion_Id);
+            parametros.Add("@Stop_OT", valores.Stop_OP);
+            parametros.Add("@Stop_Trabajo", valores.Stop_Trabajo);
+            parametros.Add("@Stop_Procedimiento", valores.Stop_Procedimiento);
+            parametros.Add("@Tipo_Riesgo_Id", valores.Tipo_Riesgo_Id);
+            parametros.Add("@Usr_Reg", valores.Usr_Reg);
+
+            await connection.ExecuteAsync(
+                "SP_Insertar_Stop_Report",
+                parametros,
+                commandType: CommandType.StoredProcedure
+            );
+
+            return (0, "Stop Report registrado correctamente.");
+        }
+        catch (SqlException ex)
+        {
+            return (1, ex.Message);
+        }
+    }
+}
+
+public async Task<(int Codigo, string Mensaje)> ActualizarStopReport(ActualizarStopReportEntity valores)
+{
+    using (var connection = new SqlConnection(_connectionString))
+    {
+        try
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Stop_Work_Id", valores.Stop_Work_Id);
+            parametros.Add("@We_Report_Cod", valores.We_Report_Cod);
+            parametros.Add("@Usr_Cod", valores.Usr_Cod);
+            parametros.Add("@Stop_Supervisor", valores.Stop_Supervisor);
+            parametros.Add("@Stop_Inspector", valores.Stop_Inspector);
+            parametros.Add("@Cliente_Id", valores.Cliente_Id);
+            parametros.Add("@Subestacion_Id", valores.Subestacion_Id);
+            parametros.Add("@Stop_OT", valores.Stop_OP);
+            parametros.Add("@Stop_Trabajo", valores.Stop_Trabajo);
+            parametros.Add("@Stop_Procedimiento", valores.Stop_Procedimiento);
+            parametros.Add("@Tipo_Riesgo_Id", valores.Tipo_Riesgo_Id);
+            parametros.Add("@Usr_Mod", valores.Usr_Mod);
+            parametros.Add("@Estado", string.IsNullOrWhiteSpace(valores.Estado) ? "A" : valores.Estado);
+
+            var sql = @"
+                UPDATE Ins_Stop_Work
+                SET
+                    We_Report_Cod = COALESCE(@We_Report_Cod, We_Report_Cod),
+                    Usr_Cod = @Usr_Cod,
+                    Stop_Supervisor = @Stop_Supervisor,
+                    Stop_Inspector = @Stop_Inspector,
+                    Cliente_Id = @Cliente_Id,
+                    Subestacion_Id = @Subestacion_Id,
+                    Stop_OT = @Stop_OT,
+                    Stop_Trabajo = @Stop_Trabajo,
+                    Stop_Procedimiento = @Stop_Procedimiento,
+                    Tipo_Riesgo_Id = @Tipo_Riesgo_Id,
+                    Usr_Mod = @Usr_Mod,
+                    Fec_Mod = GETDATE(),
+                    Estado = @Estado
+                WHERE Stop_Work_Id = @Stop_Work_Id";
+
+            var rows = await connection.ExecuteAsync(sql, parametros);
+            return rows > 0 ? (0, "Stop Report actualizado correctamente.") : (1, "No se pudo actualizar Stop Report");
+        }
+        catch (SqlException ex)
+        {
+            return (1, ex.Message);
+        }
+    }
+}
+
+public async Task<(int Codigo, string Mensaje)> EliminarStopReport(EliminarStopReportEntity valores)
+{
+    using (var connection = new SqlConnection(_connectionString))
+    {
+        try
+        {
+            await connection.OpenAsync();
+            var parametros = new DynamicParameters();
+            parametros.Add("@Stop_Work_Id", valores.Stop_Work_Id);
+            parametros.Add("@Usr_Mod", valores.Usr_Mod);
+
+            await connection.ExecuteAsync(
+                "SP_Eliminar_Stop_Work",
+                parametros,
+                commandType: CommandType.StoredProcedure
+            );
+
+            return (0, "Stop Report eliminado correctamente.");
+        }
+        catch (SqlException ex)
+        {
+            return (1, ex.Message);
+        }
+    }
+}
+
     public async Task<(int Codigo, string Mensaje)> ActualizarWeReport(WeReportActualizarEntity valores)
 {
     using (var connection = new SqlConnection(_connectionString))

@@ -7,36 +7,20 @@ namespace Arce.Web.Api.Controllers.Inspecciones
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class JefeController : ControllerBase
+    public class TipoReporteController : ControllerBase
     {
-        private readonly IJefeService _service;
+        private readonly ITipoReporteService _service;
 
-        public JefeController(IJefeService service)
+        public TipoReporteController(ITipoReporteService service)
         {
             _service = service;
         }
 
         [HttpGet]
-        [Route("getListarJefe")]
-        public async Task<IActionResult> ListarJefe(int? Id, string? Reporte_Tipo, string? Estado)
+        [Route("getListarTipoReporte")]
+        public async Task<IActionResult> ListarTipoReporte(int? Reporte_Id, string? Reporte_Tipo, string? Estado)
         {
-            var result = await _service.ListarJefe(Id, Reporte_Tipo, Estado);
-
-            if (result!.Success)
-            {
-                result.CodeResult = StatusCodes.Status200OK;
-                return Ok(result);
-            }
-
-            result.CodeResult = StatusCodes.Status400BadRequest;
-            return BadRequest(result);
-        }
-
-        [HttpGet]
-        [Route("getConsultarDatosJefe")]
-        public async Task<IActionResult> ConsultarDatosJefe(int? Reporte_Id)
-        {
-            var result = await _service.ConsultarDatosJefe(Reporte_Id);
+            var result = await _service.ListarTipoReporte(Reporte_Id, Reporte_Tipo, Estado);
 
             if (result!.Success)
             {
@@ -49,16 +33,16 @@ namespace Arce.Web.Api.Controllers.Inspecciones
         }
 
         [HttpPost]
-        [Route("postRegistrarJefe")]
-        public async Task<IActionResult> RegistrarJefe([FromBody] JefeEntity valores)
+        [Route("postRegistrarTipoReporte")]
+        public async Task<IActionResult> RegistrarTipoReporte([FromBody] TipoReporteEntity valores)
         {
-            JefeEntity parametros = new JefeEntity()
+            var parametros = new TipoReporteEntity()
             {
                 Reporte_Tipo = valores.Reporte_Tipo,
                 Usr_Reg = valores.Usr_Reg
             };
 
-            var result = await _service.RegistrarJefe(parametros);
+            var result = await _service.RegistrarTipoReporte(parametros);
 
             if (result!.Success)
             {
@@ -71,10 +55,10 @@ namespace Arce.Web.Api.Controllers.Inspecciones
         }
 
         [HttpPatch]
-        [Route("patchActualizarJefe")]
-        public async Task<IActionResult> ActualizarJefe([FromBody] JefeEntity valores)
+        [Route("patchActualizarTipoReporte")]
+        public async Task<IActionResult> ActualizarTipoReporte([FromBody] TipoReporteEntity valores)
         {
-            JefeEntity parametros = new JefeEntity()
+            var parametros = new TipoReporteEntity()
             {
                 Reporte_Id = valores.Reporte_Id,
                 Reporte_Tipo = valores.Reporte_Tipo,
@@ -82,7 +66,7 @@ namespace Arce.Web.Api.Controllers.Inspecciones
                 Usr_Mod = valores.Usr_Mod
             };
 
-            var result = await _service.ActualizarJefe(parametros);
+            var result = await _service.ActualizarTipoReporte(parametros);
 
             if (result!.Success)
             {
@@ -95,10 +79,10 @@ namespace Arce.Web.Api.Controllers.Inspecciones
         }
 
         [HttpDelete]
-        [Route("deleteEliminarJefe/{Id}")]
-        public async Task<IActionResult> EliminarJefe(int? Id, string? Usr_Mod)
+        [Route("deleteEliminarTipoReporte/{Tipo_Reporte_Id}")]
+        public async Task<IActionResult> EliminarTipoReporte(int? Tipo_Reporte_Id, string? Usr_Mod)
         {
-            var result = await _service.EliminarJefe(Id, Usr_Mod);
+            var result = await _service.EliminarTipoReporte(Tipo_Reporte_Id, Usr_Mod);
 
             if (result!.Success)
             {

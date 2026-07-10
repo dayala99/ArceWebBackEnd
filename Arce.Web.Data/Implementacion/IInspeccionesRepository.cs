@@ -35,6 +35,11 @@ public interface IInspeccionesRepository
     Task<IEnumerable<PrevencionDetalleEntity>?> MostrarPrevencion(int Prevencion_Id);
     Task<(int Codigo, string Mensaje)> InsertarPrevencion(InsPrevencionEntity valores);
     Task<IEnumerable<WeReportActualizarEntity>?> MostrarActualizarWeReport(int We_Report_Id);
+    Task<IEnumerable<StopReportListadoEntity>?> FiltrarStopReport(DateTime? Fecha_Desde, DateTime? Fecha_Hasta, string? Estado);
+    Task<IEnumerable<StopReportDetalleEntity>?> MostrarStopReport(int Stop_Work_Id);
+    Task<(int Codigo, string Mensaje)> InsertarStopReport(InsStopReportEntity valores);
+    Task<(int Codigo, string Mensaje)> ActualizarStopReport(ActualizarStopReportEntity valores);
+    Task<(int Codigo, string Mensaje)> EliminarStopReport(EliminarStopReportEntity valores);
     Task<(int Codigo, string Mensaje)> InsertarWeReport(WeReportEntity valores);
     Task<(int Codigo, string Mensaje)> ActualizarWeReport(WeReportActualizarEntity valores);
     Task<(int Codigo, string Mensaje)> EliminarWeReport(EliminarWeReportEntity valores);

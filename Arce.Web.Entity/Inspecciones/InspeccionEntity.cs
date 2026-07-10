@@ -229,6 +229,88 @@ namespace Arce.Web.Entity.Inspecciones
         public string? Reporte_Tipo { get; set; }
     }
 
+
+public class StopReportListadoEntity
+{
+    public int? Stop_Work_Id { get; set; }
+    public string? Codigo_We_Report { get; set; }
+    public string? Codigo_Stop_Work { get; set; }
+    public string? Usr_Nom { get; set; }
+    public string? Cen_Cos_Des { get; set; }
+    public string? Stop_Supervisor_Nom { get; set; }
+    public string? Stop_Inspector { get; set; }
+    public string? Cliente_Nombre { get; set; }
+    public string? OT { get; set; }
+    public string? Tipo_Riesgo { get; set; }
+    public string? Estado { get; set; }
+}
+
+public class StopReportDetalleEntity
+{
+    public int? Stop_Work_Id { get; set; }
+    public string? We_Report_Cod { get; set; }
+    public string? Codigo_Stop_Work { get; set; }
+    public string? Usr_Cod { get; set; }
+    public string? Usr_Nom { get; set; }
+    public string? Cargo_Nombre { get; set; }
+    public string? Cen_Cos_Des { get; set; }
+    public string? Stop_Supervisor { get; set; }
+    public string? Stop_Supervisor_Nom { get; set; }
+    public string? Stop_Inspector { get; set; }
+    public int? Cliente_Id { get; set; }
+    public string? Cliente_Nombre { get; set; }
+    public int? Subestacion_Id { get; set; }
+    public string? Subestacion_Nombre { get; set; }
+    public string? Stop_OP { get; set; }
+    public string? Stop_Trabajo { get; set; }
+    public string? Stop_Procedimiento { get; set; }
+    public int? Tipo_Riesgo_Id { get; set; }
+    public string? Tipo_Riesgo { get; set; }
+    public string? Usr_Reg { get; set; }
+    public DateTime? Fec_Reg { get; set; }
+    public string? Usr_Mod { get; set; }
+    public DateTime? Fec_Mod { get; set; }
+    public string? Estado { get; set; }
+}
+
+public class InsStopReportEntity
+{
+    public string? We_Report_Cod { get; set; }
+    public string? Usr_Cod { get; set; }
+    public string? Stop_Supervisor { get; set; }
+    public string? Stop_Inspector { get; set; }
+    public int? Cliente_Id { get; set; }
+    public int? Subestacion_Id { get; set; }
+    public string? Stop_OP { get; set; }
+    public string? Stop_Trabajo { get; set; }
+    public string? Stop_Procedimiento { get; set; }
+    public int? Tipo_Riesgo_Id { get; set; }
+    public string? Usr_Reg { get; set; }
+}
+
+public class ActualizarStopReportEntity
+{
+    public int? Stop_Work_Id { get; set; }
+    public string? We_Report_Cod { get; set; }
+    public string? Usr_Cod { get; set; }
+    public string? Stop_Supervisor { get; set; }
+    public string? Stop_Inspector { get; set; }
+    public int? Cliente_Id { get; set; }
+    public int? Subestacion_Id { get; set; }
+    public string? Stop_OP { get; set; }
+    public string? Stop_Trabajo { get; set; }
+    public string? Stop_Procedimiento { get; set; }
+    public int? Tipo_Riesgo_Id { get; set; }
+    public string? Usr_Mod { get; set; }
+    public string? Estado { get; set; }
+}
+
+public class EliminarStopReportEntity
+{
+    public int? Stop_Work_Id { get; set; }
+    public string? Usr_Mod { get; set; }
+}
+
     public class WeReportListadoEntity
     {
         public int? We_Report_Id { get; set; }

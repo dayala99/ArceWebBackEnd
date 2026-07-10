@@ -16,20 +16,23 @@ public class JefeRepository : IJefeRepository
         _connectionString = configuration.GetConnectionString("Connection")!;
     }
 
-    public async Task<IEnumerable<JefeEntity>?> ListarJefe(int? Id, string? Nombre, string? Dni, string? Estado, int? Cen_Cos_Id)
+    public async Task<IEnumerable<JefeEntity>?> ListarJefe(int? Id, string? Reporte_Tipo, string? Estado)
     {
         using var connection = new SqlConnection(_connectionString);
         await connection.OpenAsync();
 
         var parametros = new DynamicParameters();
-        parametros.Add("@Jefe_Id", Id ?? 0);
-        parametros.Add("@Jef_Nombre", Nombre ?? string.Empty);
-        parametros.Add("@Jef_DNI", Dni ?? string.Empty);
+        parametros.Add("@Reporte_Id", Id ?? 0);
+        parametros.Add("@Reporte_Tipo", Reporte_Tipo ?? string.Empty);
         parametros.Add("@Estado", NormalizarEstado(Estado) ?? "A");
-        parametros.Add("@Cen_Cos_Id", Cen_Cos_Id ?? 0);
+
+        Console.WriteLine("[TipoReporte][Repository] SP_Filtrar_Tipo_Reporte -> filtros:");
+        Console.WriteLine($"  Reporte_Id: {Id ?? 0}");
+        Console.WriteLine($"  Reporte_Tipo: {Reporte_Tipo ?? string.Empty}");
+        Console.WriteLine($"  Estado: {NormalizarEstado(Estado) ?? "A"}");
 
         var filas = await connection.QueryAsync(
-            "[dbo].[SP_Filtrar_Jefe]",
+            "[dbo].[SP_Filtrar_Tipo_Reporte]",
             parametros,
             commandType: CommandType.StoredProcedure
         );
@@ -41,20 +44,19 @@ public class JefeRepository : IJefeRepository
         return resultado;
     }
 
-    public async Task<IEnumerable<JefeEntity>?> ConsultarDatosJefe(int? Jefe_Id)
+    public async Task<IEnumerable<JefeEntity>?> ConsultarDatosJefe(int? Reporte_Id)
     {
         using var connection = new SqlConnection(_connectionString);
         await connection.OpenAsync();
 
         var parametros = new DynamicParameters();
-        parametros.Add("@Jefe_Id", Jefe_Id);
+        parametros.Add("@Reporte_Id", Reporte_Id);
 
-        // El SP devuelve las columnas Jef_Nombre, Jef_DNI, Cen_Cos_Des.
-        // JefeEntity tiene las propiedades Nombre, Dni, Cen_Cos_Des, por lo que
-        // se mapea manualmente para evitar que Dapper deje Nombre/Dni en null
-        // (Cen_Cos_Des sí mapea directo porque el nombre coincide exacto).
+        Console.WriteLine("[TipoReporte][Repository] SP_Mostrar_Actualizar_Tipo_Reporte -> id:");
+        Console.WriteLine($"  Reporte_Id: {Reporte_Id}");
+
         var filas = await connection.QueryAsync(
-            "[dbo].[SP_Consultar_Datos_Jefe_Actualizar]",
+            "[dbo].[SP_Mostrar_Actualizar_Tipo_Reporte]",
             parametros,
             commandType: CommandType.StoredProcedure
         );
@@ -64,11 +66,8 @@ public class JefeRepository : IJefeRepository
             var dict = (IDictionary<string, object>)fila;
             return new JefeEntity
             {
-                Id = Jefe_Id,
-                Nombre = ObtenerTexto(dict, "Jef_Nombre", "Nombre", "jef_Nombre", "nombre"),
-                Dni = ObtenerTexto(dict, "Jef_DNI", "Dni", "dni"),
-                Cen_Cos_Des = ObtenerTexto(dict, "Cen_Cos_Des", "Area", "area"),
-                Area = ObtenerTexto(dict, "Cen_Cos_Des", "Area", "area"),
+                Reporte_Id = Reporte_Id,
+                Reporte_Tipo = ObtenerTexto(dict, "Reporte_Tipo", "reporte_tipo", "Tipo_Reporte", "tipo_reporte"),
                 Estado = ObtenerTexto(dict, "Estado", "estado")
             };
         });
@@ -82,15 +81,17 @@ public class JefeRepository : IJefeRepository
         await connection.OpenAsync();
 
         var parametros = new DynamicParameters();
-        parametros.Add("@Jef_Nombre", valores.Nombre);
-        parametros.Add("@Jef_DNI", valores.Dni);
-        parametros.Add("@Cen_Cos_Id", valores.Cen_Cos_Id);
+        parametros.Add("@Reporte_Tipo", valores.Reporte_Tipo);
         parametros.Add("@Usr_Reg", valores.Usr_Reg);
+
+        Console.WriteLine("[TipoReporte][Repository] SP_Insertar_Tipo_Reporte -> datos:");
+        Console.WriteLine($"  Reporte_Tipo: {valores.Reporte_Tipo}");
+        Console.WriteLine($"  Usr_Reg: {valores.Usr_Reg}");
 
         try
         {
             await connection.ExecuteAsync(
-                "[dbo].[SP_Insertar_Jefe]",
+                "[dbo].[SP_Insertar_Tipo_Reporte]",
                 parametros,
                 commandType: CommandType.StoredProcedure
             );
@@ -109,17 +110,21 @@ public class JefeRepository : IJefeRepository
         await connection.OpenAsync();
 
         var parametros = new DynamicParameters();
-        parametros.Add("@Jefe_Id", valores.Id);
-        parametros.Add("@Jef_Nombre", valores.Nombre);
-        parametros.Add("@Cen_Cos_Id", valores.Cen_Cos_Id);
-        parametros.Add("@Estado", valores.Estado);
-        parametros.Add("@Jef_DNI", valores.Dni);
+        parametros.Add("@Reporte_Id", valores.Reporte_Id);
+        parametros.Add("@Reporte_Tipo", valores.Reporte_Tipo);
         parametros.Add("@Usr_Mod", valores.Usr_Mod);
+        parametros.Add("@Estado", NormalizarEstado(valores.Estado) ?? "A");
+
+        Console.WriteLine("[TipoReporte][Repository] SP_Actualizar_Tipo_Reporte -> datos:");
+        Console.WriteLine($"  Reporte_Id: {valores.Reporte_Id}");
+        Console.WriteLine($"  Reporte_Tipo: {valores.Reporte_Tipo}");
+        Console.WriteLine($"  Estado: {NormalizarEstado(valores.Estado) ?? "A"}");
+        Console.WriteLine($"  Usr_Mod: {valores.Usr_Mod}");
 
         try
         {
             await connection.ExecuteAsync(
-                "[dbo].[SP_Actualizar_Jefe]",
+                "[dbo].[SP_Actualizar_Tipo_Reporte]",
                 parametros,
                 commandType: CommandType.StoredProcedure
             );
@@ -138,13 +143,17 @@ public class JefeRepository : IJefeRepository
         await connection.OpenAsync();
 
         var parametros = new DynamicParameters();
-        parametros.Add("@Jefe_Id", Id);
+        parametros.Add("@Tipo_Reporte_Id", Id);
         parametros.Add("@Usr_Mod", Usr_Mod);
+
+        Console.WriteLine("[TipoReporte][Repository] SP_Eliminar_Tipo_Reporte -> datos:");
+        Console.WriteLine($"  Tipo_Reporte_Id: {Id}");
+        Console.WriteLine($"  Usr_Mod: {Usr_Mod}");
 
         try
         {
             await connection.ExecuteAsync(
-                "[dbo].[SP_Eliminar_Jefe]",
+                "[dbo].[SP_Eliminar_Tipo_Reporte]",
                 parametros,
                 commandType: CommandType.StoredProcedure
             );
@@ -162,13 +171,9 @@ public class JefeRepository : IJefeRepository
 
         return new JefeEntity
         {
-            Id = ObtenerEntero(dict, "Id", "Jefe_Id", "jefe_id"),
-            Nombre = ObtenerTexto(dict, "Nombre", "Jef_Nombre", "jef_nombre"),
-            Dni = ObtenerTexto(dict, "Dni", "Jef_DNI", "jef_dni"),
-            Area = ObtenerTexto(dict, "Area", "Cen_Cos_Des", "cen_cos_des"),
-            Cen_Cos_Des = ObtenerTexto(dict, "Area", "Cen_Cos_Des", "cen_cos_des"),
-            Estado = ObtenerTexto(dict, "Estado", "estado", "Flg_Est", "flg_est"),
-            Cen_Cos_Id = ObtenerEntero(dict, "Cen_Cos_Id", "cen_cos_id")
+            Reporte_Id = ObtenerEntero(dict, "Reporte_Id", "Id", "reporte_id"),
+            Reporte_Tipo = ObtenerTexto(dict, "Reporte_Tipo", "reporte_tipo", "Tipo_Reporte", "tipo_reporte"),
+            Estado = ObtenerTexto(dict, "Estado", "estado", "Flg_Est", "flg_est")
         };
     }
 

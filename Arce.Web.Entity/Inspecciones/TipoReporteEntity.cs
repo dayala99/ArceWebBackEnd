@@ -1,6 +1,6 @@
 namespace Arce.Web.Entity;
 
-public class JefeEntity
+public class TipoReporteEntity
 {
     public int? Reporte_Id { get; set; }
     public string? Reporte_Tipo { get; set; }
