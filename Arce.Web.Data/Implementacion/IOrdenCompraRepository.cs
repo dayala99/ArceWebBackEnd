@@ -15,4 +15,6 @@ public interface IOrdenCompraRepository
     Task<(int Codigo, string Mensaje)> RegistrarArchivoAdjuntoOrdenCompra(OrdenCompraArchivoEntity valores);
     Task<IEnumerable<OrdenCompraArchivoEntity>?> ListarArchivosAdjuntosOrdenCompra(int? Ord_Com_Id);
     Task<(int Codigo, string Mensaje)> EliminarArchivoAdjuntoOrdenCompra(OrdenCompraArchivoEntity valores);
+    Task<(int Codigo, string Mensaje)> ActualizarEstadoConfirmación(OrdenCompraEntity valores);
+    Task<(int Codigo, string Mensaje)> AnularOrdenCompra(OrdenCompraEntity valores);
 }

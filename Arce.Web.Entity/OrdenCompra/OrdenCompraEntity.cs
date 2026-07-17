@@ -36,4 +36,8 @@ public class OrdenCompraEntity
 	public string? Mon_Abr { get; set; }
 	public string? Con_Nom { get; set; }
 	public string? Mon_Des { get; set; }
+	public string? Ped_Usr_Apr { get; set; }
+	public int? Prv_Ban_Id { get; set; }
+	public string? Flg_Alm { get; set; }
+	public int? Flg_Est_Con { get; set; }
 }

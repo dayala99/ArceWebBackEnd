@@ -15,4 +15,5 @@ public interface IAlmacenService
     Task<ServiceResponse<int>> RegistrarIngresoAlmacenOrdenCompra(AlmacenEntity valores);
     Task<ServiceResponse<int>> ActualizarIngresoAlmacenDetalleOrdenCompra(AlmacenDetalleEntity valores);
     Task<ServiceResponse<int>> ActualizarMotivoRechazoAlmacen(AlmacenEntity valores);
+    Task<ServiceResponseList<AlmacenDetalleEntity>?> ListarIngresoSalidaAlmacenPorCentroCosto(int? Alm_Det_Itm_Id);
 }

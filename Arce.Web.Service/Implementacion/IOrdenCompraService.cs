@@ -15,4 +15,6 @@ public interface IOrdenCompraService
     Task<ServiceResponse<int>> RegistrarArchivoAdjuntoOrdenCompra(OrdenCompraArchivoEntity valores);
     Task<ServiceResponseList<OrdenCompraArchivoEntity>?> ListarArchivosAdjuntosOrdenCompra(int? Ord_Com_Id);
     Task<ServiceResponse<int>> EliminarArchivoAdjuntoOrdenCompra(OrdenCompraArchivoEntity valores);
+    Task<ServiceResponse<int>> ActualizarEstadoConfirmación(OrdenCompraEntity valores);
+    Task<ServiceResponse<int>> AnularOrdenCompra(OrdenCompraEntity valores);
 }

@@ -1,6 +1,7 @@
 using Arce.Web.Entity;
 using Arce.Web.Service;
 using Microsoft.AspNetCore.Http;
+using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 
@@ -341,18 +342,19 @@ namespace MyApp.Namespace
 
         [HttpPost]
         [Route("postRegistrarDetallePedido")]
-        public async Task<IActionResult> RegistrarDetallePedido([FromBody] PedidoDetalleEntity valores)
+        public async Task<IActionResult> RegistrarDetallePedido([FromForm] PedidoDetalleEntity valores, IFormFile? archivo)
         {
-            // PedidoDetalleEntity parametros = new PedidoDetalleEntity
-            // {
-            //     Ped_Cab_Id = valores.Ped_Cab_Id,
-            //     Ped_Cod_Itm = valores.Ped_Cod_Itm,
-            //     Ped_Uni_Med = valores.Ped_Uni_Med,
-            //     Ped_Can = valores.Ped_Can,
-            //     Ped_Cos_Uni = valores.Ped_Cos_Uni,
-            //     Ped_Cos_Tot = valores.Ped_Cos_Tot,
-            //     Usr_Reg = valores.Usr_Reg
-            // };
+            if (valores == null)
+            {
+                return BadRequest(new { Success = false, Message = "Datos incompletos" });
+            }
+
+            if (archivo != null && archivo.Length > 0)
+            {
+                valores.Ped_Det_Img = await GuardarImagenDetallePedidoAsync(archivo);
+            }
+
+            NormalizarDecimalesDetallePedidoDesdeFormulario(valores);
             
             var result = await _service.RegistrarDetallePedido(valores);
             if (result!.Success)
@@ -367,8 +369,20 @@ namespace MyApp.Namespace
 
         [HttpPatch]
         [Route("patchActualizarDetallePedido")]
-        public async Task<IActionResult> ActualizarDetallePedido([FromBody] PedidoDetalleEntity valores)
-        {          
+        public async Task<IActionResult> ActualizarDetallePedido([FromForm] PedidoDetalleEntity valores, IFormFile? archivo)
+        {
+            if (valores == null)
+            {
+                return BadRequest(new { Success = false, Message = "Datos incompletos" });
+            }
+
+            if (archivo != null && archivo.Length > 0)
+            {
+                valores.Ped_Det_Img = await GuardarImagenDetallePedidoAsync(archivo);
+            }
+
+            NormalizarDecimalesDetallePedidoDesdeFormulario(valores);
+            
             var result = await _service.ActualizarDetallePedido(valores);
             if (result!.Success)
             {
@@ -378,6 +392,56 @@ namespace MyApp.Namespace
 
             result.CodeResult = StatusCodes.Status400BadRequest;
             return BadRequest(result);
+        }
+
+        private void NormalizarDecimalesDetallePedidoDesdeFormulario(PedidoDetalleEntity valores)
+        {
+            valores.Ped_Can = LeerDecimalForm("Ped_Can", valores.Ped_Can, 2);
+            valores.Ped_Cos_Uni = LeerDecimalForm("Ped_Cos_Uni", valores.Ped_Cos_Uni, 4);
+            valores.Ped_Cos_Tot = LeerDecimalForm("Ped_Cos_Tot", valores.Ped_Cos_Tot, 4);
+        }
+
+        private decimal? LeerDecimalForm(string key, decimal? fallback, int precision = 2)
+        {
+            if (!Request.HasFormContentType || !Request.Form.TryGetValue(key, out var value))
+            {
+                return fallback;
+            }
+
+            var rawValue = value.ToString().Trim();
+            if (string.IsNullOrWhiteSpace(rawValue))
+            {
+                return fallback;
+            }
+
+            var normalizedValue = NormalizarTextoDecimal(rawValue);
+            return decimal.TryParse(normalizedValue, NumberStyles.Number, CultureInfo.InvariantCulture, out var parsedValue)
+                ? Math.Round(parsedValue, precision)
+                : fallback;
+        }
+
+        private static string NormalizarTextoDecimal(string value)
+        {
+            var rawValue = value.Trim();
+            var lastDot = rawValue.LastIndexOf('.');
+            var lastComma = rawValue.LastIndexOf(',');
+
+            if (lastDot >= 0 && lastComma >= 0)
+            {
+                if (lastDot > lastComma)
+                {
+                    return rawValue.Replace(",", "");
+                }
+
+                return rawValue.Replace(".", "").Replace(",", ".");
+            }
+
+            if (lastComma >= 0)
+            {
+                return rawValue.Replace(".", "").Replace(",", ".");
+            }
+
+            return rawValue.Replace(",", "");
         }
 
         [HttpDelete]
@@ -434,6 +498,25 @@ namespace MyApp.Namespace
         public IActionResult GetArchivoPedido(string nombreArchivo)
         {
             var carpeta = @"C:\Archivos";
+            var ruta = Path.Combine(carpeta, nombreArchivo);
+
+            if (!System.IO.File.Exists(ruta))
+                return NotFound("El archivo no existe en disco");
+
+            var provider = new FileExtensionContentTypeProvider();
+            if (!provider.TryGetContentType(ruta, out var mimeType))
+            {
+                mimeType = "application/octet-stream";
+            }
+
+            var fileBytes = System.IO.File.ReadAllBytes(ruta);
+            return File(fileBytes, mimeType);
+        }
+
+        [HttpGet("getArchivoDetallePedido")]
+        public IActionResult GetArchivoDetallePedido(string nombreArchivo)
+        {
+            var carpeta = @"C:\ArchivosFoto";
             var ruta = Path.Combine(carpeta, nombreArchivo);
 
             if (!System.IO.File.Exists(ruta))
@@ -665,6 +748,24 @@ namespace MyApp.Namespace
 
             result.CodeResult = StatusCodes.Status400BadRequest;
             return BadRequest(result);
+        }
+
+        private static async Task<string> GuardarImagenDetallePedidoAsync(IFormFile archivo)
+        {
+            var carpeta = Path.Combine(@"C:\ArchivosFoto");
+            if (!Directory.Exists(carpeta))
+            {
+                Directory.CreateDirectory(carpeta);
+            }
+
+            var extension = Path.GetExtension(archivo.FileName);
+            var nombreArchivo = $"{Guid.NewGuid():N}{extension}";
+            var rutaCompleta = Path.Combine(carpeta, nombreArchivo);
+
+            using var stream = new FileStream(rutaCompleta, FileMode.Create);
+            await archivo.CopyToAsync(stream);
+
+            return nombreArchivo;
         }
 
     }

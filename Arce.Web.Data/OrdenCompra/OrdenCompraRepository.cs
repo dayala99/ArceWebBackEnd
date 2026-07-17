@@ -203,7 +203,7 @@ public class OrdenCompraRepository: IOrdenCompraRepository
             var parametros = new DynamicParameters();
 
             parametros.Add("@Ord_Com_Id", valores.Ord_Com_Id);
-            parametros.Add("@Flg_Alm", valores.Ord_Com_Prv);
+            parametros.Add("@Flg_Alm", valores.Flg_Alm);
             
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
@@ -323,4 +323,77 @@ public class OrdenCompraRepository: IOrdenCompraRepository
             return (Codigo, Mensaje);
         }
     }
+
+    public async Task<(int Codigo, string Mensaje)> ActualizarEstadoConfirmación(OrdenCompraEntity valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+
+            parametros.Add("@Ord_Com_Id", valores.Ord_Com_Id);
+            parametros.Add("@Flg_Est_Con", valores.Flg_Est_Con);
+            
+            parametros.Add("@Codigo", 0);
+            parametros.Add("@sMsj", "");
+
+            parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+            try
+            {
+                connection.Execute(
+                    "[dbo].[PA_Lg_Orden_Compra_U0003]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+                );
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            var Codigo = parametros.Get<int>("@Codigo");
+            var mensaje = parametros.Get<string>("@sMsj");
+            
+            return (Codigo, mensaje);
+        }
+    }
+
+    public async Task<(int Codigo, string Mensaje)> AnularOrdenCompra(OrdenCompraEntity valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+
+            parametros.Add("@Ord_Com_Id", valores.Ord_Com_Id);
+            parametros.Add("@Flg_Est", valores.Flg_Est);
+            
+            parametros.Add("@Codigo", 0);
+            parametros.Add("@sMsj", "");
+
+            parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+            try
+            {
+                connection.Execute(
+                    "[dbo].[PA_Lg_Orden_Compra_U0004]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+                );
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            var Codigo = parametros.Get<int>("@Codigo");
+            var mensaje = parametros.Get<string>("@sMsj");
+            
+            return (Codigo, mensaje);
+        }
+    }
+
 }

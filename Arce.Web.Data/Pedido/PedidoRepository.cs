@@ -412,6 +412,7 @@ public class PedidoRepository: IPedidoRepository
             parametros.Add("@Ped_Obs_Ped", valores.Ped_Obs_Ped);
             parametros.Add("@Ped_Com", valores.Ped_Com);
             parametros.Add("@Ped_Req", valores.Ped_Req);
+            parametros.Add("@Ped_Det_Img", valores.Ped_Det_Img);
             
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
@@ -458,6 +459,7 @@ public class PedidoRepository: IPedidoRepository
             parametros.Add("@Usr_Mod", valores.Usr_Mod);
             parametros.Add("@Ped_Com", valores.Ped_Com);
             parametros.Add("@Ped_Req", valores.Ped_Req);
+            parametros.Add("@Ped_Det_Img", valores.Ped_Det_Img);
 
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
@@ -567,6 +569,7 @@ public class PedidoRepository: IPedidoRepository
             parametros.Add("@Ord_Com_Id", valores.Ord_Com_Id);
             parametros.Add("@Ped_Obs", valores.Ped_Obs);
             parametros.Add("@Ped_Cos_Uni", valores.Ped_Cos_Uni);
+            parametros.Add("@Ped_Can", valores.Ped_Can);
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
 

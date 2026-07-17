@@ -175,5 +175,21 @@ namespace MyApp.Namespace
             result.CodeResult = StatusCodes.Status400BadRequest;
             return BadRequest(result);
         }
+
+        [HttpGet]
+        [Route("getListarIngresoSalidaAlmacenPorCentroCosto")]
+        public async Task<IActionResult> ListarIngresoSalidaAlmacenPorCentroCosto(int? Alm_Det_Itm_Id)
+        {
+            var result = await _service.ListarIngresoSalidaAlmacenPorCentroCosto(Alm_Det_Itm_Id ?? 0);
+
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
     }
 }

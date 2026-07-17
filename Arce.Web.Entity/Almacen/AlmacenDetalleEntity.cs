@@ -15,4 +15,8 @@ public class AlmacenDetalleEntity
 	public string? Usr_Mod { get; set; }
     public DateTime? Fec_Mod { get; set; }
     public int? Alm_Det_Prv_Id { get; set; }
+	public decimal? Ingreso { get; set; }
+	public decimal? Salida { get; set; }
+	public decimal? Stock { get; set; }
+	public string? Cen_Cos_Des { get; set; }
 }

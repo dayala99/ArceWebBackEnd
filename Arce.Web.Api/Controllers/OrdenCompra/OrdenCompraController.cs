@@ -331,5 +331,35 @@ namespace MyApp.Namespace
             result.CodeResult = StatusCodes.Status400BadRequest;
             return BadRequest(result);
         }
+
+        [HttpPatch]
+        [Route("patchActualizarEstadoConfirmación")]
+        public async Task<IActionResult> ActualizarEstadoConfirmación([FromBody] OrdenCompraEntity valores)
+        {   
+            var result = await _service.ActualizarEstadoConfirmación(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPatch]
+        [Route("patchAnularOrdenCompra")]
+        public async Task<IActionResult> AnularOrdenCompra([FromBody] OrdenCompraEntity valores)
+        {   
+            var result = await _service.AnularOrdenCompra(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
     }
 }

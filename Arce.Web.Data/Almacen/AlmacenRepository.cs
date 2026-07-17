@@ -357,4 +357,23 @@ public class AlmacenRepository: IAlmacenRepository
             return (Codigo, Mensaje);
         }
     }
+
+    public async Task<IEnumerable<AlmacenDetalleEntity>?> ListarIngresoSalidaAlmacenPorCentroCosto(int? Alm_Det_Itm_Id)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Alm_Det_Itm_Id", Alm_Det_Itm_Id);
+
+            var result = await connection.QueryAsync<AlmacenDetalleEntity>(
+                "[dbo].[PA_Lg_Almacen_Det_Ing_S0003]"
+                , parametros
+                , commandType: CommandType.StoredProcedure
+            );
+
+            return result;
+        }
+    }
 }
