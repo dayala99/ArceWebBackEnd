@@ -977,4 +977,23 @@ public class PedidoRepository: IPedidoRepository
             return (Codigo, Mensaje);
         }
     }
+
+    public async Task<IEnumerable<ReporteEntity>?> GenerarKardexGeneral(int? Itm_Id)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Itm_Id", Itm_Id);
+            //parametros.Add("", Ord_Com_Id);
+
+            var result = await connection.QueryAsync<ReporteEntity>(
+                "[dbo].[PA_Lg_Almacen_Det_Ing_S0004]"
+                , parametros
+                , commandType: CommandType.StoredProcedure
+            );
+            return result;
+        }
+    }
 }

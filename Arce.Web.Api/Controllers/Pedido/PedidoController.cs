@@ -768,5 +768,20 @@ namespace MyApp.Namespace
             return nombreArchivo;
         }
 
+        [HttpGet]
+        [Route("getGenerarKardexGeneral")]
+        public async Task<IActionResult> GenerarKardexGeneral(int? Itm_Id)
+        {
+            var result = await _service.GenerarKardexGeneral(Itm_Id ?? 0);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
     }
 }

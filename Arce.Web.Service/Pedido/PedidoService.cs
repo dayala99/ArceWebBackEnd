@@ -864,4 +864,35 @@ public class PedidoService: IPedidoService
         }
     }
 
+    public async Task<ServiceResponseList<ReporteEntity>?> GenerarKardexGeneral(int? Itm_Id)
+    {
+        var result = new ServiceResponseList<ReporteEntity>();
+        try
+        {
+            var resultData = await _repository.GenerarKardexGeneral(Itm_Id);
+
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+                result.Elements = new List<ReporteEntity>();
+                result.TotalElements = 0;
+                return result;
+            }
+
+            var elementos = resultData.ToList();
+
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = elementos;
+            result.TotalElements = elementos.Count;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepción no controlada " + ex.Message;
+            return result;
+        }
+    }
+
 }
