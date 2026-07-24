@@ -159,10 +159,15 @@ public class CentroMonitoreoHseController : ControllerBase
         parametros.Add("@Fec_Mod", DateTime.Now);
         parametros.Add("@Estado", NormalizarEstado(valores.Estado));
 
-        var result = await connection.ExecuteAsync("[dbo].[SP_Actualizar_Centro_HSE]", parametros, commandType: CommandType.StoredProcedure);
-        return result > 0
-            ? Ok(new { Success = true, Message = "Centro de Monitoreo HSE actualizado correctamente." })
-            : BadRequest(new { Success = false, Message = "No se pudo actualizar el Centro de Monitoreo HSE." });
+        try
+        {
+            await connection.ExecuteAsync("[dbo].[SP_Actualizar_Centro_HSE]", parametros, commandType: CommandType.StoredProcedure);
+            return Ok(new { Success = true, Message = "Centro de Monitoreo HSE actualizado correctamente." });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { Success = false, Message = "No se pudo actualizar el Centro de Monitoreo HSE.", Detail = ex.Message });
+        }
     }
 
     [HttpPost]
@@ -173,10 +178,10 @@ public class CentroMonitoreoHseController : ControllerBase
         await connection.OpenAsync();
 
         var parametros = new DynamicParameters();
-        parametros.Add("@Centro_Monitoreo_Id", valores.Centro_Monitoreo_Id);
+        parametros.Add("@Centro_HSE_Id", valores.Centro_Monitoreo_Id);
         parametros.Add("@Usr_Mod", valores.Usr_Mod);
 
-        var result = await connection.ExecuteAsync("[dbo].[SP_Eliminar_Centro_Monitoreo_HSE]", parametros, commandType: CommandType.StoredProcedure);
+        var result = await connection.ExecuteAsync("[dbo].[SP_Eliminar_Centro_HSE]", parametros, commandType: CommandType.StoredProcedure);
         return result > 0
             ? Ok(new { Success = true, Message = "Centro de Monitoreo HSE eliminado correctamente." })
             : BadRequest(new { Success = false, Message = "No se pudo eliminar el Centro de Monitoreo HSE." });
