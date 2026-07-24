@@ -39,17 +39,66 @@ public class CentroMonitoreoHseController : ControllerBase
         return Ok(resultado);
     }
 
+    // Alimenta la tabla de Centro de Monitoreo HSE (columnas: Nro, Inspector, Supervisor, Cliente, Revisión, Puntaje).
+    [HttpGet]
+    [Route("getFiltrarCentroMonitoreoHse")]
+    public async Task<IActionResult> FiltrarCentroMonitoreoHse([FromQuery] DateTime? Fecha_Desde, [FromQuery] DateTime? Fecha_Hasta, [FromQuery] string? Estado = "A")
+    {
+        if (!Fecha_Desde.HasValue || !Fecha_Hasta.HasValue)
+        {
+            return Ok(new List<CentroHseListadoEntity>());
+        }
+
+        var resultado = new List<CentroHseListadoEntity>();
+
+        using var connection = new SqlConnection(_connectionString);
+        await connection.OpenAsync();
+
+        using var command = new SqlCommand("[dbo].[SP_Filtrar_Centro_HSE]", connection)
+        {
+            CommandType = CommandType.StoredProcedure
+        };
+        command.Parameters.AddWithValue("@Fecha_Desde", Fecha_Desde.Value);
+        command.Parameters.AddWithValue("@Fecha_Hasta", Fecha_Hasta.Value);
+        command.Parameters.AddWithValue("@Estado", NormalizarEstado(Estado));
+
+        // El SP selecciona t4.Usr_Nom (Inspector) y t3.Usr_Nom (Supervisor) sin alias,
+        // por lo que ambas columnas llegan con el mismo nombre "Usr_Nom". Dapper/dynamic
+        // busca por nombre y solo encontraría la primera coincidencia, así que aquí se lee
+        // el resultado por posición (tal como las selecciona el SP, en este orden):
+        // 0 Centro_HSE_Id, 1 Centro_HSE_Cod, 2 Usr_Nom (Inspector), 3 Usr_Nom (Supervisor),
+        // 4 Cliente_Nombre, 5 Centro_Revision, 6 Centro_Puntaje.
+        using var reader = await command.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            resultado.Add(new CentroHseListadoEntity
+            {
+                Centro_HSE_Id = LeerInt(reader, 0),
+                Centro_HSE_Cod = LeerTexto(reader, 1),
+                Usr_Inspector = LeerTexto(reader, 2),
+                Usr_Supervisor = LeerTexto(reader, 3),
+                Cliente_Nombre = LeerTexto(reader, 4),
+                Centro_Revision = LeerTexto(reader, 5),
+                Centro_Puntaje = LeerTexto(reader, 6),
+            });
+        }
+
+        return Ok(resultado);
+    }
+
     [HttpGet]
     [Route("getMostrarActualizarCentroMonitoreoHse")]
-    public async Task<IActionResult> MostrarActualizarCentroMonitoreoHse([FromQuery] int Centro_Monitoreo_Id)
+    public async Task<IActionResult> MostrarActualizarCentroMonitoreoHse([FromQuery] int Centro_HSE_Id)
     {
         using var connection = new SqlConnection(_connectionString);
         await connection.OpenAsync();
 
         var parametros = new DynamicParameters();
-        parametros.Add("@Centro_Monitoreo_Id", Centro_Monitoreo_Id);
+        parametros.Add("@Centro_HSE_Id", Centro_HSE_Id);
 
-        var filas = await connection.QueryAsync("[dbo].[SP_Mostrar_Actualizar_Centro_Monitoreo_HSE]", parametros, commandType: CommandType.StoredProcedure);
+        // Este SP devuelve Usr_Nom, Cliente_Nombre, Centro_Hse_Documento,
+        // Centro_HSE_Audio y Estado para pintar el formulario de edición.
+        var filas = await connection.QueryAsync("[dbo].[SP_Mostrar_Actualizar_Centro_HSE]", parametros, commandType: CommandType.StoredProcedure);
         return Ok(filas.ToList());
     }
 
@@ -102,15 +151,15 @@ public class CentroMonitoreoHseController : ControllerBase
         await connection.OpenAsync();
 
         var parametros = new DynamicParameters();
-        parametros.Add("@Centro_Monitoreo_Id", valores.Centro_Monitoreo_Id);
-        parametros.Add("@Usr_Cod", valores.Usr_Cod);
+        parametros.Add("@Centro_HSE_Id", valores.Centro_Monitoreo_Id);
         parametros.Add("@Cliente_Id", valores.Cliente_Id);
-        parametros.Add("@Monitoreo_Documentos_Ubicacion", documentos);
-        parametros.Add("@Monitoreo_Audio_Ubicacion", audio);
+        parametros.Add("@Centro_Hse_Documento", documentos);
+        parametros.Add("@Centro_HSE_Audio", audio);
+        parametros.Add("@Usr_Mod", valores.Usr_Mod ?? valores.Usr_Cod);
+        parametros.Add("@Fec_Mod", DateTime.Now);
         parametros.Add("@Estado", NormalizarEstado(valores.Estado));
-        parametros.Add("@Usr_Mod", valores.Usr_Mod);
 
-        var result = await connection.ExecuteAsync("[dbo].[SP_Actualizar_Centro_Monitoreo_HSE]", parametros, commandType: CommandType.StoredProcedure);
+        var result = await connection.ExecuteAsync("[dbo].[SP_Actualizar_Centro_HSE]", parametros, commandType: CommandType.StoredProcedure);
         return result > 0
             ? Ok(new { Success = true, Message = "Centro de Monitoreo HSE actualizado correctamente." })
             : BadRequest(new { Success = false, Message = "No se pudo actualizar el Centro de Monitoreo HSE." });
@@ -178,6 +227,19 @@ public class CentroMonitoreoHseController : ControllerBase
             Monitoreo_Audio_Ubicacion = ObtenerTexto(dict, "Monitoreo_Audio_Ubicacion", "monitoreo_Audio_Ubicacion"),
             Estado = ObtenerTexto(dict, "Estado", "estado"),
         };
+    }
+
+    private static int? LeerInt(SqlDataReader reader, int ordinal)
+    {
+        if (ordinal >= reader.FieldCount || reader.IsDBNull(ordinal)) return null;
+        return int.TryParse(reader.GetValue(ordinal).ToString(), out var n) ? n : null;
+    }
+
+    private static string? LeerTexto(SqlDataReader reader, int ordinal)
+    {
+        if (ordinal >= reader.FieldCount || reader.IsDBNull(ordinal)) return null;
+        var texto = reader.GetValue(ordinal)?.ToString()?.Trim();
+        return string.IsNullOrWhiteSpace(texto) ? null : texto;
     }
 
     private static int? ObtenerInt(IDictionary<string, object> dict, params string[] keys)

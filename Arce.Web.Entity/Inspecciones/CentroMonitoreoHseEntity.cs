@@ -28,3 +28,17 @@ public class CentroMonitoreoHseEntity
         set => Codigo_Centro_Monitoreo = value;
     }
 }
+
+/// <summary>
+/// Fila que devuelve [dbo].[SP_Filtrar_Centro_HSE] para la tabla de Centro de Monitoreo HSE.
+/// </summary>
+public class CentroHseListadoEntity
+{
+    public int? Centro_HSE_Id { get; set; }
+    public string? Centro_HSE_Cod { get; set; }
+    public string? Usr_Inspector { get; set; }
+    public string? Usr_Supervisor { get; set; }
+    public string? Cliente_Nombre { get; set; }
+    public string? Centro_Revision { get; set; }
+    public string? Centro_Puntaje { get; set; }
+}
