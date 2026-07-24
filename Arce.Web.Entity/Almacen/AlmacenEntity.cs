@@ -21,4 +21,5 @@ public class AlmacenEntity
 	public int? Ord_Com_Id { get; set; }
 	public string? Flg_Est_Alm { get; set; }
 	public string? Alm_Mot_Rch { get; set; }
+	public string? Alm_Ser { get; set; }
 }

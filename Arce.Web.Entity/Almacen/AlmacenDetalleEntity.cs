@@ -19,4 +19,5 @@ public class AlmacenDetalleEntity
 	public decimal? Salida { get; set; }
 	public decimal? Stock { get; set; }
 	public string? Cen_Cos_Des { get; set; }
+	public string? Alm_Ser { get; set; }
 }

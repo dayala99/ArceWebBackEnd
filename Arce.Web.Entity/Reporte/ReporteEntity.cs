@@ -13,3 +13,13 @@ public class ReporteEntity
     public string? Flg_Est_Apr	 {get; set; }
     public decimal? Alm_Det_Can {get; set; }
 }
+
+public class ReporteSalidaEntity
+{
+    public DateTime? Fec_Reg { get; set; }
+    public string? Usr_Nom  { get; set; }
+    public string? Usr_Doc_Nro  { get; set; }
+    public string? Itm_Des { get; set; }
+    public string? Uni_Med_Abr  { get; set; }
+    public string? Alm_Det_Can { get; set; }
+}

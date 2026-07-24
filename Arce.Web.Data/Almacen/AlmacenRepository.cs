@@ -174,8 +174,9 @@ public class AlmacenRepository: IAlmacenRepository
             parametros.Add("@Alm_Det_Doc_Nro", valores.Alm_Det_Doc_Nro);
             parametros.Add("@Alm_Det_Fec", valores.Alm_Det_Fec);
             parametros.Add("@Alm_Det_Cen_Cos_Id", valores.Alm_Det_Cen_Cos_Id);
-            parametros.Add("@Usr_Reg",valores.Usr_Reg);
-            parametros.Add("@Alm_Det_Prv_Id",valores.Alm_Det_Prv_Id);
+            parametros.Add("@Usr_Reg", valores.Usr_Reg);
+            parametros.Add("@Alm_Det_Prv_Id", valores.Alm_Det_Prv_Id);
+            parametros.Add("@Alm_Ser", valores.Alm_Ser);
             parametros.Add("@Codigo",0);
             parametros.Add("@sMsj", "");
 
@@ -217,6 +218,7 @@ public class AlmacenRepository: IAlmacenRepository
             parametros.Add("@Alm_Det_Cen_Cos_Id", valores.Alm_Det_Cen_Cos_Id);
             parametros.Add("@Usr_Mod",valores.Usr_Mod);
             parametros.Add("@Alm_Det_Prv_Id",valores.Alm_Det_Prv_Id);
+            parametros.Add("@Alm_Ser", valores.Alm_Ser);
             parametros.Add("@Codigo",0);
             parametros.Add("@sMsj", "");
 
@@ -369,6 +371,27 @@ public class AlmacenRepository: IAlmacenRepository
 
             var result = await connection.QueryAsync<AlmacenDetalleEntity>(
                 "[dbo].[PA_Lg_Almacen_Det_Ing_S0003]"
+                , parametros
+                , commandType: CommandType.StoredProcedure
+            );
+
+            return result;
+        }
+    }
+
+    public async Task<IEnumerable<AlmacenDetalleEntity>?> ReporteListarSalidas(DateTime? Fec_Ini, DateTime? Fec_Fin ,int? Alm_Det_Itm_Id)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Fec_Ini", Fec_Ini);
+            parametros.Add("@Fec_Fin", Fec_Fin);
+            parametros.Add("@Alm_Det_Itm_Id", Alm_Det_Itm_Id);
+
+            var result = await connection.QueryAsync<AlmacenDetalleEntity>(
+                "[dbo].[PA_Lg_Almacen_Det_Ing_S0005]"
                 , parametros
                 , commandType: CommandType.StoredProcedure
             );
