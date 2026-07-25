@@ -21,7 +21,7 @@ public class PreguntasHseRepository : IPreguntasHseRepository
         await connection.OpenAsync();
 
         var parametros = new DynamicParameters();
-        parametros.Add("@Pregunta_Id", Pregunta_Id);
+        parametros.Add("@Pregunta_Id", Pregunta_Id ?? 0);
         parametros.Add("@Pregunta_Nombre", Pregunta_Nombre ?? string.Empty);
         parametros.Add("@Estado", NormalizarEstado(Estado) ?? "A");
 
