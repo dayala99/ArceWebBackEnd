@@ -41,4 +41,5 @@ public class CentroHseListadoEntity
     public string? Cliente_Nombre { get; set; }
     public string? Centro_Revision { get; set; }
     public string? Centro_Puntaje { get; set; }
+    public string? Centro_Comentario { get; set; }
 }

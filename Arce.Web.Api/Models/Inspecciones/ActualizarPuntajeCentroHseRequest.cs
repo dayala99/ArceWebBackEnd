@@ -16,5 +16,6 @@ public class ActualizarPuntajeCentroHseRequest
     public string Usr_Mod { get; set; } = string.Empty;
     public string Centro_Revision { get; set; } = "CERRADO";
     public string? Centro_Motivo { get; set; }
+    public string? Centro_Comentario { get; set; }
     public List<PuntajeCentroHseActualizarDetalle> Detalles { get; set; } = new();
 }

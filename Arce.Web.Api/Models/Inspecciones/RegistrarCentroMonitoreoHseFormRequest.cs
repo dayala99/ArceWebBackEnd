@@ -13,4 +13,5 @@ public class RegistrarCentroMonitoreoHseFormRequest
     public List<string>? Monitoreo_Audio_Ubicacion { get; set; }
     public string? Estado { get; set; }
     public string? Usr_Reg { get; set; }
+    public string? Centro_Ubicacion { get; set; }
 }

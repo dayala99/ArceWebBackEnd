@@ -17,5 +17,6 @@ public class InsertarPuntajeCentroHseRequest
 {
     public int Centro_HSE_Id { get; set; }
     public string Usr_Reg { get; set; } = string.Empty;
+    public string? Centro_Comentario { get; set; }
     public List<PuntajeCentroHseDetalle> Detalles { get; set; } = new();
 }

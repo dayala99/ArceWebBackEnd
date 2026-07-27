@@ -14,4 +14,5 @@ public class ActualizarCentroMonitoreoHseFormRequest
     public List<string>? Monitoreo_Audio_Ubicacion { get; set; }
     public string? Estado { get; set; }
     public string? Usr_Mod { get; set; }
+    public string? Centro_Ubicacion { get; set; }
 }
