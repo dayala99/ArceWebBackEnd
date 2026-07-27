@@ -187,8 +187,147 @@ public class CentroMonitoreoHseController : ControllerBase
             : BadRequest(new { Success = false, Message = "No se pudo eliminar el Centro de Monitoreo HSE." });
     }
 
+    // Guarda la Nota de Centro de Monitoreo HSE: una fila en Ins_Puntaje_Centro_HSE
+    // por cada pregunta y tipo (Audio/Documento) marcados en el diálogo.
+    [HttpPost]
+    [Route("postInsertarPuntajeCentroHse")]
+    public async Task<IActionResult> InsertarPuntajeCentroHse([FromBody] InsertarPuntajeCentroHseRequest valores)
+    {
+        if (valores.Centro_HSE_Id <= 0)
+        {
+            return BadRequest(new { Success = false, Message = "No se pudo identificar el Centro de Monitoreo HSE." });
+        }
+
+        if (valores.Detalles is null || valores.Detalles.Count == 0)
+        {
+            return BadRequest(new { Success = false, Message = "No hay respuestas para registrar." });
+        }
+
+        using var connection = new SqlConnection(_connectionString);
+        await connection.OpenAsync();
+
+        foreach (var detalle in valores.Detalles)
+        {
+            var parametros = new DynamicParameters();
+            parametros.Add("@Centro_HSE_Id", valores.Centro_HSE_Id);
+            parametros.Add("@Pregunta_Id", detalle.Pregunta_Id);
+            parametros.Add("@Puntaje_Tipo", detalle.Puntaje_Tipo);
+            parametros.Add("@Puntaje_Rpta", detalle.Puntaje_Rpta);
+            parametros.Add("@Usr_Reg", valores.Usr_Reg);
+
+            await connection.ExecuteAsync("[dbo].[SP_Insertar_Puntaje_Centro_HSE]", parametros, commandType: CommandType.StoredProcedure);
+        }
+
+        // Puntaje final: cuántas respuestas fueron "Pasó" (S) sobre el total de
+        // respuestas registradas (preguntas x 2, Audio + Documento). Ej.: 8 Pasó en
+        // Audio + 3 Pasó en Documento, de 10 preguntas => "11/20".
+        var aprobadas = valores.Detalles.Count(d => string.Equals(d.Puntaje_Rpta, "S", StringComparison.OrdinalIgnoreCase));
+        var total = valores.Detalles.Count;
+        var centroPuntaje = $"{aprobadas}/{total}";
+
+        var parametrosEstado = new DynamicParameters();
+        parametrosEstado.Add("@Centro_HSE_Id", valores.Centro_HSE_Id);
+        parametrosEstado.Add("@Usr_Mod", valores.Usr_Reg);
+        parametrosEstado.Add("@Centro_Puntaje", centroPuntaje);
+
+        await connection.ExecuteAsync("[dbo].[SP_Estado_Puntaje_Centro_HSE]", parametrosEstado, commandType: CommandType.StoredProcedure);
+
+        return Ok(new { Success = true, Message = "Nota de Centro de Monitoreo HSE registrada correctamente." });
+    }
+
+    // Trae la respuesta vigente (Audio y Documento) de cada pregunta, para pintar
+    // el formulario de edición de Puntaje.
+    [HttpGet]
+    [Route("getMostrarActualizarPuntajeCentroHse")]
+    public async Task<IActionResult> MostrarActualizarPuntajeCentroHse([FromQuery] int Centro_HSE_Id)
+    {
+        using var connection = new SqlConnection(_connectionString);
+        await connection.OpenAsync();
+
+        var parametros = new DynamicParameters();
+        parametros.Add("@Centro_HSE_Id", Centro_HSE_Id);
+
+        var filas = await connection.QueryAsync("[dbo].[SP_Mostrar_Actualizar_Puntaje_Centro_HSE]", parametros, commandType: CommandType.StoredProcedure);
+        return Ok(filas.ToList());
+    }
+
+    // Actualiza las respuestas de Puntaje (por Puntaje_Id), guarda el motivo y
+    // recalcula el marcador o abre el centro cuando la revisión queda en ABIERTO.
+    [HttpPost]
+    [Route("postActualizarPuntajeCentroHse")]
+    public async Task<IActionResult> ActualizarPuntajeCentroHse([FromBody] ActualizarPuntajeCentroHseRequest valores)
+    {
+        if (valores.Centro_HSE_Id <= 0)
+        {
+            return BadRequest(new { Success = false, Message = "No se pudo identificar el Centro de Monitoreo HSE." });
+        }
+
+        if (valores.Detalles is null || valores.Detalles.Count == 0)
+        {
+            return BadRequest(new { Success = false, Message = "No hay respuestas para actualizar." });
+        }
+
+        var revision = NormalizarRevision(valores.Centro_Revision);
+        var motivo = (valores.Centro_Motivo ?? string.Empty).Trim();
+        if (string.IsNullOrWhiteSpace(motivo))
+        {
+            return BadRequest(new { Success = false, Message = "Escriba el motivo por el cual está editando el puntaje." });
+        }
+
+        using var connection = new SqlConnection(_connectionString);
+        await connection.OpenAsync();
+        using var transaction = connection.BeginTransaction();
+
+        try
+        {
+            foreach (var detalle in valores.Detalles)
+            {
+                var parametros = new DynamicParameters();
+                parametros.Add("@Puntaje_Id", detalle.Puntaje_Id);
+                parametros.Add("@Puntaje_Rpta", detalle.Puntaje_Rpta);
+                parametros.Add("@Usr_Mod", valores.Usr_Mod);
+                parametros.Add("@Centro_HSE_Id", valores.Centro_HSE_Id);
+                parametros.Add("@Centro_Motivo", motivo);
+
+                await connection.ExecuteAsync("[dbo].[SP_Actualizar_Puntaje_Centro_HSE]", parametros, transaction: transaction, commandType: CommandType.StoredProcedure);
+            }
+
+            if (revision == "ABIERTO")
+            {
+                var parametrosEliminar = new DynamicParameters();
+                parametrosEliminar.Add("@Centro_HSE_Id", valores.Centro_HSE_Id);
+                parametrosEliminar.Add("@Motivo", motivo);
+                parametrosEliminar.Add("@Usr_Inspector", valores.Usr_Mod);
+
+                await connection.ExecuteAsync("[dbo].[SP_Eliminar_Puntaje_Centro_HSE]", parametrosEliminar, transaction: transaction, commandType: CommandType.StoredProcedure);
+            }
+            else
+            {
+                var aprobadas = valores.Detalles.Count(d => string.Equals(d.Puntaje_Rpta, "S", StringComparison.OrdinalIgnoreCase));
+                var total = valores.Detalles.Count;
+                var centroPuntaje = $"{aprobadas}/{total}";
+
+                var parametrosEstado = new DynamicParameters();
+                parametrosEstado.Add("@Centro_HSE_Id", valores.Centro_HSE_Id);
+                parametrosEstado.Add("@Usr_Mod", valores.Usr_Mod);
+                parametrosEstado.Add("@Centro_Puntaje", centroPuntaje);
+
+                await connection.ExecuteAsync("[dbo].[SP_Estado_Puntaje_Centro_HSE]", parametrosEstado, transaction: transaction, commandType: CommandType.StoredProcedure);
+            }
+
+            transaction.Commit();
+            return Ok(new { Success = true, Message = "Puntaje de Centro de Monitoreo HSE actualizado correctamente." });
+        }
+        catch (Exception ex)
+        {
+            try { transaction.Rollback(); } catch { }
+            return BadRequest(new { Success = false, Message = "No se pudo actualizar el Puntaje de Centro de Monitoreo HSE.", Detail = ex.Message });
+        }
+    }
+
     [HttpGet]
     [Route("getArchivoCentroMonitoreoHse")]
+
     public IActionResult GetArchivoCentroMonitoreoHse(string rutaArchivo)
     {
         if (string.IsNullOrWhiteSpace(rutaArchivo))
@@ -271,6 +410,13 @@ public class CentroMonitoreoHseController : ControllerBase
     private static string NormalizarEstado(string? valor)
     {
         return string.IsNullOrWhiteSpace(valor) ? "A" : (valor.Trim().ToUpperInvariant().StartsWith("I") ? "I" : "A");
+    }
+
+    private static string NormalizarRevision(string? valor)
+    {
+        return string.Equals(valor?.Trim(), "ABIERTO", StringComparison.OrdinalIgnoreCase)
+            ? "ABIERTO"
+            : "CERRADO";
     }
 
     private static async Task<List<string>> GuardarArchivosAsync(IEnumerable<IFormFile>? archivos, string carpeta, string prefijo, bool esAudio = false)
