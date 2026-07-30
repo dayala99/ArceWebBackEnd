@@ -92,9 +92,94 @@ public class CentroMonitoreoHseController : ControllerBase
 
         return Ok(resultado);
     }
+    [HttpGet]
+    [Route("getExcelGeneralCentroMonitoreoHse")]
+    public async Task<IActionResult> GetDatosExcelGeneralCentroMonitoreoHse()
+    {
+        const string sql = @"
+SELECT
+    t1.Centro_HSE_Cod AS Codigo,
+    t4.Usr_Nom AS Inspector,
+    t3.Usr_Nom AS Supervisor,
+    CONVERT(VARCHAR(10), ISNULL(t1.Fec_Mod, t1.Fec_Reg), 103) AS Fecha,
+    CONVERT(VARCHAR(8), ISNULL(t1.Fec_Mod, t1.Fec_Reg), 108) AS Hora,
+    t1.Centro_Revision AS Estado,
+    t1.Centro_Puntaje AS Puntaje,
+    t1.Centro_Comentario AS Comentario,
+    t1.Centro_Ubicacion AS Ubicacion
+FROM Ins_Centro_HSE t1
+LEFT JOIN Sg_Usuario t3
+    ON t1.Usr_Supervisor = t3.Usr_Cod
+LEFT JOIN Sg_Usuario t4
+    ON t1.Usr_Inspector = t4.Usr_Cod
+ORDER BY ISNULL(t1.Fec_Mod, t1.Fec_Reg) DESC, t1.Centro_HSE_Cod DESC;";
+
+        using var connection = new SqlConnection(_connectionString);
+        await connection.OpenAsync();
+
+        var filas = await connection.QueryAsync(sql);
+        var resultado = filas.Select(fila =>
+        {
+            var dict = (IDictionary<string, object>)fila;
+            return new
+            {
+                Codigo = ObtenerTexto(dict, "Codigo") ?? string.Empty,
+                Inspector = ObtenerTexto(dict, "Inspector") ?? string.Empty,
+                Supervisor = ObtenerTexto(dict, "Supervisor") ?? string.Empty,
+                Fecha = ObtenerTexto(dict, "Fecha") ?? string.Empty,
+                Hora = ObtenerTexto(dict, "Hora") ?? string.Empty,
+                Estado = ObtenerTexto(dict, "Estado") ?? string.Empty,
+                Puntaje = ObtenerTexto(dict, "Puntaje") ?? string.Empty,
+                Comentario = ObtenerTexto(dict, "Comentario") ?? string.Empty,
+                Ubicacion = ObtenerTexto(dict, "Ubicacion", "Ubicación") ?? string.Empty
+            };
+        }).ToList();
+
+        return Ok(resultado);
+    }
+
+    [HttpGet]
+    [Route("getExcelEspecificoCentroMonitoreoHse")]
+    public async Task<IActionResult> GetExcelEspecificoCentroMonitoreoHse([FromQuery] DateTime? Fecha_Desde, [FromQuery] DateTime? Fecha_Hasta, [FromQuery] string? Estado = "A")
+    {
+        if (!Fecha_Desde.HasValue || !Fecha_Hasta.HasValue)
+        {
+            return Ok(new List<object>());
+        }
+
+        using var connection = new SqlConnection(_connectionString);
+        await connection.OpenAsync();
+
+        var parametros = new DynamicParameters();
+        parametros.Add("@Fecha_Desde", Fecha_Desde.Value);
+        parametros.Add("@Fecha_Hasta", Fecha_Hasta.Value);
+        parametros.Add("@Estado", NormalizarEstado(Estado));
+
+        var filas = await connection.QueryAsync("[dbo].[SP_Filtrar_ReportePDF_Centro_HSE]", parametros, commandType: CommandType.StoredProcedure);
+
+        var resultado = filas.Select(fila =>
+        {
+            var dict = (IDictionary<string, object>)fila;
+            return new
+            {
+                Codigo = ObtenerTexto(dict, "Centro_HSE_Cod", "Codigo") ?? string.Empty,
+                Inspector = ObtenerTexto(dict, "Inspector", "Usr_Inspector") ?? string.Empty,
+                Supervisor = ObtenerTexto(dict, "Supervisor", "Usr_Supervisor") ?? string.Empty,
+                Fecha = ObtenerTexto(dict, "Fecha") ?? string.Empty,
+                Hora = ObtenerTexto(dict, "Hora") ?? string.Empty,
+                Estado = ObtenerTexto(dict, "Centro_Revision", "Estado") ?? string.Empty,
+                Puntaje = ObtenerTexto(dict, "Centro_Puntaje", "Puntaje") ?? string.Empty,
+                Comentario = ObtenerTexto(dict, "Centro_Comentario", "Comentario") ?? string.Empty,
+                Ubicacion = ObtenerTexto(dict, "Centro_Ubicacion", "Ubicacion", "Ubicación") ?? string.Empty
+            };
+        }).ToList();
+
+        return Ok(resultado);
+    }
 
     [HttpGet]
     [Route("getMostrarActualizarCentroMonitoreoHse")]
+
     public async Task<IActionResult> MostrarActualizarCentroMonitoreoHse([FromQuery] int Centro_HSE_Id)
     {
         using var connection = new SqlConnection(_connectionString);
