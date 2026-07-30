@@ -33,6 +33,7 @@ public class PedidoCabeceraEntity
     public string? Usr_Nom { get; set; }
     public string? Ord_Com_Ped_Id { get; set; }
     public string? Ped_Ref_Gral { get; set; }
+    public string? Ped_Acl { get; set; }
 }
 
 public class PedidoDetalleEntityReporte
@@ -44,5 +45,7 @@ public class PedidoDetalleEntityReporte
 	public decimal? Ped_Cos_Uni { get; set; }
 	public decimal? Ped_Cos_Tot { get; set; }
     public string? Cen_Cos_Des {  get; set; }
-    public string? Ped_Obs_Ped { get; set; }
+    public string? Ped_Com { get; set; }
+    public string? Ped_Req { get; set; }
+    public string? Ped_Det_Img { get; set; }
 }

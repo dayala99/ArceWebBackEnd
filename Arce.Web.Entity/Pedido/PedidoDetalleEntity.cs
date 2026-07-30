@@ -24,4 +24,8 @@ public class PedidoDetalleEntity
     public int? Can_Ing {get; set; }
     public DateTime? Fec_Ing { get; set; }
     public string? Ped_Obs_Ped { get; set; }
+    public int? Alm_Det_Id { get; set; }
+    public string? Ped_Com { get; set; }    
+    public string? Ped_Req { get; set; }
+    public string? Ped_Det_Img { get; set; }
 }

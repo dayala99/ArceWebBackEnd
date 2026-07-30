@@ -99,6 +99,7 @@ public class PedidoRepository: IPedidoRepository
             parametros.Add("@Usr_Reg", valores.Usr_Reg);
             parametros.Add("@Ped_Can_Tot", valores.Ped_Can_Tot);
             parametros.Add("@Ped_Ref_Gral", valores.Ped_Ref_Gral);
+            parametros.Add("@Ped_Acl", valores.Ped_Acl);
 
             parametros.Add("@Ped_Id", 0);
             parametros.Add("@Codigo", 0);
@@ -152,6 +153,7 @@ public class PedidoRepository: IPedidoRepository
             parametros.Add("@Usr_Mod", valores.Usr_Mod);
             parametros.Add("@Ped_Can_Tot", valores.Ped_Can_Tot);
             parametros.Add("@Ped_Ref_Gral", valores.Ped_Ref_Gral);
+            parametros.Add("@Ped_Acl", valores.Ped_Acl);
 
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
@@ -408,6 +410,9 @@ public class PedidoRepository: IPedidoRepository
             parametros.Add("@Ped_Cen_Cos_Asg", valores.Ped_Cen_Cos_Asg);
             parametros.Add("@Usr_Reg", valores.Usr_Reg);
             parametros.Add("@Ped_Obs_Ped", valores.Ped_Obs_Ped);
+            parametros.Add("@Ped_Com", valores.Ped_Com);
+            parametros.Add("@Ped_Req", valores.Ped_Req);
+            parametros.Add("@Ped_Det_Img", valores.Ped_Det_Img);
             
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
@@ -452,6 +457,10 @@ public class PedidoRepository: IPedidoRepository
             parametros.Add("@Ped_Cen_Cos_Asg", valores.Ped_Cen_Cos_Asg);
             parametros.Add("@Ped_Obs_Ped", valores.Ped_Obs_Ped);
             parametros.Add("@Usr_Mod", valores.Usr_Mod);
+            parametros.Add("@Ped_Com", valores.Ped_Com);
+            parametros.Add("@Ped_Req", valores.Ped_Req);
+            parametros.Add("@Ped_Det_Img", valores.Ped_Det_Img);
+
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
 
@@ -560,6 +569,7 @@ public class PedidoRepository: IPedidoRepository
             parametros.Add("@Ord_Com_Id", valores.Ord_Com_Id);
             parametros.Add("@Ped_Obs", valores.Ped_Obs);
             parametros.Add("@Ped_Cos_Uni", valores.Ped_Cos_Uni);
+            parametros.Add("@Ped_Can", valores.Ped_Can);
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
 
@@ -569,7 +579,7 @@ public class PedidoRepository: IPedidoRepository
             try
             {
                 connection.Execute(
-                    "[dbo].[PA_Lg_Pedido_Det_U0002]"
+                    "[dbo].[PA_Lg_Pedido_Det_U0002_DAYALA]"
                     , parametros
                     , commandType: CommandType.StoredProcedure
                 );
@@ -873,5 +883,117 @@ public class PedidoRepository: IPedidoRepository
             return (Codigo, Mensaje);
         }
     }
+
+    public async Task<(int Codigo, string Mensaje)> RegistrarArchivoAdjunto(PedidoArchivo valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Ped_Cab_Arc_Id", valores.Ped_Cab_Arc_Id);
+            parametros.Add("@Ped_Cab_Id", valores.Ped_Cab_Id);
+            parametros.Add("@Ped_Cab_Arc_Rut", valores.Ped_Cab_Arc_Rut);
+            parametros.Add("@Ped_Cab_Arc_Nom", valores.Ped_Cab_Arc_Nom);
     
+
+            
+            parametros.Add("@Codigo", 0);
+            parametros.Add("@sMsj", "");
+
+            parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+
+            try
+            {
+                connection.Execute(
+                    "[dbo].[PA_Lg_Pedido_Cab_Archivo_I0001]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+                );
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            var Codigo = parametros.Get<int>("@Codigo");
+            var Mensaje = parametros.Get<string>("@sMsj");
+
+            return (Codigo, Mensaje);
+        }
+    }
+
+    public async Task<IEnumerable<PedidoArchivo>?> ListarArchivosAdjuntos(int? Ped_Cab_Id)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Ped_Cab_Id", Ped_Cab_Id);
+
+            var result = await connection.QueryAsync<PedidoArchivo>(
+                "[dbo].[PA_Lg_Pedido_Cab_Archivo_S0001]"
+                , parametros
+                , commandType: CommandType.StoredProcedure
+            );
+            return result;
+        }
+    }
+    
+    public async Task<(int Codigo, string Mensaje)> EliminarArchivoAdjunto(PedidoArchivo valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Ped_Cab_Arc_Id", valores.Ped_Cab_Arc_Id);
+            parametros.Add("@Ped_Cab_Id", valores.Ped_Cab_Id);
+            
+            parametros.Add("@Codigo", 0);
+            parametros.Add("@sMsj", "");
+
+            parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+
+            try
+            {
+                connection.Execute(
+                    "[dbo].[PA_Lg_Pedido_Cab_Archivo_D0001]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+                );
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            var Codigo = parametros.Get<int>("@Codigo");
+            var Mensaje = parametros.Get<string>("@sMsj");
+
+            return (Codigo, Mensaje);
+        }
+    }
+
+    public async Task<IEnumerable<ReporteEntity>?> GenerarKardexGeneral(int? Itm_Id)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Itm_Id", Itm_Id);
+            //parametros.Add("", Ord_Com_Id);
+
+            var result = await connection.QueryAsync<ReporteEntity>(
+                "[dbo].[PA_Lg_Almacen_Det_Ing_S0004]"
+                , parametros
+                , commandType: CommandType.StoredProcedure
+            );
+            return result;
+        }
+    }
 }

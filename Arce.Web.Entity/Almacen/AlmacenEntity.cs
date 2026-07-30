@@ -10,7 +10,7 @@ public class AlmacenEntity
 	public string? Flg_Est_Apr {get; set; }
 	public string? Usr_Reg {get; set; }
 	public DateTime? Fec_Reg {get; set; }
-	public string? Usr_Mod {get; set; }
+		public string? Usr_Mod {get; set; }
 	public DateTime? Fec_Mod {get; set; }
     public int? Alm_Tip_Ing { get; set; }
     public string? Ubi_Des { get; set; }
@@ -19,4 +19,7 @@ public class AlmacenEntity
     public string? Usr_Nom { get; set; }
 	public int? Ped_Id { get; set; }
 	public int? Ord_Com_Id { get; set; }
+	public string? Flg_Est_Alm { get; set; }
+	public string? Alm_Mot_Rch { get; set; }
+	public string? Alm_Ser { get; set; }
 }

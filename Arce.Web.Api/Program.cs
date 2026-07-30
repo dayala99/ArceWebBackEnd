@@ -38,24 +38,24 @@ builder.Services.AddCors(options =>
     {
         /*DESARROLLO*/
 
-        policy.WithOrigins(
-                    "http://localhost:4200",
-                    "https://localhost:4200"
-                    )  // Especifica el origen permitido
-                .AllowAnyHeader()                     // Permitir cualquier encabezado
-                .AllowAnyMethod()                   // Permitir cualquier método (GET, POST, etc.)
-                .AllowCredentials();
+        // policy.WithOrigins(
+        //             "http://localhost:4200",
+        //             "https://localhost:4200"
+        //             )  // Especifica el origen permitido
+        //         .AllowAnyHeader()                     // Permitir cualquier encabezado
+        //         .AllowAnyMethod()                   // Permitir cualquier método (GET, POST, etc.)
+        //         .AllowCredentials();
 
         /*PRODUCCION*/
 
-        // policy.WithOrigins(
-        // // "http://192.168.1.36",
-        // // "https://192.168.1.36",
-        // "https://gestion.montajeseingenieriaarceperu.com",
-        // "https://gestion.montajeseingenieriaarceperu.com:443"
-        // )  // Especifica el origen permitido
-        // .AllowAnyHeader()                     // Permitir cualquier encabezado
-        // .AllowAnyMethod();                   // Permitir cualquier método (GET, POST, etc.)
+        policy.WithOrigins(
+        // "http://192.168.1.36",
+        // "https://192.168.1.36",
+        "https://gestion.montajeseingenieriaarceperu.com",
+        "https://gestion.montajeseingenieriaarceperu.com:443"
+        )  // Especifica el origen permitido
+        .AllowAnyHeader()                     // Permitir cualquier encabezado
+        .AllowAnyMethod();                   // Permitir cualquier método (GET, POST, etc.)
 
     });
 });
@@ -95,6 +95,7 @@ builder.Services.AddScoped<IEnviarCorreoService, EnviarCorreoService>();
 builder.Services.AddScoped<IPerfilService, PerfilService>();
 builder.Services.AddScoped<IAccesoService, AccesoService>();
 builder.Services.AddScoped<ICargoService, CargoService>();
+builder.Services.AddScoped<IAsignacionService, AsignacionService>();
 
 //Inyection Repository
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
@@ -126,6 +127,8 @@ builder.Services.AddScoped<IDireccionEntregaRepository, DireccionEntregaReposito
 builder.Services.AddScoped<IPerfilRepository, PerfilRepository>();
 builder.Services.AddScoped<IAccesoRepository, AccesoRepository>();
 builder.Services.AddScoped<ICargoRepository, CargoRepository>();
+builder.Services.AddScoped<IAsignacionRepository, AsignacionRepository>();
+
 
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>(); // ← AGREGADO
 builder.Services.AddScoped<ITipoInspeccionRepository, TipoInspeccionRepository>();

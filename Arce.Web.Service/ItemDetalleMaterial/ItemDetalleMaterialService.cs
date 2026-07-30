@@ -76,7 +76,7 @@ public class ItemDetalleMaterialService: IItemDetalleMaterialService
 
         try
         {
-            var resultData = await _repository.RegistrarItemDetalleMaterial(valores);
+            var resultData = await _repository.ActualizarItemDetalleMaterial(valores);
 
             if (resultData.Codigo == 0)
             {

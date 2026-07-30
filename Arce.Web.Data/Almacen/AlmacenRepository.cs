@@ -68,6 +68,7 @@ public class AlmacenRepository: IAlmacenRepository
             parametros.Add("@Alm_Sol_Dni", valores.Alm_Sol_Dni);
             parametros.Add("@Alm_Cen_Cos",valores.Alm_Cen_Cos);
             parametros.Add("@Alm_Tip_Ing", valores.Alm_Tip_Ing);
+            //parametros.Add("@Flg_Est_Apr", string.IsNullOrWhiteSpace(valores.Flg_Est_Apr) ? "I" : valores.Flg_Est_Apr);
             parametros.Add("@Usr_Reg",valores.Usr_Reg);
             parametros.Add("@Alm_Mov_Id",0);
             parametros.Add("@Codigo",0);
@@ -173,8 +174,9 @@ public class AlmacenRepository: IAlmacenRepository
             parametros.Add("@Alm_Det_Doc_Nro", valores.Alm_Det_Doc_Nro);
             parametros.Add("@Alm_Det_Fec", valores.Alm_Det_Fec);
             parametros.Add("@Alm_Det_Cen_Cos_Id", valores.Alm_Det_Cen_Cos_Id);
-            parametros.Add("@Usr_Reg",valores.Usr_Reg);
-            parametros.Add("@Alm_Det_Prv_Id",valores.Alm_Det_Prv_Id);
+            parametros.Add("@Usr_Reg", valores.Usr_Reg);
+            parametros.Add("@Alm_Det_Prv_Id", valores.Alm_Det_Prv_Id);
+            parametros.Add("@Alm_Ser", valores.Alm_Ser);
             parametros.Add("@Codigo",0);
             parametros.Add("@sMsj", "");
 
@@ -216,6 +218,7 @@ public class AlmacenRepository: IAlmacenRepository
             parametros.Add("@Alm_Det_Cen_Cos_Id", valores.Alm_Det_Cen_Cos_Id);
             parametros.Add("@Usr_Mod",valores.Usr_Mod);
             parametros.Add("@Alm_Det_Prv_Id",valores.Alm_Det_Prv_Id);
+            parametros.Add("@Alm_Ser", valores.Alm_Ser);
             parametros.Add("@Codigo",0);
             parametros.Add("@sMsj", "");
 
@@ -281,6 +284,119 @@ public class AlmacenRepository: IAlmacenRepository
             var Mensaje = parametros.Get<string>("@sMsj");
             
             return (Codigo, Mensaje, Alm_Mov_Id);
+        }
+    }
+
+    public async Task<(int Codigo, string Mensaje)> ActualizarIngresoAlmacenDetalleOrdenCompra(AlmacenDetalleEntity valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+            var parametros = new DynamicParameters();
+
+            parametros.Add("@Alm_Det_Id", valores.Alm_Det_Id);
+            parametros.Add("@Alm_Det_Can", valores.Alm_Det_Can);
+            parametros.Add("@Usr_Mod",valores.Usr_Mod);
+
+            parametros.Add("@Codigo",0);
+            parametros.Add("@sMsj", "");
+
+            parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+
+            try
+            {
+                connection.Execute(
+                    "[dbo].[PA_Lg_Almacen_Det_Ing_U0002]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+                );
+            }
+            catch(SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            var Codigo = parametros.Get<int>("@Codigo");
+            var Mensaje = parametros.Get<string>("@sMsj");
+            
+            return (Codigo, Mensaje);
+        }
+    }
+
+    public async Task<(int Codigo, string Mensaje)> ActualizarMotivoRechazoAlmacen(AlmacenEntity valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+            var parametros = new DynamicParameters();
+
+            parametros.Add("@Alm_Mov_Id", valores.Alm_Mov_Id);
+            parametros.Add("@Alm_Mot_Rch", valores.Alm_Mot_Rch);
+
+            parametros.Add("@Codigo",0);
+            parametros.Add("@sMsj", "");
+
+            parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+
+            try
+            {
+                connection.Execute(
+                    "[dbo].[PA_Lg_Almacen_U0002]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+                );
+            }
+            catch(SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            var Codigo = parametros.Get<int>("@Codigo");
+            var Mensaje = parametros.Get<string>("@sMsj");
+            
+            return (Codigo, Mensaje);
+        }
+    }
+
+    public async Task<IEnumerable<AlmacenDetalleEntity>?> ListarIngresoSalidaAlmacenPorCentroCosto(int? Alm_Det_Itm_Id)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Alm_Det_Itm_Id", Alm_Det_Itm_Id);
+
+            var result = await connection.QueryAsync<AlmacenDetalleEntity>(
+                "[dbo].[PA_Lg_Almacen_Det_Ing_S0003]"
+                , parametros
+                , commandType: CommandType.StoredProcedure
+            );
+
+            return result;
+        }
+    }
+
+    public async Task<IEnumerable<AlmacenDetalleEntity>?> ReporteListarSalidas(DateTime? Fec_Ini, DateTime? Fec_Fin ,int? Alm_Det_Itm_Id)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Fec_Ini", Fec_Ini);
+            parametros.Add("@Fec_Fin", Fec_Fin);
+            parametros.Add("@Alm_Det_Itm_Id", Alm_Det_Itm_Id);
+
+            var result = await connection.QueryAsync<AlmacenDetalleEntity>(
+                "[dbo].[PA_Lg_Almacen_Det_Ing_S0005]"
+                , parametros
+                , commandType: CommandType.StoredProcedure
+            );
+
+            return result;
         }
     }
 }

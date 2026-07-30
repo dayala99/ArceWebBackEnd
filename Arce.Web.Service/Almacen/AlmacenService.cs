@@ -244,4 +244,90 @@ public class AlmacenService: IAlmacenService
             return result;
         }
     }
+
+    public async Task<ServiceResponse<int>> ActualizarIngresoAlmacenDetalleOrdenCompra(AlmacenDetalleEntity valores)
+    {
+        var result = new ServiceResponse<int>();
+
+        try
+        {
+            var resultData = await _repository.ActualizarIngresoAlmacenDetalleOrdenCompra(valores);
+
+            if (resultData.Codigo == 0)
+            {
+                result.Success = true;
+                result.Message = resultData.Mensaje;
+                result.CodeTransacc = resultData.Codigo;
+                return result;
+            }
+
+            result.Success = false;
+            result.Message = resultData.Mensaje;
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Error inesperado " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponse<int>> ActualizarMotivoRechazoAlmacen(AlmacenEntity valores)
+    {
+        var result = new ServiceResponse<int>();
+
+        try
+        {
+            var resultData = await _repository.ActualizarMotivoRechazoAlmacen(valores);
+
+            if (resultData.Codigo == 0)
+            {
+                result.Success = true;
+                result.Message = resultData.Mensaje;
+                result.CodeTransacc = resultData.Codigo;
+                return result;
+            }
+
+            result.Success = false;
+            result.Message = resultData.Mensaje;
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Error inesperado " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponseList<AlmacenDetalleEntity>?> ListarIngresoSalidaAlmacenPorCentroCosto(int? Alm_Det_Itm_Id)
+    {
+        var result = new ServiceResponseList<AlmacenDetalleEntity>();
+        try
+        {
+            var resultData = await _repository.ListarIngresoSalidaAlmacenPorCentroCosto(Alm_Det_Itm_Id);
+            
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+                return result;
+            }
+            
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = resultData.ToList();
+            result.TotalElements = resultData.ToList().Count();
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepcion no controlada " + ex.Message;
+            return result;
+        }
+    }
 }

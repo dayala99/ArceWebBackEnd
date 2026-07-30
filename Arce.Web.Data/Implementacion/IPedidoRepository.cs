@@ -32,4 +32,8 @@ public interface IPedidoRepository
     Task<(int Codigo, string Mensaje)> ActualizarPedidoDetalleIngresoAlmacen(PedidoDetalleEntity valores);
     Task<(int Codigo, string Mensaje)> RechazarPedido(PedidoCabeceraEntity valores);
     Task<(int Codigo, string Mensaje)> ActualizarReferenciaGeneral(PedidoCabeceraEntity valores);
+    Task<(int Codigo, string Mensaje)> RegistrarArchivoAdjunto(PedidoArchivo valores);
+    Task<IEnumerable<PedidoArchivo>?> ListarArchivosAdjuntos(int? Ped_Cab_Id);
+    Task<(int Codigo, string Mensaje)> EliminarArchivoAdjunto(PedidoArchivo valores);
+    Task<IEnumerable<ReporteEntity>?> GenerarKardexGeneral(int? Itm_Id);
 }
