@@ -895,4 +895,35 @@ public class PedidoService: IPedidoService
         }
     }
 
+    public async Task<ServiceResponseList<PedidoCabeceraEntity>?> GenerarReporteOcos(string? Usr_Reg, int? Ped_Tip_Com,
+    int? Ped_Id, int? Ord_Com_Id, int? Ord_Com_Prv, int? Ord_Com_For_Pag)
+    {
+        var result = new ServiceResponseList<PedidoCabeceraEntity>();
+        try
+        {
+            var resultData = await _repository.GenerarReporteOcos(Usr_Reg, Ped_Tip_Com, Ped_Id, Ord_Com_Id, Ord_Com_Prv, Ord_Com_For_Pag);
+
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+                result.Elements = new List<PedidoCabeceraEntity>();
+                result.TotalElements = 0;
+                return result;
+            }
+
+            var elementos = resultData.ToList();
+
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = elementos;
+            result.TotalElements = elementos.Count;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepción no controlada " + ex.Message;
+            return result;
+        }
+    }
 }

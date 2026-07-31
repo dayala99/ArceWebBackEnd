@@ -35,6 +35,10 @@ public class PedidoCabeceraEntity
     public string? Ped_Ref_Gral { get; set; }
     public string? Ped_Acl { get; set; }
     public string? Ped_Obs_Ped { get; set; }
+	public string? Solicitante { get; set; }
+	public string? Ord_Com_Id { get; set; }
+	public string? Ord_Com_For_Pag { get; set; }
+	public string? For_Pag_Des { get; set; }
 }
 
 public class PedidoDetalleEntityReporte

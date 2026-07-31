@@ -783,5 +783,22 @@ namespace MyApp.Namespace
             return BadRequest(result);
         }
 
+        [HttpGet]
+        [Route("getGenerarReporteOcos")]
+        public async Task<IActionResult> GenerarReporteOcos(string? Usr_Reg, int? Ped_Tip_Com,
+        int? Ped_Id, int? Ord_Com_Id, int? Ord_Com_Prv, int? Ord_Com_For_Pag)
+        {
+            var result = await _service.GenerarReporteOcos(Usr_Reg ?? "", Ped_Tip_Com ?? 0, Ped_Id ?? 0, Ord_Com_Id ?? 0,
+            Ord_Com_Prv ?? 0, Ord_Com_For_Pag ?? 0);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
     }
 }

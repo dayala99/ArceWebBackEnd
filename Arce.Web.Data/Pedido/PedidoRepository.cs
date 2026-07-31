@@ -996,4 +996,29 @@ public class PedidoRepository: IPedidoRepository
             return result;
         }
     }
+
+    public async Task<IEnumerable<PedidoCabeceraEntity>?> GenerarReporteOcos(string? Usr_Reg, int? Ped_Tip_Com,
+    int? Ped_Id, int? Ord_Com_Id, int? Ord_Com_Prv, int? Ord_Com_For_Pag)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Usr_Reg", Usr_Reg);
+            parametros.Add("@Ped_Tip_Com", Ped_Tip_Com);
+            parametros.Add("@Ped_Id", Ped_Id);
+            parametros.Add("@Ord_Com_Id", Ord_Com_Id);
+            parametros.Add("@Ord_Com_Prv", Ord_Com_Prv);
+            parametros.Add("@Ord_Com_For_Pag", Ord_Com_For_Pag);
+            
+
+            var result = await connection.QueryAsync<PedidoCabeceraEntity>(
+                "[dbo].[PA_Lg_Pedido_Cab_S0006]"
+                , parametros
+                , commandType: CommandType.StoredProcedure
+            );
+            return result;
+        }
+    }
 }

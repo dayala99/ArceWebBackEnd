@@ -12,4 +12,7 @@ public class AsignacionCabeceraEntity
     public string? Usr_Mod { get; set; }
     public string? Flg_Est { get; set; }
     public decimal? Asg_Det_Can { get; set; }
+    public string? Usr_Asignacion { get; set; }
+    public string? Usr_Registro { get; set; }
+    public string? Cen_Cos_Des { get; set; }
 }

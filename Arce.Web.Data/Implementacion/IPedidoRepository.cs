@@ -36,4 +36,6 @@ public interface IPedidoRepository
     Task<IEnumerable<PedidoArchivo>?> ListarArchivosAdjuntos(int? Ped_Cab_Id);
     Task<(int Codigo, string Mensaje)> EliminarArchivoAdjunto(PedidoArchivo valores);
     Task<IEnumerable<ReporteEntity>?> GenerarKardexGeneral(int? Itm_Id);
+    Task<IEnumerable<PedidoCabeceraEntity>?> GenerarReporteOcos(string? Usr_Reg, int? Ped_Tip_Com,
+    int? Ped_Id, int? Ord_Com_Id, int? Ord_Com_Prv, int? Ord_Com_For_Pag);
 }

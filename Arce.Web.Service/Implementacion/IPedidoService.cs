@@ -37,4 +37,6 @@ public interface IPedidoService
     Task<ServiceResponseList<PedidoArchivo>?> ListarArchivosAdjuntos(int? Ped_Cab_Id);
     Task<ServiceResponse<int>> EliminarArchivoAdjunto(PedidoArchivo valores);
     Task<ServiceResponseList<ReporteEntity>?> GenerarKardexGeneral(int? Itm_Id);
+    Task<ServiceResponseList<PedidoCabeceraEntity>?> GenerarReporteOcos(string? Usr_Reg, int? Ped_Tip_Com,
+    int? Ped_Id, int? Ord_Com_Id, int? Ord_Com_Prv, int? Ord_Com_For_Pag);
 }

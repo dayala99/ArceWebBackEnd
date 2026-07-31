@@ -13,12 +13,13 @@ public class AsignacionService: IAsignacionService
         _repository = repository;
     }
 
-    public async Task<ServiceResponseList<AsignacionCabeceraEntity>?> ListarAsignacion()
+    public async Task<ServiceResponseList<AsignacionCabeceraEntity>?> ListarAsignacion(int? Asg_Id, DateTime? Fec_Ini, DateTime? Fec_Fin,
+    string? Asg_Usr, string? Usr_Reg, string? Flg_Est, int? Asg_Usr_Cen_Cos)
     {
         var result = new ServiceResponseList<AsignacionCabeceraEntity>();
         try
         {
-            var resultData = await _repository.ListarAsignacion();
+            var resultData = await _repository.ListarAsignacion(Asg_Id, Fec_Ini, Fec_Fin, Asg_Usr, Usr_Reg, Flg_Est, Asg_Usr_Cen_Cos);
             
             if (resultData == null || !resultData.Any())
             {
@@ -276,6 +277,64 @@ public class AsignacionService: IAsignacionService
         try
         {
             var resultData = await _repository.EliminarAsignacionDetalle(valores);
+
+            if (resultData.Codigo == 0)
+            {
+                result.Success = true;
+                result.Message = resultData.Mensaje;
+                result.CodeTransacc = resultData.Codigo;
+                return result;
+            }
+
+            result.Success = false;
+            result.Message = resultData.Mensaje;
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Error inesperado " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponse<int>> EliminarAsignacion(AsignacionCabeceraEntity valores)
+    {
+        var result = new ServiceResponse<int>();
+
+        try
+        {
+            var resultData = await _repository.EliminarAsignacion(valores);
+
+            if (resultData.Codigo == 0)
+            {
+                result.Success = true;
+                result.Message = resultData.Mensaje;
+                result.CodeTransacc = resultData.Codigo;
+                return result;
+            }
+
+            result.Success = false;
+            result.Message = resultData.Mensaje;
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Error inesperado " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponse<int>> EliminarAsignacionDetalleTotal(AsignacionDetalleEntity valores)
+    {
+        var result = new ServiceResponse<int>();
+
+        try
+        {
+            var resultData = await _repository.EliminarAsignacionDetalleTotal(valores);
 
             if (resultData.Codigo == 0)
             {

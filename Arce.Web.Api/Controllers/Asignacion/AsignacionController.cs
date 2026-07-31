@@ -18,9 +18,10 @@ namespace MyApp.Namespace
 
         [HttpGet]
         [Route("getListarAsignacion")]
-        public async Task<IActionResult> ListarAsignacion()
+        public async Task<IActionResult> ListarAsignacion(int? Asg_Id, DateTime? Fec_Ini, DateTime? Fec_Fin,
+    string? Asg_Usr, string? Usr_Reg, string? Flg_Est, int? Asg_Usr_Cen_Cos)
         {
-            var result = await _service.ListarAsignacion();
+            var result = await _service.ListarAsignacion(Asg_Id ?? 0, Fec_Ini, Fec_Fin, Asg_Usr ?? "", Usr_Reg ?? "", Flg_Est ?? "", Asg_Usr_Cen_Cos ?? 0);
 
             if (result!.Success)
             {
@@ -165,6 +166,38 @@ namespace MyApp.Namespace
         public async Task<IActionResult> EliminarAsignacionDetalle([FromBody] AsignacionDetalleEntity valores)
         {
             var result = await _service.EliminarAsignacionDetalle(valores);
+
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPatch]
+        [Route("patchEliminarAsignacion")]
+        public async Task<IActionResult> EliminarAsignacion([FromBody] AsignacionCabeceraEntity valores)
+        {
+            var result = await _service.EliminarAsignacion(valores);
+
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPatch]
+        [Route("patchEliminarAsignacionDetalleTotal")]
+        public async Task<IActionResult> EliminarAsignacionDetalleTotal([FromBody] AsignacionDetalleEntity valores)
+        {
+            var result = await _service.EliminarAsignacionDetalleTotal(valores);
 
             if (result!.Success)
             {
