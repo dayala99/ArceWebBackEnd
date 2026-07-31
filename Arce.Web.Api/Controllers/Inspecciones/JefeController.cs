@@ -18,9 +18,9 @@ namespace Arce.Web.Api.Controllers.Inspecciones
 
         [HttpGet]
         [Route("getListarJefe")]
-        public async Task<IActionResult> ListarJefe(int? Id, string? Nombre, string? Dni, string? Estado)
+        public async Task<IActionResult> ListarJefe(int? Id, string? Reporte_Tipo, string? Estado)
         {
-            var result = await _service.ListarJefe(Id, Nombre, Dni, Estado);
+            var result = await _service.ListarJefe(Id, Reporte_Tipo, Estado);
 
             if (result!.Success)
             {
@@ -34,9 +34,9 @@ namespace Arce.Web.Api.Controllers.Inspecciones
 
         [HttpGet]
         [Route("getConsultarDatosJefe")]
-        public async Task<IActionResult> ConsultarDatosJefe(int? Jefe_Id)
+        public async Task<IActionResult> ConsultarDatosJefe(int? Reporte_Id)
         {
-            var result = await _service.ConsultarDatosJefe(Jefe_Id);
+            var result = await _service.ConsultarDatosJefe(Reporte_Id);
 
             if (result!.Success)
             {
@@ -54,9 +54,7 @@ namespace Arce.Web.Api.Controllers.Inspecciones
         {
             JefeEntity parametros = new JefeEntity()
             {
-                Nombre = valores.Nombre,
-                Dni = valores.Dni,
-                Cen_Cos_Id = valores.Cen_Cos_Id,
+                Reporte_Tipo = valores.Reporte_Tipo,
                 Usr_Reg = valores.Usr_Reg
             };
 
@@ -78,10 +76,8 @@ namespace Arce.Web.Api.Controllers.Inspecciones
         {
             JefeEntity parametros = new JefeEntity()
             {
-                Id = valores.Id,
-                Nombre = valores.Nombre,
-                Dni = valores.Dni,
-                Cen_Cos_Id = valores.Cen_Cos_Id,
+                Reporte_Id = valores.Reporte_Id,
+                Reporte_Tipo = valores.Reporte_Tipo,
                 Estado = valores.Estado,
                 Usr_Mod = valores.Usr_Mod
             };

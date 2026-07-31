@@ -1,9 +1,22 @@
 using Arce.Web.Data;
 using Arce.Web.Data.Inspecciones.Cliente;
 using Arce.Web.Data.Inspecciones.Jefe;
+using Arce.Web.Data.Inspecciones.TipoReporte;
+using Arce.Web.Service.Inspecciones.Motivo;
+using Arce.Web.Data.Inspecciones.Motivo;
+using Arce.Web.Data.Inspecciones.Clima;
+using Arce.Web.Data.Inspecciones.Tarea;
+using Arce.Web.Data.Inspecciones.SubContrata;
 using Arce.Web.Data.Inspecciones.Subestaciones;
+using Arce.Web.Data.Inspecciones.TipoInspeccion;
+using Arce.Web.Data.Inspecciones.PreguntasHse;
+using Arce.Web.Data.Inspecciones.TipoRiesgo;
 using Arce.Web.Service;
 using Arce.Web.Service.Inspecciones.Jefe;
+using Arce.Web.Service.Inspecciones.TipoReporte;
+using Arce.Web.Service.Inspecciones.Clima;
+using Arce.Web.Service.Inspecciones.Tarea;
+using Arce.Web.Service.Inspecciones.SubContrata;
 using Arce.Web.Service.Inspecciones.Subestaciones;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +26,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+});
 
 
 builder.Services.AddCors(options =>
@@ -53,6 +69,11 @@ builder.Services.AddScoped<IFormaPagoService, FormaPagoService>();
 builder.Services.AddScoped<ITipoServicioService, TipoServicioService>();
 builder.Services.AddScoped<IUnidadMedidaService, UnidadMedidaService>();
 builder.Services.AddScoped<IJefeService, JefeService>();
+builder.Services.AddScoped<ITipoReporteService, TipoReporteService>();
+builder.Services.AddScoped<IMotivoService, MotivoService>();
+builder.Services.AddScoped<IClimaService, ClimaService>();
+builder.Services.AddScoped<ITareaService, TareaService>();
+builder.Services.AddScoped<ISubContrataService, SubContrataService>();
 builder.Services.AddScoped<ICentroCostoService, CentroCostoService>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
 builder.Services.AddScoped<IGrupoItemService, GrupoItemService>();
@@ -83,6 +104,11 @@ builder.Services.AddScoped<IFormaPagoRepository, FormaPagoRepository>();
 builder.Services.AddScoped<ITipoServicioRepository, TipoServicioRepository>();
 builder.Services.AddScoped<IUnidadMedidaRepository, UnidadMedidaRepository>();
 builder.Services.AddScoped<IJefeRepository, JefeRepository>();
+builder.Services.AddScoped<ITipoReporteRepository, TipoReporteRepository>();
+builder.Services.AddScoped<IMotivoRepository, MotivoRepository>();
+builder.Services.AddScoped<IClimaRepository, ClimaRepository>();
+builder.Services.AddScoped<ITareaRepository, TareaRepository>();
+builder.Services.AddScoped<ISubContrataRepository, SubContrataRepository>();
 builder.Services.AddScoped<ICentroCostoRepository, CentroCostoRepository>();
 builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
 builder.Services.AddScoped<IGrupoItemRepository, GrupoItemRepository>();
@@ -105,6 +131,9 @@ builder.Services.AddScoped<IAsignacionRepository, AsignacionRepository>();
 
 
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>(); // ← AGREGADO
+builder.Services.AddScoped<ITipoInspeccionRepository, TipoInspeccionRepository>();
+builder.Services.AddScoped<IPreguntasHseRepository, PreguntasHseRepository>();
+builder.Services.AddScoped<ITipoRiesgoRepository, TipoRiesgoRepository>();
 
 #endregion
 

@@ -3,144 +3,24 @@ using Arce.Web.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Arce.Web.Api.Controllers.Inspecciones
+namespace Arce.Web.Api.Controllers.Prevencion;
+
+[ApiController]
+[Route("api/Prevencion")]
+public class PrevencionController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class InspeccionesController : ControllerBase
+    private readonly IInspeccionesService _inspeccionesService;
+
+    public PrevencionController(IInspeccionesService inspeccionesService)
     {
-        private readonly IInspeccionesService _inspeccionesService;
-
-        public InspeccionesController(IInspeccionesService inspeccionesService)
-        {
-            _inspeccionesService = inspeccionesService;
-        }
-
+        _inspeccionesService = inspeccionesService;
+    }
+        // NUEVO: devuelve Cen_Cos_Des y DNI del jefe a partir de su Usr_Cod
         [HttpGet]
-        [Route("getConsultaDatosUsuario")]
-        public async Task<IActionResult> ConsultarDatosUsuario(string? Usr_Cod)
+        [Route("getMostrarJefe")]
+        public async Task<IActionResult> MostrarJefe(string Jefe_Cod)
         {
-            var result = await _inspeccionesService.ConsultarDatosUsuario(Usr_Cod ?? "");
-            if (result!.Success)
-            {
-                result.CodeResult = StatusCodes.Status200OK;
-                return Ok(result);
-            }
-
-            result.CodeResult = StatusCodes.Status400BadRequest;
-            return BadRequest(result);
-        }
-
-        [HttpGet]
-        [Route("getSubEstacionesPorCliente")]
-        public async Task<IActionResult> ListarSubEstacionesPorCliente(int Cliente_Id)
-        {
-            var result = await _inspeccionesService.ListarSubEstacionesPorCliente(Cliente_Id);
-            if (result!.Success)
-            {
-                result.CodeResult = StatusCodes.Status200OK;
-                return Ok(result);
-            }
-
-            result.CodeResult = StatusCodes.Status400BadRequest;
-            return BadRequest(result);
-        }
-
-        [HttpGet]
-        [Route("getListarSubEstaciones")]
-        public async Task<IActionResult> ListarSubEstaciones(int? Id, string? Nombre, int? Cliente_Id, string? Estado)
-        {
-            var result = await _inspeccionesService.ListarSubEstaciones(Id, Nombre, Cliente_Id, Estado);
-            if (result!.Success)
-            {
-                result.CodeResult = StatusCodes.Status200OK;
-                return Ok(result);
-            }
-
-            result.CodeResult = StatusCodes.Status400BadRequest;
-            return BadRequest(result);
-        }
-
-        [HttpGet]
-        [Route("getListarClientes")]
-        public async Task<IActionResult> ListarClientes()
-        {
-            var result = await _inspeccionesService.ListarClientes();
-            if (result!.Success)
-            {
-                result.CodeResult = StatusCodes.Status200OK;
-                return Ok(result);
-            }
-
-            result.CodeResult = StatusCodes.Status400BadRequest;
-            return BadRequest(result);
-        }
-
-        [HttpGet]
-        [Route("getListarMotivos")]
-        public async Task<IActionResult> ListarMotivos()
-        {
-            var result = await _inspeccionesService.ListarMotivos();
-            if (result!.Success)
-            {
-                result.CodeResult = StatusCodes.Status200OK;
-                return Ok(result);
-            }
-
-            result.CodeResult = StatusCodes.Status400BadRequest;
-            return BadRequest(result);
-        }
-
-        [HttpGet]
-        [Route("getListarClimas")]
-        public async Task<IActionResult> ListarClimas()
-        {
-            var result = await _inspeccionesService.ListarClimas();
-            if (result!.Success)
-            {
-                result.CodeResult = StatusCodes.Status200OK;
-                return Ok(result);
-            }
-
-            result.CodeResult = StatusCodes.Status400BadRequest;
-            return BadRequest(result);
-        }
-
-        [HttpGet]
-        [Route("getListarTareas")]
-        public async Task<IActionResult> ListarTareas()
-        {
-            var result = await _inspeccionesService.ListarTareas();
-            if (result!.Success)
-            {
-                result.CodeResult = StatusCodes.Status200OK;
-                return Ok(result);
-            }
-
-            result.CodeResult = StatusCodes.Status400BadRequest;
-            return BadRequest(result);
-        }
-
-        [HttpGet]
-        [Route("getListarSubContratas")]
-        public async Task<IActionResult> ListarSubContratas()
-        {
-            var result = await _inspeccionesService.ListarSubContratas();
-            if (result!.Success)
-            {
-                result.CodeResult = StatusCodes.Status200OK;
-                return Ok(result);
-            }
-
-            result.CodeResult = StatusCodes.Status400BadRequest;
-            return BadRequest(result);
-        }
-
-        [HttpGet]
-        [Route("getListarJefesArea")]
-        public async Task<IActionResult> ListarJefesArea()
-        {
-            var result = await _inspeccionesService.ListarJefesArea();
+            var result = await _inspeccionesService.MostrarJefe(Jefe_Cod);
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;
@@ -255,5 +135,94 @@ namespace Arce.Web.Api.Controllers.Inspecciones
             result.CodeResult = StatusCodes.Status400BadRequest;
             return BadRequest(result);
         }
-    }
+        [HttpGet]
+        [Route("getListarTiposInspeccion")]
+        public async Task<IActionResult> ListarTiposInspeccion()
+        {
+            var result = await _inspeccionesService.ListarTiposInspeccion();
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpGet]
+        [Route("getFiltrarPrevencion")]
+        public async Task<IActionResult> FiltrarPrevencion(DateTime Fecha_Desde, DateTime Fecha_Hasta, string Estado)
+        {
+            var result = await _inspeccionesService.FiltrarPrevencion(Fecha_Desde, Fecha_Hasta, Estado);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpGet]
+        [Route("getMostrarPrevencion")]
+        public async Task<IActionResult> MostrarPrevencion(int Prevencion_Id)
+        {
+            var result = await _inspeccionesService.MostrarPrevencion(Prevencion_Id);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPost]
+        [Route("postInsertarPrevencion")]
+        public async Task<IActionResult> InsertarPrevencion([FromBody] InsPrevencionEntity valores)
+        {
+            var result = await _inspeccionesService.InsertarPrevencion(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPut]
+        [Route("putActualizarPrevencion")]
+        public async Task<IActionResult> ActualizarPrevencion([FromBody] ActualizarPrevencionEntity valores)
+        {
+            var result = await _inspeccionesService.ActualizarPrevencion(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpDelete]
+        [Route("deleteEliminarPrevencion")]
+        public async Task<IActionResult> EliminarPrevencion(int Prevencion_Id, string Usr_Mod)
+        {
+            var valores = new EliminarPrevencionEntity { Prevencion_Id = Prevencion_Id, Usr_Mod = Usr_Mod };
+            var result = await _inspeccionesService.EliminarPrevencion(valores);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
 }

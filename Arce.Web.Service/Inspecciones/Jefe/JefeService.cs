@@ -14,12 +14,12 @@ public class JefeService : IJefeService
         _repository = repository;
     }
 
-    public async Task<ServiceResponseList<JefeEntity>?> ListarJefe(int? Id, string? Nombre, string? Dni, string? Estado)
+    public async Task<ServiceResponseList<JefeEntity>?> ListarJefe(int? Id, string? Reporte_Tipo, string? Estado)
     {
         var result = new ServiceResponseList<JefeEntity>();
         try
         {
-            var resultData = await _repository.ListarJefe(Id, Nombre, Dni, Estado);
+            var resultData = await _repository.ListarJefe(Id, Reporte_Tipo, Estado);
             var elements = (resultData ?? Enumerable.Empty<JefeEntity>()).ToList();
 
             result.Success = true;
@@ -31,17 +31,17 @@ public class JefeService : IJefeService
         }
         catch (Exception ex)
         {
-            result.Message = "Excepción no controlada " + ex.Message;
+            result.Message = "Excepcion no controlada " + ex.Message;
             return result;
         }
     }
 
-    public async Task<ServiceResponseList<JefeEntity>?> ConsultarDatosJefe(int? Jefe_Id)
+    public async Task<ServiceResponseList<JefeEntity>?> ConsultarDatosJefe(int? Reporte_Id)
     {
         var result = new ServiceResponseList<JefeEntity>();
         try
         {
-            var resultData = await _repository.ConsultarDatosJefe(Jefe_Id);
+            var resultData = await _repository.ConsultarDatosJefe(Reporte_Id);
             var elements = (resultData ?? Enumerable.Empty<JefeEntity>()).ToList();
 
             result.Success = true;
@@ -53,7 +53,7 @@ public class JefeService : IJefeService
         }
         catch (Exception ex)
         {
-            result.Message = "Excepción no controlada " + ex.Message;
+            result.Message = "Excepcion no controlada " + ex.Message;
             return result;
         }
     }
@@ -68,7 +68,7 @@ public class JefeService : IJefeService
             if (resultData.Codigo == 0)
             {
                 result.Success = true;
-                result.Message = resultData.Mensaje;
+                result.Message = string.IsNullOrWhiteSpace(resultData.Mensaje) ? "Completado con éxito" : resultData.Mensaje;
                 result.CodeTransacc = resultData.Codigo;
                 return result;
             }
@@ -96,7 +96,7 @@ public class JefeService : IJefeService
             if (resultData.Codigo == 0)
             {
                 result.Success = true;
-                result.Message = resultData.Mensaje;
+                result.Message = string.IsNullOrWhiteSpace(resultData.Mensaje) ? "Completado con éxito" : resultData.Mensaje;
                 result.CodeTransacc = resultData.Codigo;
                 return result;
             }
@@ -124,7 +124,7 @@ public class JefeService : IJefeService
             if (resultData.Codigo == 0)
             {
                 result.Success = true;
-                result.Message = resultData.Mensaje;
+                result.Message = string.IsNullOrWhiteSpace(resultData.Mensaje) ? "Completado con éxito" : resultData.Mensaje;
                 result.CodeTransacc = resultData.Codigo;
                 return result;
             }
