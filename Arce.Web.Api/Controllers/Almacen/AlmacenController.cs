@@ -191,5 +191,38 @@ namespace MyApp.Namespace
             result.CodeResult = StatusCodes.Status400BadRequest;
             return BadRequest(result);
         }
-    }
+
+        [HttpGet]
+        [Route("getReporteListarSalidas")]
+        public async Task<IActionResult> ReporteListarSalidas(DateTime? Fec_Ini, DateTime? Fec_Fin ,int? Alm_Det_Itm_Id)
+        {
+            var result = await _service.ReporteListarSalidas(Fec_Ini, Fec_Fin, Alm_Det_Itm_Id ?? 0);
+
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpGet]
+        [Route("getReporteIngresoSalidasAlmacen")]
+        public async Task<IActionResult> ReporteIngresoSalidasAlmacen(string? Usr_Cod, DateTime? Fec_Ini, DateTime? Fec_Fin
+        , int? Alm_Det_Cen_Cos_Id, int? Alm_Det_Prv_Id, int? Alm_Det_Itm_Id, int? Alm_Tip_Ing)
+        {
+            var result = await _service.ReporteIngresoSalidasAlmacen(Usr_Cod ?? "", Fec_Ini, Fec_Fin, Alm_Det_Cen_Cos_Id ?? 0, Alm_Det_Prv_Id ?? 0, Alm_Det_Itm_Id ?? 0, Alm_Tip_Ing ?? 0);
+
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+    }    
 }

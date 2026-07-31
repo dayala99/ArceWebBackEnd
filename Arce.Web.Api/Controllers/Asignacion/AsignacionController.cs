@@ -16,21 +16,21 @@ namespace MyApp.Namespace
             _service = service;
         }
 
-        // [HttpGet]
-        // [Route("getListarBanco")]
-        // public async Task<IActionResult> RegistrarAsignacion(int? Ban_Id, string? Ban_Des, string? Flg_Est)
-        // {
-        //     var result = await _service.RegistrarAsignacion(Ban_Id ?? 0, Ban_Des ?? "", Flg_Est ?? "");
+        [HttpGet]
+        [Route("getListarAsignacion")]
+        public async Task<IActionResult> ListarAsignacion()
+        {
+            var result = await _service.ListarAsignacion();
 
-        //     if (result!.Success)
-        //     {
-        //         result.CodeResult = StatusCodes.Status200OK;
-        //         return Ok(result);
-        //     }
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
 
-        //     result.CodeResult = StatusCodes.Status400BadRequest;
-        //     return BadRequest(result);
-        // }
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
 
         [HttpPost]
         [Route("postRegistrarAsignacion")]
@@ -53,6 +53,118 @@ namespace MyApp.Namespace
         public async Task<IActionResult> ActualizarAsignacion([FromBody] AsignacionCabeceraEntity valores)
         {
             var result = await _service.ActualizarAsignacion(valores);
+
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPost]
+        [Route("postRegistrarAsignacionDetalle")]
+        public async Task<IActionResult> RegistrarAsignacionDetalle([FromBody] AsignacionDetalleEntity valores)
+        {   
+            var result = await _service.RegistrarAsignacionDetalle(valores);
+
+            if (result.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPatch]
+        [Route("patchActualizarAsignacionDetalle")]
+        public async Task<IActionResult> ActualizarAsignacionDetalle([FromBody] AsignacionDetalleEntity valores)
+        {
+            var result = await _service.ActualizarAsignacionDetalle(valores);
+
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpGet]
+        [Route("getListarDetallesXAsignacion")]
+        public async Task<IActionResult> ListarDetallesXAsignacion(int? Asg_Id)
+        {
+            var result = await _service.ListarDetallesXAsignacion(Asg_Id ?? 0);
+
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpGet]
+        [Route("getListarAsignacionDetalleModificar")]
+        public async Task<IActionResult> ListarAsignacionDetalleModificar(int? Asg_Det_Id)
+        {
+            var result = await _service.ListarAsignacionDetalleModificar(Asg_Det_Id ?? 0);
+
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpGet]
+        [Route("getListarAsignacionModificar")]
+        public async Task<IActionResult> ListarAsignacionModificar(int? Asg_Id)
+        {
+            var result = await _service.ListarAsignacionModificar(Asg_Id);
+
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpGet]
+        [Route("getObtenerStockReservadoAsignacion")]
+        public async Task<IActionResult> ObtenerStockReservadoAsignacion(int? Asg_Usr_Cen_Cos, int? Asg_Det_Itm_Id)
+        {
+            var result = await _service.ObtenerStockReservadoAsignacion(Asg_Usr_Cen_Cos, Asg_Det_Itm_Id);
+
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPatch]
+        [Route("patchEliminarAsignacionDetalle")]
+        public async Task<IActionResult> EliminarAsignacionDetalle([FromBody] AsignacionDetalleEntity valores)
+        {
+            var result = await _service.EliminarAsignacionDetalle(valores);
 
             if (result!.Success)
             {
