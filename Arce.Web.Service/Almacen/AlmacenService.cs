@@ -330,4 +330,60 @@ public class AlmacenService: IAlmacenService
             return result;
         }
     }
+
+    public async Task<ServiceResponseList<AlmacenDetalleEntity>?> ReporteListarSalidas(DateTime? Fec_Ini, DateTime? Fec_Fin ,int? Alm_Det_Itm_Id)
+    {
+        var result = new ServiceResponseList<AlmacenDetalleEntity>();
+        try
+        {
+            var resultData = await _repository.ReporteListarSalidas(Fec_Ini, Fec_Fin, Alm_Det_Itm_Id);
+            
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+                return result;
+            }
+            
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = resultData.ToList();
+            result.TotalElements = resultData.ToList().Count();
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepcion no controlada " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponseList<AlmacenEntity>?> ReporteIngresoSalidasAlmacen(string? Usr_Cod, DateTime? Fec_Ini, DateTime? Fec_Fin, int? Alm_Det_Cen_Cos_Id, int? Alm_Det_Prv_Id, int? Alm_Det_Itm_Id, int? Alm_Tip_Ing)
+    {
+        var result = new ServiceResponseList<AlmacenEntity>();
+        try
+        {
+            var resultData = await _repository.ReporteIngresoSalidasAlmacen(Usr_Cod, Fec_Ini, Fec_Fin, Alm_Det_Cen_Cos_Id, Alm_Det_Prv_Id, Alm_Det_Itm_Id, Alm_Tip_Ing);
+            
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+                return result;
+            }
+            
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = resultData.ToList();
+            result.TotalElements = resultData.ToList().Count();
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepcion no controlada " + ex.Message;
+            return result;
+        }
+    }
 }

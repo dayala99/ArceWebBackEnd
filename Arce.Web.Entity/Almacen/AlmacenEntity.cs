@@ -22,4 +22,13 @@ public class AlmacenEntity
 	public string? Flg_Est_Alm { get; set; }
 	public string? Alm_Mot_Rch { get; set; }
 	public string? Alm_Ser { get; set; }
+	public string? Solicitante { get; set; }
+	public string? Alm_Det_Cen_Cos_Id	 { get; set; }
+	public string? Alm_Det_Prv_Id	 { get; set; }
+	public string? Prv_Nom	 { get; set; }
+	public string? Alm_Det_Itm_Id	 { get; set; }
+	public string? Itm_Cod	 { get; set; }
+	public string? Itm_Des	 { get; set; }
+	public string? Alm_Det_Can { get; set; }
+	public string? Usr_Nom_Reg { get; set; }
 }

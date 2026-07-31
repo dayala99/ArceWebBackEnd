@@ -34,6 +34,7 @@ public class PedidoCabeceraEntity
     public string? Ord_Com_Ped_Id { get; set; }
     public string? Ped_Ref_Gral { get; set; }
     public string? Ped_Acl { get; set; }
+    public string? Ped_Obs_Ped { get; set; }
 }
 
 public class PedidoDetalleEntityReporte
@@ -48,4 +49,5 @@ public class PedidoDetalleEntityReporte
     public string? Ped_Com { get; set; }
     public string? Ped_Req { get; set; }
     public string? Ped_Det_Img { get; set; }
+    public string? Ped_Obs_Ped { get; set; }
 }

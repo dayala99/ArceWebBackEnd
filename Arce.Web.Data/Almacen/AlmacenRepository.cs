@@ -259,6 +259,8 @@ public class AlmacenRepository: IAlmacenRepository
             parametros.Add("@Usr_Reg",valores.Usr_Reg);
             parametros.Add("@Ord_Com_Id", valores.Ord_Com_Id);
             parametros.Add("@Ped_Id",valores.Ped_Id);
+            parametros.Add("@Alm_Sol_Dni", valores.Alm_Sol_Dni);
+
             parametros.Add("@Alm_Mov_Id",0);
             parametros.Add("@Codigo",0);
             parametros.Add("@sMsj", "");
@@ -399,4 +401,32 @@ public class AlmacenRepository: IAlmacenRepository
             return result;
         }
     }
+
+    public async Task<IEnumerable<AlmacenEntity>?> ReporteIngresoSalidasAlmacen(string? Usr_Cod, DateTime? Fec_Ini, DateTime? Fec_Fin
+    , int? Alm_Det_Cen_Cos_Id, int? Alm_Det_Prv_Id, int? Alm_Det_Itm_Id, int? Alm_Tip_Ing)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Usr_Cod", Usr_Cod);
+            parametros.Add("@Fec_Ini", Fec_Ini);
+            parametros.Add("@Fec_Fin", Fec_Fin);
+            parametros.Add("@Alm_Det_Cen_Cos_Id", Alm_Det_Cen_Cos_Id);
+            parametros.Add("@Alm_Det_Prv_Id", Alm_Det_Prv_Id);
+            parametros.Add("@Alm_Det_Itm_Id", Alm_Det_Itm_Id);
+            parametros.Add("@Alm_Tip_Ing", Alm_Tip_Ing);
+
+            var result = await connection.QueryAsync<AlmacenEntity>(
+                "[dbo].[PA_Lg_Almacen_S0003]"
+                , parametros
+                , commandType: CommandType.StoredProcedure
+            );
+
+            return result;
+        }
+    }
+
+
 }

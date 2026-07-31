@@ -15,4 +15,6 @@ public interface IAlmacenRepository
     Task<(int Codigo, string Mensaje)> ActualizarIngresoAlmacenDetalleOrdenCompra(AlmacenDetalleEntity valores);
     Task<(int Codigo, string Mensaje)> ActualizarMotivoRechazoAlmacen(AlmacenEntity valores);
     Task<IEnumerable<AlmacenDetalleEntity>?> ListarIngresoSalidaAlmacenPorCentroCosto(int? Alm_Det_Itm_Id);
+    Task<IEnumerable<AlmacenDetalleEntity>?> ReporteListarSalidas(DateTime? Fec_Ini, DateTime? Fec_Fin ,int? Alm_Det_Itm_Id);
+    Task<IEnumerable<AlmacenEntity>?> ReporteIngresoSalidasAlmacen(string? Usr_Cod, DateTime? Fec_Ini, DateTime? Fec_Fin, int? Alm_Det_Cen_Cos_Id, int? Alm_Det_Prv_Id, int? Alm_Det_Itm_Id, int? Alm_Tip_Ing);
 }

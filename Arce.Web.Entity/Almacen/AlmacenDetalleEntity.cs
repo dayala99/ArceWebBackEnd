@@ -20,4 +20,8 @@ public class AlmacenDetalleEntity
 	public decimal? Stock { get; set; }
 	public string? Cen_Cos_Des { get; set; }
 	public string? Alm_Ser { get; set; }
+	public string? Usr_Nom { get; set; }
+	public string? Usr_Doc_Nro { get; set; }
+	public string? Itm_Des { get; set; }
+	public string? Uni_Med_Abr { get; set; }
 }

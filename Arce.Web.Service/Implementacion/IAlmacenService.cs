@@ -16,4 +16,6 @@ public interface IAlmacenService
     Task<ServiceResponse<int>> ActualizarIngresoAlmacenDetalleOrdenCompra(AlmacenDetalleEntity valores);
     Task<ServiceResponse<int>> ActualizarMotivoRechazoAlmacen(AlmacenEntity valores);
     Task<ServiceResponseList<AlmacenDetalleEntity>?> ListarIngresoSalidaAlmacenPorCentroCosto(int? Alm_Det_Itm_Id);
+    Task<ServiceResponseList<AlmacenDetalleEntity>?> ReporteListarSalidas(DateTime? Fec_Ini, DateTime? Fec_Fin ,int? Alm_Det_Itm_Id);
+    Task<ServiceResponseList<AlmacenEntity>?> ReporteIngresoSalidasAlmacen(string? Usr_Cod, DateTime? Fec_Ini, DateTime? Fec_Fin, int? Alm_Det_Cen_Cos_Id, int? Alm_Det_Prv_Id, int? Alm_Det_Itm_Id, int? Alm_Tip_Ing);
 }

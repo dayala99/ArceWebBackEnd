@@ -11,4 +11,5 @@ public class AsignacionCabeceraEntity
     public DateTime? Fec_Mod { get; set; }
     public string? Usr_Mod { get; set; }
     public string? Flg_Est { get; set; }
+    public decimal? Asg_Det_Can { get; set; }
 }
