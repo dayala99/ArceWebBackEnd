@@ -208,5 +208,56 @@ namespace MyApp.Namespace
             result.CodeResult = StatusCodes.Status400BadRequest;
             return BadRequest(result);
         }
+
+        [HttpGet]
+        [Route("getReporteAsignacionUsuario")]
+        public async Task<IActionResult> ReporteAsignacionUsuario(string? Flg_Est, 
+        string? Asg_Usr, string? Usr_Reg, int? Asg_Usr_Cen_Cos, int? Asg_Id, int? Asg_Det_Itm_Id,
+        DateTime? Fec_Ini, DateTime? Fec_Fin)
+        {
+            var result = await _service.ReporteAsignacionUsuario(Flg_Est ?? "", Asg_Usr ?? "", Usr_Reg ?? "", Asg_Usr_Cen_Cos ?? 0, Asg_Id ?? 0, 
+            Asg_Det_Itm_Id ?? 0, Fec_Ini, Fec_Fin);
+
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpGet]
+        [Route("getObtenerDatosCabeceraValeSalidaPDF")]
+        public async Task<IActionResult> ObtenerDatosCabeceraValeSalidaPDF(int? Asg_Id)
+        {
+            var result = await _service.ObtenerDatosCabeceraValeSalidaPDF(Asg_Id ?? 0);
+
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpGet]
+        [Route("getObtenerDatosDetalleValeSalidaPDF")]
+        public async Task<IActionResult> ObtenerDatosDetalleValeSalidaPDF(int? Asg_Id)
+        {
+            var result = await _service.ObtenerDatosDetalleValeSalidaPDF(Asg_Id ?? 0);
+
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
     }
 }

@@ -17,4 +17,9 @@ public interface IAsignacionRepository
     Task<(int Codigo, string Mensaje)> EliminarAsignacionDetalle(AsignacionDetalleEntity valores);
     Task<(int Codigo, string Mensaje)> EliminarAsignacion(AsignacionCabeceraEntity valores);
     Task<(int Codigo, string Mensaje)> EliminarAsignacionDetalleTotal(AsignacionDetalleEntity valores);
+    Task<IEnumerable<ReporteAsignacionEntity>?> ReporteAsignacionUsuario(string? Flg_Est, 
+    string? Asg_Usr, string? Usr_Reg, int? Asg_Usr_Cen_Cos, int? Asg_Id, int? Asg_Det_Itm_Id,
+    DateTime? Fec_Ini, DateTime? Fec_Fin);
+    Task<IEnumerable<AsignacionCabeceraEntity>?> ObtenerDatosCabeceraValeSalidaPDF (int? Asg_Id);
+    Task<IEnumerable<AsignacionDetalleEntity>?> ObtenerDatosDetalleValeSalidaPDF (int? Asg_Id);
 }

@@ -356,4 +356,91 @@ public class AsignacionService: IAsignacionService
             return result;
         }
     }
+
+    public async Task<ServiceResponseList<ReporteAsignacionEntity>?> ReporteAsignacionUsuario(string? Flg_Est, 
+    string? Asg_Usr, string? Usr_Reg, int? Asg_Usr_Cen_Cos, int? Asg_Id, int? Asg_Det_Itm_Id,
+    DateTime? Fec_Ini, DateTime? Fec_Fin)
+    {
+        var result = new ServiceResponseList<ReporteAsignacionEntity>();
+        try
+        {
+            var resultData = await _repository.ReporteAsignacionUsuario(Flg_Est, Asg_Usr, Usr_Reg, Asg_Usr_Cen_Cos, Asg_Id, 
+            Asg_Det_Itm_Id, Fec_Ini, Fec_Fin);
+            
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+                return result;
+            }
+            
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = resultData.ToList();
+            result.TotalElements = resultData.ToList().Count();
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepcion no controlada " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponseList<AsignacionCabeceraEntity>?> ObtenerDatosCabeceraValeSalidaPDF (int? Asg_Id)
+    {
+        var result = new ServiceResponseList<AsignacionCabeceraEntity>();
+        try
+        {
+            var resultData = await _repository.ObtenerDatosCabeceraValeSalidaPDF(Asg_Id);
+            
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+                return result;
+            }
+            
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = resultData.ToList();
+            result.TotalElements = resultData.ToList().Count();
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepcion no controlada " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponseList<AsignacionDetalleEntity>?> ObtenerDatosDetalleValeSalidaPDF (int? Asg_Id)
+    {
+        var result = new ServiceResponseList<AsignacionDetalleEntity>();
+        try
+        {
+            var resultData = await _repository.ObtenerDatosDetalleValeSalidaPDF(Asg_Id);
+            
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+                return result;
+            }
+            
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = resultData.ToList();
+            result.TotalElements = resultData.ToList().Count();
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepcion no controlada " + ex.Message;
+            return result;
+        }
+    }
 }

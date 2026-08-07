@@ -9,4 +9,6 @@ public class AsignacionDetalleEntity
     public string? Asg_Det_Ser { get; set; }
     public string? Asg_Det_Obs { get; set; }
     public string? Flg_Est { get; set; }
+	public string? Itm_Des { get; set; }
+	public string? Uni_Med_Abr { get; set; }
 }

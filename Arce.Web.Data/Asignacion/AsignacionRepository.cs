@@ -372,4 +372,70 @@ public class AsignacionRepository: IAsignacionRepository
             return (Codigo, Mensaje);
         }
     }
+
+    public async Task<IEnumerable<ReporteAsignacionEntity>?> ReporteAsignacionUsuario(string? Flg_Est, 
+    string? Asg_Usr, string? Usr_Reg, int? Asg_Usr_Cen_Cos, int? Asg_Id, int? Asg_Det_Itm_Id,
+    DateTime? Fec_Ini, DateTime? Fec_Fin)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Flg_Est", Flg_Est);
+            parametros.Add("@Asg_Usr", Asg_Usr);
+            parametros.Add("@Usr_Reg", Usr_Reg);
+            parametros.Add("@Asg_Usr_Cen_Cos", Asg_Usr_Cen_Cos);
+            parametros.Add("@Asg_Id", Asg_Id);
+            parametros.Add("@Asg_Det_Itm_Id", Asg_Det_Itm_Id);
+            parametros.Add("@Fec_Ini", Fec_Ini);
+            parametros.Add("@Fec_Fin", Fec_Fin);
+        
+            var result = await connection.QueryAsync<ReporteAsignacionEntity>(
+                "[dbo].[PA_Lg_Asignacion_Cab_S0004]"
+                , parametros
+                , commandType: CommandType.StoredProcedure
+            );
+
+            return result;
+        }
+    }
+
+    public async Task<IEnumerable<AsignacionCabeceraEntity>?> ObtenerDatosCabeceraValeSalidaPDF (int? Asg_Id)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Asg_Id", Asg_Id);
+        
+            var result = await connection.QueryAsync<AsignacionCabeceraEntity>(
+                "[dbo].[PA_Lg_Asignacion_Cab_S0005]"
+                , parametros
+                , commandType: CommandType.StoredProcedure
+            );
+
+            return result;
+        }
+    }
+
+    public async Task<IEnumerable<AsignacionDetalleEntity>?> ObtenerDatosDetalleValeSalidaPDF (int? Asg_Id)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Asg_Id", Asg_Id);
+        
+            var result = await connection.QueryAsync<AsignacionDetalleEntity>(
+                "[dbo].[PA_Lg_Asignacion_Det_S0003]"
+                , parametros
+                , commandType: CommandType.StoredProcedure
+            );
+
+            return result;
+        }
+    }
 }
