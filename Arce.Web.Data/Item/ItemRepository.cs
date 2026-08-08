@@ -246,4 +246,42 @@ public class ItemRepository: IItemRepository
             return result;
         }
     }
+
+    public async Task<(int Codigo, string Mensaje)> ActualizarStockItemSalidaAnulacion(ItemEntity valores)
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+
+            parametros.Add("@Alm_Mov_Id", valores.Alm_Mov_Id);
+            parametros.Add("@Alm_Det_Itm_Id", valores.Alm_Det_Itm_Id);
+            parametros.Add("@Can_Ing", valores.Can_Ing);
+            
+            parametros.Add("@Codigo", 0);
+            parametros.Add("@sMsj", "");
+
+            parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);
+            parametros.Add("@sMsj", dbType: DbType.String, size: 255, direction: ParameterDirection.Output);
+            try
+            {
+                connection.Execute(
+                    "[dbo].[PA_Lg_Item_U0005]"
+                    , parametros
+                    , commandType: CommandType.StoredProcedure
+                );
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            var Codigo = parametros.Get<int>("@Codigo");
+            var mensaje = parametros.Get<string>("@sMsj");
+            
+            return (Codigo, mensaje);
+        }
+    }
+    
 }

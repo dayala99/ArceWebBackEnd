@@ -11,4 +11,5 @@ public interface IItemRepository
     Task<(int Codigo, string Mensaje)> ActualizarStockItemIngresoDirecto(ItemEntity valores);
     Task<(int Codigo, string Mensaje)> ActualizarStockItemSalida(ItemEntity valores);
     Task<IEnumerable<ItemEntity>?> ListarStocksItems(int? Usr_Cen_Cos_Id, int? Alm_Det_Itm_Id);
+    Task<(int Codigo, string Mensaje)> ActualizarStockItemSalidaAnulacion(ItemEntity valores);
 }

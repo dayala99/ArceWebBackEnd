@@ -66,10 +66,11 @@ public class AlmacenRepository: IAlmacenRepository
             var parametros = new DynamicParameters();
             parametros.Add("@Alm_Ubi", valores.Alm_Ubi);
             parametros.Add("@Alm_Sol_Dni", valores.Alm_Sol_Dni);
-            parametros.Add("@Alm_Cen_Cos",valores.Alm_Cen_Cos);
+            parametros.Add("@Alm_Cen_Cos", valores.Alm_Cen_Cos);
             parametros.Add("@Alm_Tip_Ing", valores.Alm_Tip_Ing);
             //parametros.Add("@Flg_Est_Apr", string.IsNullOrWhiteSpace(valores.Flg_Est_Apr) ? "I" : valores.Flg_Est_Apr);
-            parametros.Add("@Usr_Reg",valores.Usr_Reg);
+            parametros.Add("@Usr_Reg", valores.Usr_Reg);
+            parametros.Add("@Alm_Ser", valores.Alm_Ser);
             parametros.Add("@Alm_Mov_Id",0);
             parametros.Add("@Codigo",0);
             parametros.Add("@sMsj", "");
@@ -108,10 +109,11 @@ public class AlmacenRepository: IAlmacenRepository
             parametros.Add("@Alm_Mov_Id", valores.Alm_Mov_Id);
             parametros.Add("@Alm_Ubi", valores.Alm_Ubi);
             parametros.Add("@Alm_Sol_Dni", valores.Alm_Sol_Dni);
-            parametros.Add("@Alm_Cen_Cos",valores.Alm_Cen_Cos);
-            parametros.Add("@Flg_Est",valores.Flg_Est);
-            parametros.Add("@Usr_Mod",valores.Usr_Mod);
-            parametros.Add("@Codigo",0);
+            parametros.Add("@Alm_Cen_Cos", valores.Alm_Cen_Cos);
+            parametros.Add("@Flg_Est", valores.Flg_Est);
+            parametros.Add("@Usr_Mod", valores.Usr_Mod);
+            parametros.Add("@Alm_Ser", valores.Alm_Ser);
+            parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
 
             parametros.Add("@Codigo", dbType: DbType.Int32, direction: ParameterDirection.Output);

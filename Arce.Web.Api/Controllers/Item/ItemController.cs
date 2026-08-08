@@ -94,7 +94,7 @@ namespace MyApp.Namespace
         [HttpPatch]
         [Route("patchActualizarStockItemSalida")]
         public async Task<IActionResult> ActualizarStockItemSalida([FromBody] ItemEntity valores)
-        {           
+        {
             var result = await _service.ActualizarStockItemSalida(valores);
             if (result!.Success)
             {
@@ -111,6 +111,21 @@ namespace MyApp.Namespace
         public async Task<IActionResult> ListarStocksItems(int? Usr_Cen_Cos_Id, int? Alm_Det_Itm_Id)
         {
             var result = await _service.ListarStocksItems(Usr_Cen_Cos_Id, Alm_Det_Itm_Id);
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
+        [HttpPatch]
+        [Route("patchActualizarStockItemSalidaAnulacion")]
+        public async Task<IActionResult> ActualizarStockItemSalidaAnulacion([FromBody] ItemEntity valores)
+        {           
+            var result = await _service.ActualizarStockItemSalidaAnulacion(valores);
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;

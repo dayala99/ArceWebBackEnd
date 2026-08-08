@@ -12,4 +12,5 @@ public interface IItemService
     Task<ServiceResponse<int>> ActualizarStockItemIngresoDirecto(ItemEntity valores);
     Task<ServiceResponse<int>> ActualizarStockItemSalida(ItemEntity valores);
     Task<ServiceResponseList<ItemEntity>?> ListarStocksItems(int? Usr_Cen_Cos_Id, int? Alm_Det_Itm_Id);
+    Task<ServiceResponse<int>> ActualizarStockItemSalidaAnulacion(ItemEntity valores);
 }
