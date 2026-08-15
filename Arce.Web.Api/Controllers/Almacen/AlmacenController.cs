@@ -96,6 +96,22 @@ namespace MyApp.Namespace
             return BadRequest(result);
         }
 
+        [HttpPost]
+        [Route("postRegistrarTransferenciaAlmacen")]
+        public async Task<IActionResult> RegistrarTransferenciaAlmacen([FromBody] AlmacenEntity valores)
+        {
+            var result = await _service.RegistrarTransferenciaAlmacen(valores);
+
+            if (result.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+
         [HttpGet]
         [Route("getListarIngresoAlmacenDetalleModificar")]
         public async Task<IActionResult> ListarIngresoAlmacenDetalleModificar(int? Alm_Mov_Id)
@@ -215,6 +231,26 @@ namespace MyApp.Namespace
         {
             var result = await _service.ReporteIngresoSalidasAlmacen(Usr_Cod ?? "", Fec_Ini, Fec_Fin, Alm_Det_Cen_Cos_Id ?? 0, Alm_Det_Prv_Id ?? 0, Alm_Det_Itm_Id ?? 0, Alm_Tip_Ing ?? 0);
 
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
+ 
+        [HttpGet]
+        [Route("getListarTransferenciaAlmacen")]
+        public async Task<IActionResult> ListarTransferenciaAlmacen(
+        DateTime? Fec_Ini, DateTime? Fec_Fin , string? Alm_Sol_Dni, int? Alm_Cen_Cos, int? Alm_Destino,
+        int? Alm_Tip_Ing, string? Alm_Usr_Apr, int? Alm_Mov_Ori
+        )
+        {
+            var result = await _service.ListarTransferenciaAlmacen(
+                Fec_Ini, Fec_Fin, Alm_Sol_Dni ?? "", Alm_Cen_Cos ?? 0, Alm_Destino ?? 0,
+                Alm_Tip_Ing ?? 0, Alm_Usr_Apr ?? "", Alm_Mov_Ori ?? 0);
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;

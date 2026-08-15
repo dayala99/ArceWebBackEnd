@@ -39,6 +39,9 @@ public class PedidoCabeceraEntity
 	public string? Ord_Com_Id { get; set; }
 	public string? Ord_Com_For_Pag { get; set; }
 	public string? For_Pag_Des { get; set; }
+    public decimal? Ord_Com_Tot { get; set; }
+    public int? Mon_Id { get; set; }
+    public string? Mon_Des { get; set; }
 }
 
 public class PedidoDetalleEntityReporte

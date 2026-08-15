@@ -13,4 +13,6 @@ public interface IItemService
     Task<ServiceResponse<int>> ActualizarStockItemSalida(ItemEntity valores);
     Task<ServiceResponseList<ItemEntity>?> ListarStocksItems(int? Usr_Cen_Cos_Id, int? Alm_Det_Itm_Id);
     Task<ServiceResponse<int>> ActualizarStockItemSalidaAnulacion(ItemEntity valores);
+    Task<ServiceResponseList<ReporteItemOcos>?> ReporteOCOS(DateTime? Fec_Ini, DateTime? Fec_Fin, int? Ped_Id, int? Ord_Com_Id, int? Ped_Tip_Com,
+        int? Mon_Id, string? Usr_Reg, int? Ped_Cen_Cos_Asg, int? Ord_Com_For_Pag, int? Ord_Com_Prv);
 }

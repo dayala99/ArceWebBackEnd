@@ -24,4 +24,5 @@ public class AlmacenDetalleEntity
 	public string? Usr_Doc_Nro { get; set; }
 	public string? Itm_Des { get; set; }
 	public string? Uni_Med_Abr { get; set; }
+	public decimal? Alm_Cos_Unit { get; set; }
 }

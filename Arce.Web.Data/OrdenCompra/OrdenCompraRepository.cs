@@ -242,8 +242,6 @@ public class OrdenCompraRepository: IOrdenCompraRepository
             parametros.Add("@Ord_Com_Arc_Rut", valores.Ord_Com_Arc_Rut);
             parametros.Add("@Ord_Com_Arc_Nom", valores.Ord_Com_Arc_Nom);
     
-
-            
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
 
@@ -284,7 +282,7 @@ public class OrdenCompraRepository: IOrdenCompraRepository
                 , parametros
                 , commandType: CommandType.StoredProcedure
             );
-            return result;
+            return result; 
         }
     }
     

@@ -283,5 +283,36 @@ public class ItemRepository: IItemRepository
             return (Codigo, mensaje);
         }
     }
+
+    public async Task<IEnumerable<ReporteItemOcos>?> ReporteOCOS(
+        DateTime? Fec_Ini, DateTime? Fec_Fin, int? Ped_Id, int? Ord_Com_Id, int? Ped_Tip_Com,
+        int? Mon_Id, string? Usr_Reg, int? Ped_Cen_Cos_Asg, int? Ord_Com_For_Pag, int? Ord_Com_Prv 
+    )
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Fec_Ini", Fec_Ini);
+            parametros.Add("@Fec_Fin", Fec_Fin);
+            parametros.Add("@Ped_Id", Ped_Id);
+            parametros.Add("@Ord_Com_Id", Ord_Com_Id);
+            parametros.Add("@Ped_Tip_Com", Ped_Tip_Com);
+            parametros.Add("@Mon_Id", Mon_Id);
+            parametros.Add("@Usr_Reg", Usr_Reg);
+            parametros.Add("@Ped_Cen_Cos_Asg", Ped_Cen_Cos_Asg);
+            parametros.Add("@Ord_Com_For_Pag", Ord_Com_For_Pag);
+            parametros.Add("@Ord_Com_Prv", Ord_Com_Prv);
+
+            var result = await connection.QueryAsync<ReporteItemOcos>(
+                "[dbo].[PA_Lg_Item_S0002]"
+                , parametros
+                , commandType: CommandType.StoredProcedure
+            );
+
+            return result;
+        }
+    }
     
 }

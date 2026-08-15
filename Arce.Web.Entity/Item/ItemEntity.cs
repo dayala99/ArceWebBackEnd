@@ -28,4 +28,5 @@ public class ItemEntity
     public decimal? Disponible { get; set; }
     public decimal? Reservado { get; set; }
     public decimal? Total { get; set; }
+    public string? Itm_Tip { get; set; }
 }

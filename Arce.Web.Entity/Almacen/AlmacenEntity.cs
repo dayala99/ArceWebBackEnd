@@ -31,4 +31,9 @@ public class AlmacenEntity
 	public string? Itm_Des	 { get; set; }
 	public string? Alm_Det_Can { get; set; }
 	public string? Usr_Nom_Reg { get; set; }
+	public string? Alm_Gui_Rem { get; set; }
+	public int? Alm_Destino { get; set; }
+	public string? Alm_Usr_Apr { get; set; }
+	public int? Alm_Mov_Ori { get; set; }
+	public string? Aprobador { get; set; }
 }

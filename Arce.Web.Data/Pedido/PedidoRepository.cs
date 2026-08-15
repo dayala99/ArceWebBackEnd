@@ -784,6 +784,8 @@ public class PedidoRepository: IPedidoRepository
             parametros.Add("@Ped_Det_Id", valores.Ped_Det_Id);
             parametros.Add("@Ord_Com_Id", valores.Ord_Com_Id);
             parametros.Add("@Can_Ing", valores.Can_Ing);
+            parametros.Add("@Alm_Ser", valores.Alm_Ser);
+            parametros.Add("@Alm_Cos_Unit", valores.Alm_Cos_Unit);
 
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");

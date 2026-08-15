@@ -28,4 +28,6 @@ public class PedidoDetalleEntity
     public string? Ped_Com { get; set; }    
     public string? Ped_Req { get; set; }
     public string? Ped_Det_Img { get; set; }
+    public string? Alm_Ser { get; set; }
+    public decimal? Alm_Cos_Unit { get; set; }
 }

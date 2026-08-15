@@ -96,6 +96,9 @@ builder.Services.AddScoped<IPerfilService, PerfilService>();
 builder.Services.AddScoped<IAccesoService, AccesoService>();
 builder.Services.AddScoped<ICargoService, CargoService>();
 builder.Services.AddScoped<IAsignacionService, AsignacionService>();
+builder.Services.AddScoped<IClienteWbService, ClienteWbService>();
+builder.Services.AddScoped<IObraService, ObraService>();
+
 
 //Inyection Repository
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
@@ -134,6 +137,8 @@ builder.Services.AddScoped<IClienteRepository, ClienteRepository>(); // ← AGRE
 builder.Services.AddScoped<ITipoInspeccionRepository, TipoInspeccionRepository>();
 builder.Services.AddScoped<IPreguntasHseRepository, PreguntasHseRepository>();
 builder.Services.AddScoped<ITipoRiesgoRepository, TipoRiesgoRepository>();
+builder.Services.AddScoped<IClienteWbRepository, ClienteWbRepository>();
+builder.Services.AddScoped<IObraRepository, ObraRepository>();
 
 #endregion
 

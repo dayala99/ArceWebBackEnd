@@ -245,6 +245,38 @@ public class AlmacenService: IAlmacenService
         }
     }
 
+    public async Task<ServiceResponse<int>> RegistrarTransferenciaAlmacen(AlmacenEntity valores)
+    {
+        var result = new ServiceResponse<int>();
+
+        try
+        {
+            var resultData = await _repository.RegistrarTransferenciaAlmacen(valores);
+
+            if (resultData.Codigo == 0)
+            {
+                result.Success = true;
+                result.Message = resultData.Mensaje;
+                result.CodeTransacc = resultData.Codigo;
+                result.Data = resultData.Alm_Mov_Id;
+                return result;
+            }
+
+            result.Success = false;
+            result.Message = resultData.Mensaje;
+            result.CodeTransacc = resultData.Codigo;
+            result.Data = 0;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.Message = "Error inesperado " + ex.Message;
+            result.Data = 0;
+            return result;
+        }
+    }
+
     public async Task<ServiceResponse<int>> ActualizarIngresoAlmacenDetalleOrdenCompra(AlmacenDetalleEntity valores)
     {
         var result = new ServiceResponse<int>();
@@ -365,6 +397,39 @@ public class AlmacenService: IAlmacenService
         try
         {
             var resultData = await _repository.ReporteIngresoSalidasAlmacen(Usr_Cod, Fec_Ini, Fec_Fin, Alm_Det_Cen_Cos_Id, Alm_Det_Prv_Id, Alm_Det_Itm_Id, Alm_Tip_Ing);
+            
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+                return result;
+            }
+            
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = resultData.ToList();
+            result.TotalElements = resultData.ToList().Count();
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepcion no controlada " + ex.Message;
+            return result;
+        }
+    }
+
+    public async Task<ServiceResponseList<AlmacenEntity>?> ListarTransferenciaAlmacen(
+        DateTime? Fec_Ini, DateTime? Fec_Fin , string? Alm_Sol_Dni, int? Alm_Cen_Cos, int? Alm_Destino,
+        int? Alm_Tip_Ing, string? Alm_Usr_Apr, int? Alm_Mov_Ori
+        )
+    {
+        var result = new ServiceResponseList<AlmacenEntity>();
+        try
+        {
+            var resultData = await _repository.ListarTransferenciaAlmacen(
+                Fec_Ini, Fec_Fin, Alm_Sol_Dni, Alm_Cen_Cos, Alm_Destino,
+                Alm_Tip_Ing, Alm_Usr_Apr, Alm_Mov_Ori);
             
             if (resultData == null || !resultData.Any())
             {

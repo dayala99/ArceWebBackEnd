@@ -216,4 +216,34 @@ public class ItemService: IItemService
             return result;
         }
     }
+
+    public async Task<ServiceResponseList<ReporteItemOcos>?> ReporteOCOS(
+        DateTime? Fec_Ini, DateTime? Fec_Fin, int? Ped_Id, int? Ord_Com_Id, int? Ped_Tip_Com,
+        int? Mon_Id, string? Usr_Reg, int? Ped_Cen_Cos_Asg, int? Ord_Com_For_Pag, int? Ord_Com_Prv)
+    {
+        var result = new ServiceResponseList<ReporteItemOcos>();
+        try
+        {
+            var resultData = await _repository.ReporteOCOS(Fec_Ini, Fec_Fin, Ped_Id, Ord_Com_Id, Ped_Tip_Com,
+            Mon_Id, Usr_Reg, Ped_Cen_Cos_Asg, Ord_Com_For_Pag, Ord_Com_Prv);
+            if (resultData == null || !resultData.Any())
+            {
+                result.Success = true;
+                result.Message = "No existe información";
+                result.Elements = new List<ReporteItemOcos>();
+                result.TotalElements = 0;
+                return result;
+            }
+            result.Success = true;
+            result.Message = "Completado con éxito";
+            result.Elements = resultData.ToList();
+            result.TotalElements = resultData.ToList().Count();
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Message = "Excepción no controlada " + ex.Message;
+            return result;
+        }
+    }
 }
