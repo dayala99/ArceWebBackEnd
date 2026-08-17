@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Arce.Web.Data;
 using Arce.Web.Data.TJH2B;
+using System.Collections.Generic;
 
 namespace Arce.Web.Api.Controllers.TJH2B
 {
@@ -39,7 +40,7 @@ namespace Arce.Web.Api.Controllers.TJH2B
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> RegistrarCotizacionTjh2b([FromForm] RegistrarCotizacionTjh2bFormRequest valores)
         {
-            var documentoPdf = await GuardarArchivoPdfAsync(valores.Cotizacion_DocumentoPDF_File) ?? valores.Cotizacion_DocumentoPDF ?? string.Empty;
+            var documentoPdf = await GuardarArchivosPdfAsync(valores.Cotizacion_DocumentoPDF_File, valores.Cotizacion_DocumentoPDF) ?? string.Empty;
 
             var entity = new CotizacionTjh2bEntity
             {
@@ -49,6 +50,8 @@ namespace Arce.Web.Api.Controllers.TJH2B
                 FechaIni = valores.Cotizacion_FechaIni,
                 FechaFin = valores.Cotizacion_FechaFin,
                 DocumentoPdf = documentoPdf,
+                Cotizacion_UsuariosCorreo = valores.Cotizacion_UsuariosCorreo,
+                Cotizacion_Alerta = valores.Cotizacion_Alerta,
                 Usr_Reg = valores.Usr_Reg
             };
 
@@ -67,7 +70,7 @@ namespace Arce.Web.Api.Controllers.TJH2B
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> ActualizarCotizacionTjh2b([FromForm] ActualizarCotizacionTjh2bFormRequest valores)
         {
-            var documentoPdf = await GuardarArchivoPdfAsync(valores.Cotizacion_DocumentoPDF_File) ?? valores.Cotizacion_DocumentoPDF ?? string.Empty;
+            var documentoPdf = await GuardarArchivosPdfAsync(valores.Cotizacion_DocumentoPDF_File, valores.Cotizacion_DocumentoPDF) ?? string.Empty;
 
             var entity = new CotizacionTjh2bEntity
             {
@@ -78,6 +81,8 @@ namespace Arce.Web.Api.Controllers.TJH2B
                 FechaIni = valores.Cotizacion_FechaIni,
                 FechaFin = valores.Cotizacion_FechaFin,
                 DocumentoPdf = documentoPdf,
+                Cotizacion_UsuariosCorreo = valores.Cotizacion_UsuariosCorreo,
+                Cotizacion_Alerta = valores.Cotizacion_Alerta,
                 Usr_Mod = valores.Usr_Mod,
                 Cotizacion_Estado = valores.Cotizacion_Estado,
                 Estado = valores.Estado
@@ -162,6 +167,56 @@ namespace Arce.Web.Api.Controllers.TJH2B
         // Al abrir esta carpeta desde el explorador de Windows se pueden ver todos los documentos.
         private const string RutaAlmacenamientoPdf = @"C:\Archivos";
 
+        private static async Task<string?> GuardarArchivosPdfAsync(IEnumerable<IFormFile>? archivos, string? rutasExistentes)
+        {
+            var rutas = new List<string>();
+
+            foreach (var ruta in SepararRutasPdf(rutasExistentes))
+            {
+                if (!EsRutaTemporal(ruta))
+                {
+                    rutas.Add(ruta);
+                }
+            }
+
+            if (archivos is not null)
+            {
+                foreach (var archivo in archivos)
+                {
+                    var rutaGuardada = await GuardarArchivoPdfAsync(archivo);
+                    if (!string.IsNullOrWhiteSpace(rutaGuardada))
+                    {
+                        rutas.Add(rutaGuardada);
+                    }
+                }
+            }
+
+            return rutas.Count > 0 ? string.Join(" | ", rutas.Distinct(StringComparer.OrdinalIgnoreCase)) : string.Empty;
+        }
+
+        private static IEnumerable<string> SepararRutasPdf(string? valor)
+        {
+            if (string.IsNullOrWhiteSpace(valor))
+            {
+                yield break;
+            }
+
+            var partes = valor.Split(new[] { '|', ';', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            foreach (var parte in partes)
+            {
+                if (!string.IsNullOrWhiteSpace(parte))
+                {
+                    yield return parte.Trim();
+                }
+            }
+        }
+
+        private static bool EsRutaTemporal(string ruta)
+        {
+            return ruta.StartsWith("blob:", StringComparison.OrdinalIgnoreCase)
+                || ruta.StartsWith("data:", StringComparison.OrdinalIgnoreCase);
+        }
+
         private static async Task<string?> GuardarArchivoPdfAsync(IFormFile? archivo)
         {
             if (archivo is null || archivo.Length == 0)
@@ -172,14 +227,13 @@ namespace Arce.Web.Api.Controllers.TJH2B
             var carpeta = RutaAlmacenamientoPdf;
             Directory.CreateDirectory(carpeta);
 
-            var extension = Path.GetExtension(archivo.FileName);
-            if (string.IsNullOrWhiteSpace(extension))
+            var nombreOriginal = Path.GetFileName(archivo.FileName);
+            if (string.IsNullOrWhiteSpace(nombreOriginal))
             {
-                extension = ".pdf";
+                nombreOriginal = $"COT_{DateTime.Now:yyyyMMddHHmmssfff}.pdf";
             }
 
-            var nombreSeguro = $"COT_{DateTime.Now:yyyyMMddHHmmssfff}_{Guid.NewGuid():N}{extension}";
-            var rutaCompleta = Path.Combine(carpeta, nombreSeguro);
+            var rutaCompleta = Path.Combine(carpeta, nombreOriginal);
 
             await using var stream = new FileStream(rutaCompleta, FileMode.Create, FileAccess.Write, FileShare.None);
             await archivo.CopyToAsync(stream);

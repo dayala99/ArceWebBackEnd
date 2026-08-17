@@ -10,6 +10,8 @@ public class CotizacionTjh2bEntity
     public DateTime? FechaIni { get; set; }
     public DateTime? FechaFin { get; set; }
     public string? DocumentoPdf { get; set; }
+    public string? Cotizacion_UsuariosCorreo { get; set; }
+    public string? Cotizacion_Alerta { get; set; }
     public string? Cotizacion_Estado { get; set; }
     public string? Estado { get; set; }
     public string? Usr_Reg { get; set; }

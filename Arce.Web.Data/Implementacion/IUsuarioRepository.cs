@@ -9,4 +9,5 @@ public interface IUsuarioRepository
     Task<IEnumerable<UsuarioEntity>?> ObtenerAccesoUsuario(string? Usr_Cod, string? Usr_Pass);
     Task<IEnumerable<UsuarioEntity>?> ObtenerUsuariosAprobacion(string? Usr_Apr);
     Task<IEnumerable<UsuarioEntity>?> ConsultarDatosUsuario(string? Usr_Cod);
+    Task<IEnumerable<UsuarioEntity>?> ListarUsuariosCorreoArce();
 }

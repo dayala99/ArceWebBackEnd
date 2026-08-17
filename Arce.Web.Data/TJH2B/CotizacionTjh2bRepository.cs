@@ -71,6 +71,7 @@ public class CotizacionTjh2bRepository : ICotizacionTjh2bRepository
         parametros.Add("@Cotizacion_FechaFin", valores.FechaFin);
         parametros.Add("@Cotizacion_DocumentoPDF", valores.DocumentoPdf ?? string.Empty);
         parametros.Add("@Usr_Reg", valores.Usr_Reg);
+        parametros.Add("@Cotizacion_Alerta", valores.Cotizacion_Alerta ?? valores.Cotizacion_UsuariosCorreo ?? string.Empty);
 
         try
         {
@@ -103,6 +104,7 @@ public class CotizacionTjh2bRepository : ICotizacionTjh2bRepository
         parametros.Add("@Cotizacion_Estado", NormalizarCotizacionEstado(valores.Cotizacion_Estado));
         parametros.Add("@Estado", NormalizarEstado(valores.Estado));
         parametros.Add("@Cotizacion_DocumentoPDF", valores.DocumentoPdf ?? string.Empty);
+        parametros.Add("@Cotizacion_Alerta", valores.Cotizacion_Alerta ?? valores.Cotizacion_UsuariosCorreo ?? string.Empty);
         parametros.Add("@Usr_Mod", valores.Usr_Mod);
 
         try
@@ -158,6 +160,8 @@ public class CotizacionTjh2bRepository : ICotizacionTjh2bRepository
             FechaIni = GetDateTime(row, "Cotizacion_FechaIni"),
             FechaFin = GetDateTime(row, "Cotizacion_FechaFin"),
             DocumentoPdf = GetString(row, "Cotizacion_DocumentoPDF"),
+            Cotizacion_Alerta = GetString(row, "Cotizacion_Alerta") ?? GetString(row, "Cotizacion_UsuariosCorreo"),
+            Cotizacion_UsuariosCorreo = GetString(row, "Cotizacion_UsuariosCorreo"),
             Cotizacion_Estado = GetString(row, "Cotizacion_Estado"),
             Estado = GetString(row, "Estado"),
             Usr_Reg = GetString(row, "Usr_Reg"),
