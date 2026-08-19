@@ -78,7 +78,7 @@ namespace MyApp.Namespace
 
             result.CodeResult = StatusCodes.Status400BadRequest;
             return BadRequest(result);
-        }
+        } 
 
         [HttpPost]
         [Route("postRegistrarIngresoAlmacenDetalle")]

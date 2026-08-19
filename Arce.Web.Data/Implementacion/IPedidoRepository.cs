@@ -4,7 +4,7 @@ namespace Arce.Web.Data;
 
 public interface IPedidoRepository
 {
-    Task<IEnumerable<PedidoCabeceraEntity>?> ListarPedido(int? Ped_Id, string? Flg_Est, int? Ped_Tip_Com, string? Usr_Cod);
+    Task<IEnumerable<PedidoCabeceraEntity>?> ListarPedido(int? Ped_Id, string? Flg_Est, int? Ped_Tip_Com, string? Usr_Cod, string? Itm_Des);
     Task<IEnumerable<PedidoCabeceraEntity>?> ListarPedidoCorrelativoNuevo();
     Task<IEnumerable<PedidoCabeceraEntity>?> ListarPedidoModificar(int Ped_Id);
     Task<(int Codigo, string Mensaje, int Ped_Id)> RegistrarPedido(PedidoCabeceraEntity valores);

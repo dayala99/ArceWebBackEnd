@@ -16,7 +16,9 @@ public class OrdenCompraRepository: IOrdenCompraRepository
         _connectionString = configuration.GetConnectionString("Connection")!;
     }
 
-    public async Task<IEnumerable<OrdenCompraEntity>?> ListarOrdenCompraActivo(int? Ord_Com_Id, string? Ord_Com_Prv, string? Flg_Est, int? Ord_Com_Tip)
+    public async Task<IEnumerable<OrdenCompraEntity>?> ListarOrdenCompraActivo(
+        int? Ord_Com_Id, string? Ord_Com_Prv, string? Flg_Est, int? Ord_Com_Tip, string? Itm_Des
+        )
     {
         using (var connection = new SqlConnection(_connectionString))
         {
@@ -26,6 +28,7 @@ public class OrdenCompraRepository: IOrdenCompraRepository
             parametros.Add("@Ord_Com_Prv", Ord_Com_Prv);
             parametros.Add("@Flg_Est", Flg_Est);
             parametros.Add("@Ord_Com_Tip", Ord_Com_Tip);
+            parametros.Add("@Itm_Des", Itm_Des);
 
             var result = await connection.QueryAsync<OrdenCompraEntity>(
                     "[dbo].[PA_Lg_Orden_Compra_S0001]"

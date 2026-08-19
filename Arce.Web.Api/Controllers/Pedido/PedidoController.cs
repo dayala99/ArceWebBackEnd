@@ -21,9 +21,9 @@ namespace MyApp.Namespace
 
         [HttpGet]
         [Route("getListarPedido")]
-        public async Task<IActionResult> ListarPedido(int? Ped_Id, string? Flg_Est, int? Ped_Tip_Com, string? Usr_Cod)
+        public async Task<IActionResult> ListarPedido(int? Ped_Id, string? Flg_Est, int? Ped_Tip_Com, string? Usr_Cod, string? Itm_Des)
         {
-            var result = await _service.ListarPedido(Ped_Id ?? 0, Flg_Est ?? "", Ped_Tip_Com ?? 0, Usr_Cod ?? "");
+            var result = await _service.ListarPedido(Ped_Id ?? 0, Flg_Est ?? "", Ped_Tip_Com ?? 0, Usr_Cod ?? "", Itm_Des ?? "");
             if (result!.Success)
             {
                 result.CodeResult = StatusCodes.Status200OK;

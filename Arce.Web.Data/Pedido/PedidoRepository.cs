@@ -17,7 +17,9 @@ public class PedidoRepository: IPedidoRepository
     }
 
     //LISTAR TOTAL DE PEDIDOS
-    public async Task<IEnumerable<PedidoCabeceraEntity>?> ListarPedido(int? Ped_Id, string? Flg_Est, int? Ped_Tip_Com, string? Usr_Cod)
+    public async Task<IEnumerable<PedidoCabeceraEntity>?> ListarPedido(
+        int? Ped_Id, string? Flg_Est, int? Ped_Tip_Com, string? Usr_Cod, string? Itm_Des
+        )
     {
         using (var connection = new SqlConnection(_connectionString))
         {
@@ -29,6 +31,7 @@ public class PedidoRepository: IPedidoRepository
             parametros.Add("@Flg_Est", Flg_Est);
             parametros.Add("@Ped_Tip_Com", Ped_Tip_Com);
             parametros.Add("@Usr_Cod", Usr_Cod);
+            parametros.Add("@Itm_Des", Itm_Des);
 
             var result = await connection.QueryAsync<PedidoCabeceraEntity>(
                 "[dbo].[PA_Lg_Pedido_Cab_S0001]"

@@ -12,12 +12,12 @@ public class PedidoService: IPedidoService
     {
         _repository = pedidoRepository;
     }
-    public async Task<ServiceResponseList<PedidoCabeceraEntity>?> ListarPedido(int? Ped_Id, string? Flg_Est, int? Ped_Tip_Com, string? Usr_Cod)
+    public async Task<ServiceResponseList<PedidoCabeceraEntity>?> ListarPedido(int? Ped_Id, string? Flg_Est, int? Ped_Tip_Com, string? Usr_Cod, string? Itm_Des)
     {
         var result = new ServiceResponseList<PedidoCabeceraEntity>();
         try
         {
-            var resultData = await _repository.ListarPedido(Ped_Id, Flg_Est, Ped_Tip_Com, Usr_Cod);
+            var resultData = await _repository.ListarPedido(Ped_Id, Flg_Est, Ped_Tip_Com, Usr_Cod, Itm_Des);
 
             if (resultData == null || !resultData.Any())
             {
