@@ -8,9 +8,11 @@ using Arce.Web.Data.Inspecciones.Clima;
 using Arce.Web.Data.Inspecciones.Tarea;
 using Arce.Web.Data.Inspecciones.SubContrata;
 using Arce.Web.Data.Inspecciones.Subestaciones;
+using Arce.Web.Data.Inspecciones.ClienteTjh2b;
 using Arce.Web.Data.Inspecciones.TipoInspeccion;
 using Arce.Web.Data.Inspecciones.PreguntasHse;
 using Arce.Web.Data.Inspecciones.TipoRiesgo;
+using Arce.Web.Data.TJH2B;
 using Arce.Web.Service;
 using Arce.Web.Service.Inspecciones.Jefe;
 using Arce.Web.Service.Inspecciones.TipoReporte;
@@ -134,6 +136,8 @@ builder.Services.AddScoped<IAsignacionRepository, AsignacionRepository>();
 
 
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>(); // ← AGREGADO
+builder.Services.AddScoped<ICotizacionTjh2bRepository, CotizacionTjh2bRepository>();
+builder.Services.AddScoped<IClienteTjh2bRepository, ClienteTjh2bRepository>();
 builder.Services.AddScoped<ITipoInspeccionRepository, TipoInspeccionRepository>();
 builder.Services.AddScoped<IPreguntasHseRepository, PreguntasHseRepository>();
 builder.Services.AddScoped<ITipoRiesgoRepository, TipoRiesgoRepository>();

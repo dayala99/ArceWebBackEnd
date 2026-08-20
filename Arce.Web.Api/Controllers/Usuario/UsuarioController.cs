@@ -106,5 +106,20 @@ namespace MyApp.Namespace
             result.CodeResult = StatusCodes.Status400BadRequest;
             return BadRequest(result);
         }
+
+        [HttpGet]
+        [Route("getListarUsuariosCorreoArce")]
+        public async Task<IActionResult> ListarUsuariosCorreoArce()
+        {
+            var result = await _usuarioService.ListarUsuariosCorreoArce();
+            if (result!.Success)
+            {
+                result.CodeResult = StatusCodes.Status200OK;
+                return Ok(result);
+            }
+
+            result.CodeResult = StatusCodes.Status400BadRequest;
+            return BadRequest(result);
+        }
     }
 }

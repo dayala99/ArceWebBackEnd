@@ -172,4 +172,28 @@ public class UsuarioRepository: IUsuarioRepository
         }
     }
 
+    public async Task<IEnumerable<UsuarioEntity>?> ListarUsuariosCorreoArce()
+    {
+        using (var connection = new SqlConnection(_connectionString))
+        {
+            await connection.OpenAsync();
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@Dominio", "@tjh2b.com");
+
+            var result = await connection.QueryAsync<UsuarioEntity>(
+                @"
+                    SELECT t1.Usr_Corr
+                    FROM Sg_Usuario t1
+                    WHERE t1.Usr_Corr LIKE '%' + @Dominio
+                    ORDER BY t1.Usr_Corr
+                ",
+                parametros,
+                commandType: CommandType.Text
+            );
+
+            return result;
+        }
+    }
+
 }
