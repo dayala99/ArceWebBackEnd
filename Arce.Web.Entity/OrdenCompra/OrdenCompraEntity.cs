@@ -40,4 +40,10 @@ public class OrdenCompraEntity
 	public int? Prv_Ban_Id { get; set; }
 	public string? Flg_Alm { get; set; }
 	public int? Flg_Est_Con { get; set; }
+	public string? Ord_Com_Des_Gral { get; set; }
+	public DateTime? Ord_Com_Fec_Ate { get; set; }
+	public string? Ord_Com_Dir_Env { get; set; }
+	public int? Ord_Com_Per_Gas { get; set; }
+	public decimal? Ord_Com_Des { get; set; }
+	public int? Flg_Des_Por { get; set; }
 }

@@ -463,6 +463,9 @@ public class PedidoRepository: IPedidoRepository
             parametros.Add("@Ped_Com", valores.Ped_Com);
             parametros.Add("@Ped_Req", valores.Ped_Req);
             parametros.Add("@Ped_Det_Img", valores.Ped_Det_Img);
+            parametros.Add("@Ped_Det_Des", valores.Ped_Det_Des);
+            parametros.Add("@Flg_Des_Por", valores.Flg_Des_Por);
+            parametros.Add("@Ped_Det_Cos_Uni_Des", valores.Ped_Det_Cos_Uni_Des);
 
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
@@ -473,7 +476,7 @@ public class PedidoRepository: IPedidoRepository
             try
             {
                 connection.Execute(
-                    "[dbo].[PA_Lg_Pedido_Det_U0001]"
+                    "[dbo].[PA_Lg_Pedido_Det_U0001_DAYALA]"
                     , parametros
                     , commandType: CommandType.StoredProcedure
                 );

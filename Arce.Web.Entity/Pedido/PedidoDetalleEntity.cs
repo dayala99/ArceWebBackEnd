@@ -30,4 +30,7 @@ public class PedidoDetalleEntity
     public string? Ped_Det_Img { get; set; }
     public string? Alm_Ser { get; set; }
     public decimal? Alm_Cos_Unit { get; set; }
+    public decimal? Ped_Det_Des { get; set; }
+    public int? Flg_Des_Por { get; set; }
+    public decimal? Ped_Det_Cos_Uni_Des { get; set; }
 }

@@ -81,6 +81,13 @@ public class OrdenCompraRepository: IOrdenCompraRepository
             parametros.Add("@Flg_Igv_Aut", valores.Flg_Igv_Aut);
             parametros.Add("@Igv_Por", valores.Igv_Por);
             parametros.Add("@Con_Nom", valores.Con_Nom);
+            parametros.Add("@Prv_Ban_Id", valores.Prv_Ban_Id);
+            parametros.Add("@Ord_Com_Des_Gral", valores.Ord_Com_Des_Gral);
+            parametros.Add("@Ord_Com_Fec_Ate", valores.Ord_Com_Fec_Ate);
+            parametros.Add("@Ord_Com_Dir_Env", valores.Ord_Com_Dir_Env);
+            parametros.Add("@Ord_Com_Per_Gas", valores.Ord_Com_Per_Gas);
+            parametros.Add("@Ord_Com_Des", valores.Ord_Com_Des);
+            parametros.Add("@Flg_Des_Por", valores.Flg_Des_Por);
 
             parametros.Add("@Ord_Com_Id", 0);
             parametros.Add("@Codigo", 0);
@@ -92,7 +99,7 @@ public class OrdenCompraRepository: IOrdenCompraRepository
             try
             {
                 connection.Execute(
-                    "[dbo].[PA_Lg_Orden_Compra_I0001_DAYALA]"
+                    "[dbo].[PA_Lg_Orden_Compra_I0001]"
                     , parametros
                     , commandType: CommandType.StoredProcedure
                 );
@@ -136,6 +143,13 @@ public class OrdenCompraRepository: IOrdenCompraRepository
             parametros.Add("@Flg_Igv_Aut", valores.Flg_Igv_Aut);
             parametros.Add("@Igv_Por", valores.Igv_Por);
             parametros.Add("@Con_Nom", valores.Con_Nom);
+            parametros.Add("@Prv_Ban_Id", valores.Prv_Ban_Id);
+            parametros.Add("@Ord_Com_Des_Gral", valores.Ord_Com_Des_Gral);
+            parametros.Add("@Ord_Com_Fec_Ate", valores.Ord_Com_Fec_Ate);
+            parametros.Add("@Ord_Com_Dir_Env", valores.Ord_Com_Dir_Env);
+            parametros.Add("@Ord_Com_Per_Gas", valores.Ord_Com_Per_Gas);
+            parametros.Add("@Ord_Com_Des", valores.Ord_Com_Des);
+            parametros.Add("@Flg_Des_Por", valores.Flg_Des_Por);
             
             parametros.Add("@Codigo", 0);
             parametros.Add("@sMsj", "");
@@ -145,7 +159,7 @@ public class OrdenCompraRepository: IOrdenCompraRepository
             try
             {
                 connection.Execute(
-                    "[dbo].[PA_Lg_Orden_Compra_U0001_DAYALA]"
+                    "[dbo].[PA_Lg_Orden_Compra_U0001]"
                     , parametros
                     , commandType: CommandType.StoredProcedure
                 );
